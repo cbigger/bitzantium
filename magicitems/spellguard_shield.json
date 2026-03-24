@@ -1,0 +1,24 @@
+{
+  "item_id": "spellguard_shield",
+  "name": "Spellguard Shield",
+  "item_type": "shield",
+  "description": "While holding this shield, you have advantage on saving throws against spells and other magical effects, and spell attacks have disadvantage against you.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "very_rare",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "armor"
+  ],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": null
+}

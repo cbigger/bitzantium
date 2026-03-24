@@ -1,0 +1,137 @@
+{
+  "ability_id": "shatter",
+  "name": "Shatter",
+  "description": "A sudden loud ringing noise, painfully intense, erupts from a point of your choice within range. Each creature in a 10-­--foot-­--radius sphere centered on that point must make a Constitution saving throw. A creature takes 3d8 thunder damage on a failed save, or half as much damage on a successful one. A creature made of inorganic material such as stone,crystal, or metal has disadvantage on this saving throw. A nonmagical object that isn't being worn or carried also takes the damage if it's in the spell's area.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "multiple",
+  "range_ft": 60,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "6d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "10d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A burst of mica.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "bard",
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

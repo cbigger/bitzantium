@@ -1,0 +1,51 @@
+{
+  "item_id": "demon_armor",
+  "name": "Demon Armor",
+  "item_type": "armor",
+  "description": "While wearing this armor, you gain a +1 bonus to AC, and you can understand and speak Abyssal. In addition, the armor's clawed gauntlets turn unarmed strikes with your hands into magic weapons that deal slashing damage, with a +1 bonus to attack rolls and damage rolls and a damage die of 1d8.\n\n**_Curse_**. Once you don this cursed armor, you can't doff it unless you are targeted by the _remove curse_ spell or similar magic. While wearing the armor, you have disadvantage on attack rolls against demons and on saving throws against their spells and special abilities.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "very_rare",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "armor",
+    "cursed"
+  ],
+  "weapon_properties": null,
+  "armor_properties": {
+    "armor_type": "heavy",
+    "base_ac": 0,
+    "ac_bonus": 1,
+    "max_dex_bonus": null,
+    "strength_requirement": 0,
+    "stealth_disadvantage": false,
+    "don_time_minutes": 1,
+    "doff_time_minutes": 1
+  },
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [
+      {
+        "effect_type": "modify_stat",
+        "stat": "ac",
+        "modifier": 1,
+        "set_value": null
+      }
+    ],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

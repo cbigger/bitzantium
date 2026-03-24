@@ -1,0 +1,51 @@
+{
+  "item_id": "potion_of_healing",
+  "name": "Potion of Healing",
+  "item_type": "potion",
+  "description": "You regain hit points when you drink this potion. The number of hit points depends on the potion's rarity, as shown in the Potions of Healing table. Whatever its potency, the potion's red liquid glimmers when agitated.\n\n**Potions of Healing (table)**\n\n| Potion of ...    | Rarity    | HP Regained |\n|------------------|-----------|-------------|\n| Healing          | Common    | 2d4 + 2     |\n| Greater healing  | Uncommon  | 4d4 + 4     |\n| Superior healing | Rare      | 8d4 + 8     |\n| Supreme healing  | Very rare | 10d4 + 20   |",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "uncommon",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": {
+    "consumption_type": "drink",
+    "charges": 1,
+    "effects": [
+      {
+        "effect_type": "heal",
+        "dice": "2d4",
+        "bonus": 2,
+        "max_hp_only": false
+      }
+    ],
+    "addiction_risk": false
+  },
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [
+      {
+        "effect_type": "heal",
+        "dice": "2d4",
+        "bonus": 2,
+        "max_hp_only": false
+      }
+    ],
+    "concentration_required": false
+  }
+}

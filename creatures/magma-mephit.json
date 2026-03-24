@@ -1,0 +1,133 @@
+{
+  "creature_id": "magma-mephit",
+  "name": "Magma Mephit",
+  "description": "",
+  "creature_type": "elemental",
+  "size": "small",
+  "ability_scores": {
+    "strength": 8,
+    "dexterity": 12,
+    "constitution": 12,
+    "intelligence": 7,
+    "wisdom": 10,
+    "charisma": 10
+  },
+  "armor_class": 11,
+  "armor_type": "",
+  "hp_dice_count": 5,
+  "hp_die": 6,
+  "hp_flat_bonus": 5,
+  "hp_average": 22,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 30,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "fire",
+    "poison"
+  ],
+  "vulnerabilities": [
+    "cold"
+  ],
+  "condition_immunities": [
+    "poisoned"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "magma-mephit_death_burst",
+      "name": "Death Burst",
+      "source": "magma-mephit",
+      "description": "When the mephit dies, it explodes in a burst of lava. Each creature within 5 ft. of it must make a DC 11 Dexterity saving throw, taking 7 (2d6) fire damage on a failed save, or half as much damage on a successful one."
+    },
+    {
+      "feature_id": "magma-mephit_false_appearance",
+      "name": "False Appearance",
+      "source": "magma-mephit",
+      "description": "While the mephit remains motionless, it is indistinguishable from an ordinary mound of magma."
+    },
+    {
+      "feature_id": "magma-mephit_innate_spellcasting_1_day",
+      "name": "Innate Spellcasting (1/Day)",
+      "source": "magma-mephit",
+      "description": "The mephit can innately cast _heat metal_ (spell save DC 10), requiring no material components. Its innate spellcasting ability is Charisma."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "magma-mephit_claws",
+      "name": "Claws",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 1,
+          "damage_type": "slashing"
+        },
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 0,
+          "damage_type": "fire"
+        }
+      ],
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 3 (1d4 + 1) slashing damage plus 2 (1d4) fire damage."
+    },
+    {
+      "action_id": "magma-mephit_fire_breath_recharge_6",
+      "name": "Fire Breath (Recharge 6)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "dexterity",
+      "save_dc": 11,
+      "on_hit": [],
+      "description": "The mephit exhales a 15-foot cone of fire. Each creature in that area must make a DC 11 Dexterity saving throw, taking 7 (2d6) fire damage on a failed save, or half as much damage on a successful one."
+    },
+    {
+      "action_id": "magma-mephit_variant_summon_mephits_1_day",
+      "name": "Variant: Summon Mephits (1/Day)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The mephit has a 25 percent chance of summoning 1d4 mephits of its kind. A summoned mephit appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other mephits. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 100,
+  "challenge_rating": "1/2"
+}

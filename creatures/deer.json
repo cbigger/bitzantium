@@ -1,0 +1,71 @@
+{
+  "creature_id": "deer",
+  "name": "Deer",
+  "description": "",
+  "creature_type": "beast",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 11,
+    "dexterity": 16,
+    "constitution": 11,
+    "intelligence": 2,
+    "wisdom": 14,
+    "charisma": 5
+  },
+  "armor_class": 13,
+  "armor_type": "",
+  "hp_dice_count": 1,
+  "hp_die": 8,
+  "hp_flat_bonus": 0,
+  "hp_average": 4,
+  "speed": {
+    "walk": 50,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "deer_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 2,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 0,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

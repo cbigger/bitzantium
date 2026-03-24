@@ -1,0 +1,36 @@
+{
+  "ability_id": "enhance_ability",
+  "name": "Enhance Ability",
+  "description": "You touch a creature and bestow upon it a magical enhancement. Choose one of the following effects; the target gains that effect until the spell ends.\n\n**Bear's Endurance.** The target has advantage on constitution checks. It also gains 2d6 temporary hit points, which are lost when the spell ends.\n\n**Bull's Strength.** The target has advantage on strength checks, and his or her carrying capacity doubles.\n\n**Cat's Grace.** The target has advantage on dexterity checks. It also doesn't take damage from falling 20 feet or less if it isn't incapacitated.\n\n**Eagle's Splendor.** The target has advantage on Charisma checks\n\n **Fox's Cunning.** The target has advantage on intelligence checks.\n\n**Owl's Wisdom.** The target has advantage on wisdom checks.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 hour",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": []
+    }
+  ],
+  "spell_school": "transmutation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "Fur or a feather from a beast.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "bard",
+    "sorcerer"
+  ]
+}

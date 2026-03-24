@@ -1,0 +1,115 @@
+{
+  "creature_id": "hippogriff",
+  "name": "Hippogriff",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "large",
+  "ability_scores": {
+    "strength": 17,
+    "dexterity": 13,
+    "constitution": 13,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 8
+  },
+  "armor_class": 11,
+  "armor_type": "",
+  "hp_dice_count": 3,
+  "hp_die": 10,
+  "hp_flat_bonus": 3,
+  "hp_average": 19,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 60,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 15,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "hippogriff_keen_sight",
+      "name": "Keen Sight",
+      "source": "hippogriff",
+      "description": "The hippogriff has advantage on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "hippogriff_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The hippogriff makes two attacks: one with its beak and one with its claws."
+    },
+    {
+      "action_id": "hippogriff_beak",
+      "name": "Beak",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 5,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 10,
+          "damage_flat_bonus": 3,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage."
+    },
+    {
+      "action_id": "hippogriff_claws",
+      "name": "Claws",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 5,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 3,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 200,
+  "challenge_rating": "1"
+}

@@ -1,0 +1,44 @@
+{
+  "ability_id": "fear",
+  "name": "Fear",
+  "description": "You project a phantasmal image of a creature's worst fears. Each creature in a 30-foot cone must succeed on a wisdom saving throw or drop whatever it is holding and become frightened for the duration. While frightened by this spell, a creature must take the Dash action and move away from you by the safest available route on each of its turns, unless there is nowhere to move. If the creature ends its turn in a location where it doesn't have line of sight to you, the creature can make a wisdom saving throw. On a successful save, the spell ends for that creature.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_cone",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": 30,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "apply_condition",
+          "condition": "frightened",
+          "duration_turns": null,
+          "save_ability": "wisdom",
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "illusion",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A white feather or the heart of a hen.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "bard",
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

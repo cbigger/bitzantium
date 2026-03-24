@@ -1,0 +1,82 @@
+{
+  "creature_id": "ogre-zombie",
+  "name": "Ogre Zombie",
+  "description": "",
+  "creature_type": "undead",
+  "size": "large",
+  "ability_scores": {
+    "strength": 19,
+    "dexterity": 6,
+    "constitution": 18,
+    "intelligence": 3,
+    "wisdom": 6,
+    "charisma": 5
+  },
+  "armor_class": 8,
+  "armor_type": "",
+  "hp_dice_count": 9,
+  "hp_die": 10,
+  "hp_flat_bonus": 36,
+  "hp_average": 85,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 8,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "poisoned"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "ogre-zombie_undead_fortitude",
+      "name": "Undead Fortitude",
+      "source": "ogre-zombie",
+      "description": "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5+the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "ogre-zombie_morningstar",
+      "name": "Morningstar",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 4,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 450,
+  "challenge_rating": "2"
+}

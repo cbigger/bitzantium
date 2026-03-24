@@ -1,0 +1,122 @@
+{
+  "creature_id": "doppelganger",
+  "name": "Doppelganger",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 11,
+    "dexterity": 18,
+    "constitution": 14,
+    "intelligence": 11,
+    "wisdom": 12,
+    "charisma": 14
+  },
+  "armor_class": 14,
+  "armor_type": "",
+  "hp_dice_count": 8,
+  "hp_die": 8,
+  "hp_flat_bonus": 16,
+  "hp_average": 52,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 11,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "doppelganger_shapechanger",
+      "name": "Shapechanger",
+      "source": "doppelganger",
+      "description": "The doppelganger can use its action to polymorph into a Small or Medium humanoid it has seen, or back into its true form. Its statistics, other than its size, are the same in each form. Any equipment it is wearing or carrying isn't transformed. It reverts to its true form if it dies."
+    },
+    {
+      "feature_id": "doppelganger_ambusher",
+      "name": "Ambusher",
+      "source": "doppelganger",
+      "description": "The doppelganger has advantage on attack rolls against any creature it has surprised."
+    },
+    {
+      "feature_id": "doppelganger_surprise_attack",
+      "name": "Surprise Attack",
+      "source": "doppelganger",
+      "description": "If the doppelganger surprises a creature and hits it with an attack during the first round of combat, the target takes an extra 10 (3d6) damage from the attack."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "doppelganger_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The doppelganger makes two melee attacks."
+    },
+    {
+      "action_id": "doppelganger_slam",
+      "name": "Slam",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 4,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 7 (1d6 + 4) bludgeoning damage."
+    },
+    {
+      "action_id": "doppelganger_read_thoughts",
+      "name": "Read Thoughts",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The doppelganger magically reads the surface thoughts of one creature within 60 ft. of it. The effect can penetrate barriers, but 3 ft. of wood or dirt, 2 ft. of stone, 2 inches of metal, or a thin sheet of lead blocks it. While the target is in range, the doppelganger can continue reading its thoughts, as long as the doppelganger's concentration isn't broken (as if concentrating on a spell). While reading the target's mind, the doppelganger has advantage on Wisdom (Insight) and Charisma (Deception, Intimidation, and Persuasion) checks against the target."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 700,
+  "challenge_rating": "3"
+}

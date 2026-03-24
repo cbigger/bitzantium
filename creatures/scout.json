@@ -1,0 +1,115 @@
+{
+  "creature_id": "scout",
+  "name": "Scout",
+  "description": "**Scouts** are skilled hunters and trackers who offer their services for a fee. Most hunt wild game, but a few work as bounty hunters, serve as guides, or provide military reconnaissance.",
+  "creature_type": "humanoid",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 11,
+    "dexterity": 14,
+    "constitution": 12,
+    "intelligence": 11,
+    "wisdom": 13,
+    "charisma": 11
+  },
+  "armor_class": 13,
+  "armor_type": "leather armor",
+  "hp_dice_count": 3,
+  "hp_die": 8,
+  "hp_flat_bonus": 3,
+  "hp_average": 16,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 15,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "scout_keen_hearing_and_sight",
+      "name": "Keen Hearing and Sight",
+      "source": "scout",
+      "description": "The scout has advantage on Wisdom (Perception) checks that rely on hearing or sight."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "scout_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The scout makes two melee attacks or two ranged attacks."
+    },
+    {
+      "action_id": "scout_shortsword",
+      "name": "Shortsword",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "action_id": "scout_longbow",
+      "name": "Longbow",
+      "action_cost": "action",
+      "attack_type": "ranged_weapon",
+      "reach_ft": null,
+      "range_normal_ft": 150,
+      "range_max_ft": 600,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Ranged Weapon Attack: +4 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 100,
+  "challenge_rating": "1/2"
+}

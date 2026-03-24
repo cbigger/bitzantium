@@ -1,0 +1,32 @@
+{
+  "item_id": "bag_of_devouring",
+  "name": "Bag of Devouring",
+  "item_type": "wondrous",
+  "description": "This bag superficially resembles a _bag of holding_ but is a feeding orifice for a gigantic extradimensional creature. Turning the bag inside out closes the orifice.\n\nThe extradimensional creature attached to the bag can sense whatever is placed inside the bag. Animal or vegetable matter placed wholly in the bag is devoured and lost forever. When part of a living creature is placed in the bag, as happens when someone reaches inside it, there is a 50 percent chance that the creature is pulled inside the bag. A creature inside the bag can use its action to try to escape with a successful DC 15 Strength check. Another creature can use its action to reach into the bag to pull a creature out, doing so with a successful DC 20 Strength check (provided it isn't pulled inside the bag first). Any creature that starts its turn inside the bag is devoured, its body destroyed.\n\nInanimate objects can be stored in the bag, which can hold a cubic foot of such material. However, once each day, the bag swallows any objects inside it and spits them out into another plane of existence. The GM determines the time and plane.\n\nIf the bag is pierced or torn, it is destroyed, and anything contained within it is transported to a random location on the Astral Plane.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "very_rare",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

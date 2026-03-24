@@ -1,0 +1,173 @@
+{
+  "creature_id": "drider",
+  "name": "Drider",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "large",
+  "ability_scores": {
+    "strength": 16,
+    "dexterity": 16,
+    "constitution": 18,
+    "intelligence": 13,
+    "wisdom": 14,
+    "charisma": 12
+  },
+  "armor_class": 19,
+  "armor_type": "natural armor",
+  "hp_dice_count": 13,
+  "hp_die": 10,
+  "hp_flat_bonus": 52,
+  "hp_average": 123,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 30,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 15,
+    "darkvision_ft": 120,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 3,
+  "traits": [
+    {
+      "feature_id": "drider_fey_ancestry",
+      "name": "Fey Ancestry",
+      "source": "drider",
+      "description": "The drider has advantage on saving throws against being charmed, and magic can't put the drider to sleep."
+    },
+    {
+      "feature_id": "drider_innate_spellcasting",
+      "name": "Innate Spellcasting",
+      "source": "drider",
+      "description": "The drider's innate spellcasting ability is Wisdom (spell save DC 13). The drider can innately cast the following spells, requiring no material components:\nAt will: dancing lights\n1/day each: darkness, faerie fire"
+    },
+    {
+      "feature_id": "drider_spider_climb",
+      "name": "Spider Climb",
+      "source": "drider",
+      "description": "The drider can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+    },
+    {
+      "feature_id": "drider_sunlight_sensitivity",
+      "name": "Sunlight Sensitivity",
+      "source": "drider",
+      "description": "While in sunlight, the drider has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+    },
+    {
+      "feature_id": "drider_web_walker",
+      "name": "Web Walker",
+      "source": "drider",
+      "description": "The drider ignores movement restrictions caused by webbing."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "drider_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The drider makes three attacks, either with its longsword or its longbow. It can replace one of those attacks with a bite attack."
+    },
+    {
+      "action_id": "drider_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 0,
+          "damage_type": "piercing"
+        },
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 0,
+          "damage_type": "poison"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 2 (1d4) piercing damage plus 9 (2d8) poison damage."
+    },
+    {
+      "action_id": "drider_longsword",
+      "name": "Longsword",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 3,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage, or 8 (1d10 + 3) slashing damage if used with two hands."
+    },
+    {
+      "action_id": "drider_longbow",
+      "name": "Longbow",
+      "action_cost": "action",
+      "attack_type": "ranged_weapon",
+      "reach_ft": null,
+      "range_normal_ft": 150,
+      "range_max_ft": 600,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 3,
+          "damage_type": "piercing"
+        },
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 0,
+          "damage_type": "poison"
+        }
+      ],
+      "description": "Ranged Weapon Attack: +6 to hit, range 150/600 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 4 (1d8) poison damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 2300,
+  "challenge_rating": "6"
+}

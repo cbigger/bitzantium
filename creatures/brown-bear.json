@@ -1,0 +1,115 @@
+{
+  "creature_id": "brown-bear",
+  "name": "Brown Bear",
+  "description": "",
+  "creature_type": "beast",
+  "size": "large",
+  "ability_scores": {
+    "strength": 19,
+    "dexterity": 10,
+    "constitution": 16,
+    "intelligence": 2,
+    "wisdom": 13,
+    "charisma": 7
+  },
+  "armor_class": 11,
+  "armor_type": "natural armor",
+  "hp_dice_count": 4,
+  "hp_die": 10,
+  "hp_flat_bonus": 12,
+  "hp_average": 34,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 30,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 13,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "brown-bear_keen_smell",
+      "name": "Keen Smell",
+      "source": "brown-bear",
+      "description": "The bear has advantage on Wisdom (Perception) checks that rely on smell."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "brown-bear_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The bear makes two attacks: one with its bite and one with its claws."
+    },
+    {
+      "action_id": "brown-bear_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 4,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage."
+    },
+    {
+      "action_id": "brown-bear_claws",
+      "name": "Claws",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 4,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 200,
+  "challenge_rating": "1"
+}

@@ -1,0 +1,149 @@
+{
+  "creature_id": "sahuagin",
+  "name": "Sahuagin",
+  "description": "",
+  "creature_type": "humanoid",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 13,
+    "dexterity": 11,
+    "constitution": 12,
+    "intelligence": 12,
+    "wisdom": 13,
+    "charisma": 9
+  },
+  "armor_class": 12,
+  "armor_type": "natural armor",
+  "hp_dice_count": 4,
+  "hp_die": 8,
+  "hp_flat_bonus": 4,
+  "hp_average": 22,
+  "speed": {
+    "walk": 30,
+    "swim": 40,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 15,
+    "darkvision_ft": 120,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "sahuagin_blood_frenzy",
+      "name": "Blood Frenzy",
+      "source": "sahuagin",
+      "description": "The sahuagin has advantage on melee attack rolls against any creature that doesn't have all its hit points."
+    },
+    {
+      "feature_id": "sahuagin_limited_amphibiousness",
+      "name": "Limited Amphibiousness",
+      "source": "sahuagin",
+      "description": "The sahuagin can breathe air and water, but it needs to be submerged at least once every 4 hours to avoid suffocating."
+    },
+    {
+      "feature_id": "sahuagin_shark_telepathy",
+      "name": "Shark Telepathy",
+      "source": "sahuagin",
+      "description": "The sahuagin can magically command any shark within 120 feet of it, using a limited telepathy."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "sahuagin_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The sahuagin makes two melee attacks: one with its bite and one with its claws or spear."
+    },
+    {
+      "action_id": "sahuagin_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 1,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 1) piercing damage."
+    },
+    {
+      "action_id": "sahuagin_claws",
+      "name": "Claws",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 1,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 3 (1d4 + 1) slashing damage."
+    },
+    {
+      "action_id": "sahuagin_spear",
+      "name": "Spear",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": 20,
+      "range_max_ft": 60,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 1,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage, or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 100,
+  "challenge_rating": "1/2"
+}

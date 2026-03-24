@@ -1,0 +1,352 @@
+{
+  "sheet": {
+    "entity_id": "char_c9068bd108a9",
+    "name": "Smioth",
+    "creature_id": "dwarf",
+    "race_id": "hill_dwarf",
+    "description": "Smioth lika large hariy man",
+    "background_id": "acolyte",
+    "alignment": "Neutral Good",
+    "inspiration": false,
+    "classes": [
+      {
+        "class_id": "cleric",
+        "subclass_id": "life_domain",
+        "level": 12,
+        "hit_die": "d8"
+      }
+    ],
+    "level": 12,
+    "experience": 0,
+    "proficiency_bonus": 4,
+    "hp_current": 99,
+    "hp_max": 99,
+    "hp_temp": 0,
+    "hit_dice": [
+      {
+        "die": "d8",
+        "total": 12,
+        "remaining": 12
+      }
+    ],
+    "armor_class": 12,
+    "speed": 25,
+    "initiative_bonus": 2,
+    "death_saves": {
+      "successes": 0,
+      "failures": 0,
+      "stable": false
+    },
+    "ability_scores": {
+      "strength": 15,
+      "dexterity": 14,
+      "constitution": 15,
+      "intelligence": 12,
+      "wisdom": 11,
+      "charisma": 8
+    },
+    "saving_throw_proficiencies": [
+      "charisma",
+      "wisdom"
+    ],
+    "skill_proficiencies": [
+      {
+        "skill": "acrobatics",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "animal_handling",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "arcana",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "athletics",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "deception",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "history",
+        "proficiency_level": "proficient"
+      },
+      {
+        "skill": "insight",
+        "proficiency_level": "proficient"
+      },
+      {
+        "skill": "intimidation",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "investigation",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "medicine",
+        "proficiency_level": "proficient"
+      },
+      {
+        "skill": "nature",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "perception",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "performance",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "persuasion",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "religion",
+        "proficiency_level": "proficient"
+      },
+      {
+        "skill": "sleight_of_hand",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "stealth",
+        "proficiency_level": "none"
+      },
+      {
+        "skill": "survival",
+        "proficiency_level": "none"
+      }
+    ],
+    "tool_proficiencies": [],
+    "languages": [
+      "common",
+      "dwarvish",
+      "elvish",
+      "halfling"
+    ],
+    "senses": {
+      "passive_perception": 12,
+      "darkvision_ft": 60,
+      "blindsight_ft": 0,
+      "tremorsense_ft": 0,
+      "truesight_ft": 0
+    },
+    "conditions": [],
+    "active_effects": [],
+    "concentration_effect_id": null,
+    "exhaustion_level": 0,
+    "features": [
+      {
+        "feature_id": "cleric_spellcasting",
+        "name": "Spellcasting",
+        "source": "cleric_1",
+        "description": "Cast cleric spells using Wisdom. Prepare a number of spells equal to your Wisdom modifier + your cleric level (minimum 1). Cantrips are known and require no preparation."
+      },
+      {
+        "feature_id": "divine_domain",
+        "name": "Divine Domain",
+        "source": "cleric_1",
+        "description": "Choose a Divine Domain. Your choice grants domain spells and other features at levels 1, 2, 6, 8, and 17."
+      },
+      {
+        "feature_id": "channel_divinity_feature",
+        "name": "Channel Divinity",
+        "source": "cleric_2",
+        "description": "Channel divine energy to fuel magical effects. You know two such effects: Turn Undead and an effect determined by your domain. Uses recharge on a short or long rest. At level 6 you gain a second use; at level 18 a third."
+      },
+      {
+        "feature_id": "turn_undead",
+        "name": "Channel Divinity: Turn Undead",
+        "source": "cleric_2",
+        "description": "As an action, present your holy symbol. Each undead that can see or hear you within 30 feet must make a Wisdom saving throw. On a failed save, the creature is turned for 1 minute or until it takes damage."
+      },
+      {
+        "feature_id": "cleric_asi_4",
+        "name": "Ability Score Improvement",
+        "source": "cleric_4",
+        "description": "Increase one ability score by 2, or two ability scores by 1 each. Cannot exceed 20."
+      },
+      {
+        "feature_id": "destroy_undead_half",
+        "name": "Destroy Undead (CR 1/2)",
+        "source": "cleric_5",
+        "description": "When an undead fails its saving throw against your Turn Undead, the creature is instantly destroyed if its CR is 1/2 or lower."
+      },
+      {
+        "feature_id": "destroy_undead_1",
+        "name": "Destroy Undead (CR 1)",
+        "source": "cleric_8",
+        "description": "Your Turn Undead now instantly destroys undead of CR 1 or lower."
+      },
+      {
+        "feature_id": "cleric_asi_8",
+        "name": "Ability Score Improvement",
+        "source": "cleric_8",
+        "description": "Increase one ability score by 2, or two ability scores by 1 each. Cannot exceed 20."
+      },
+      {
+        "feature_id": "divine_intervention",
+        "name": "Divine Intervention",
+        "source": "cleric_10",
+        "description": "Call on your deity to intervene on your behalf. Roll d100; if the result is equal to or lower than your cleric level, your deity intervenes. The DM determines the nature of the intervention. On a successful intervention you cannot use this feature again for 7 days. On a failed use you can try again after a long rest. At level 20, this automatically succeeds."
+      },
+      {
+        "feature_id": "destroy_undead_2",
+        "name": "Destroy Undead (CR 2)",
+        "source": "cleric_11",
+        "description": "Your Turn Undead now instantly destroys undead of CR 2 or lower."
+      },
+      {
+        "feature_id": "cleric_asi_12",
+        "name": "Ability Score Improvement",
+        "source": "cleric_12",
+        "description": "Increase one ability score by 2, or two ability scores by 1 each. Cannot exceed 20."
+      },
+      {
+        "feature_id": "life_domain_spells",
+        "name": "Life Domain Spells",
+        "source": "life_domain_1",
+        "description": "Always-prepared domain spells by minimum cleric level \u2014 1st: bless, cure_wounds; 3rd: lesser_restoration, spiritual_weapon; 5th: beacon_of_hope, revivify; 7th: death_ward, guardian_of_faith; 9th: mass_cure_wounds, raise_dead. These count as cleric spells for you and do not count against your prepared spells total."
+      },
+      {
+        "feature_id": "life_bonus_proficiency",
+        "name": "Bonus Proficiency",
+        "source": "life_domain_1",
+        "description": "You gain proficiency with heavy armor."
+      },
+      {
+        "feature_id": "disciple_of_life",
+        "name": "Disciple of Life",
+        "source": "life_domain_1",
+        "description": "Your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional HP equal to 2 + the spell's level."
+      },
+      {
+        "feature_id": "cd_preserve_life",
+        "name": "Channel Divinity: Preserve Life",
+        "source": "life_domain_2",
+        "description": "As an action, present your holy symbol and evoke healing energy. Choose any creatures within 30 feet and divide a pool of HP equal to 5 \u00d7 your cleric level among them. You can restore a creature to no more than half of its maximum HP with this feature. It has no effect on undead or constructs."
+      },
+      {
+        "feature_id": "blessed_healer",
+        "name": "Blessed Healer",
+        "source": "life_domain_6",
+        "description": "The healing spells you cast on others heal you as well. When you cast a healing spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level."
+      },
+      {
+        "feature_id": "divine_strike_life",
+        "name": "Divine Strike",
+        "source": "life_domain_8",
+        "description": "Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage. When you reach 14th level, the extra damage increases to 2d8."
+      },
+      {
+        "feature_id": "dwarven_toughness",
+        "name": "Dwarven Toughness",
+        "source": "hill_dwarf",
+        "description": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level."
+      },
+      {
+        "feature_id": "dwarven_resilience",
+        "name": "Dwarven Resilience",
+        "source": "dwarf",
+        "description": "You have advantage on saving throws against poison, and you have resistance against poison damage."
+      },
+      {
+        "feature_id": "dwarven_combat_training",
+        "name": "Dwarven Combat Training",
+        "source": "dwarf",
+        "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer."
+      },
+      {
+        "feature_id": "tool_proficiency_dwarf",
+        "name": "Tool Proficiency",
+        "source": "dwarf",
+        "description": "You gain proficiency with the artisan's tools of your choice: smith's tools, brewer's supplies, or mason's tools."
+      },
+      {
+        "feature_id": "stonecunning",
+        "name": "Stonecunning",
+        "source": "dwarf",
+        "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus."
+      }
+    ],
+    "feats": [],
+    "class_resources": [
+      {
+        "resource_id": "channel_divinity",
+        "name": "Channel Divinity",
+        "current": 2,
+        "max": 2,
+        "die": null,
+        "recharge_on": "short_rest"
+      }
+    ],
+    "equipment": {
+      "main_hand": null,
+      "off_hand": null,
+      "armor": null,
+      "helmet": null,
+      "boots": null,
+      "gloves": null,
+      "ring_1": null,
+      "ring_2": null,
+      "amulet": null,
+      "back": null
+    },
+    "inventory": [],
+    "currency": {
+      "cp": 0,
+      "sp": 0,
+      "ep": 0,
+      "gp": 15,
+      "pp": 0
+    },
+    "carrying_capacity": 225,
+    "resistances": [
+      "poison"
+    ],
+    "immunities": [],
+    "vulnerabilities": [],
+    "spellcasting_ability": "wisdom",
+    "spell_save_dc": 12,
+    "spell_attack_bonus": 4,
+    "spell_slots": {
+      "1": {
+        "total": 4,
+        "remaining": 4
+      },
+      "2": {
+        "total": 3,
+        "remaining": 3
+      },
+      "3": {
+        "total": 3,
+        "remaining": 3
+      },
+      "4": {
+        "total": 3,
+        "remaining": 3
+      },
+      "5": {
+        "total": 2,
+        "remaining": 2
+      },
+      "6": {
+        "total": 1,
+        "remaining": 1
+      }
+    },
+    "spells": []
+  },
+  "economy": {
+    "action_spent": false,
+    "bonus_action_spent": false,
+    "reaction_spent": false,
+    "movement_used": 0
+  }
+}

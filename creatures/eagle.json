@@ -1,0 +1,78 @@
+{
+  "creature_id": "eagle",
+  "name": "Eagle",
+  "description": "",
+  "creature_type": "beast",
+  "size": "small",
+  "ability_scores": {
+    "strength": 6,
+    "dexterity": 15,
+    "constitution": 10,
+    "intelligence": 2,
+    "wisdom": 14,
+    "charisma": 7
+  },
+  "armor_class": 12,
+  "armor_type": "",
+  "hp_dice_count": 1,
+  "hp_die": 6,
+  "hp_flat_bonus": 0,
+  "hp_average": 3,
+  "speed": {
+    "walk": 10,
+    "swim": 0,
+    "climb": 0,
+    "fly": 60,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 14,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "eagle_keen_sight",
+      "name": "Keen Sight",
+      "source": "eagle",
+      "description": "The eagle has advantage on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "eagle_talons",
+      "name": "Talons",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 2,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

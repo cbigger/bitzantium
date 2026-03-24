@@ -1,0 +1,105 @@
+{
+  "creature_id": "octopus",
+  "name": "Octopus",
+  "description": "",
+  "creature_type": "beast",
+  "size": "small",
+  "ability_scores": {
+    "strength": 4,
+    "dexterity": 15,
+    "constitution": 11,
+    "intelligence": 3,
+    "wisdom": 10,
+    "charisma": 4
+  },
+  "armor_class": 12,
+  "armor_type": "",
+  "hp_dice_count": 1,
+  "hp_die": 6,
+  "hp_flat_bonus": 0,
+  "hp_average": 3,
+  "speed": {
+    "walk": 5,
+    "swim": 30,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 30,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "octopus_hold_breath",
+      "name": "Hold Breath",
+      "source": "octopus",
+      "description": "While out of water, the octopus can hold its breath for 30 minutes."
+    },
+    {
+      "feature_id": "octopus_underwater_camouflage",
+      "name": "Underwater Camouflage",
+      "source": "octopus",
+      "description": "The octopus has advantage on Dexterity (Stealth) checks made while underwater."
+    },
+    {
+      "feature_id": "octopus_water_breathing",
+      "name": "Water Breathing",
+      "source": "octopus",
+      "description": "The octopus can breathe only underwater."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "octopus_tentacles",
+      "name": "Tentacles",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 0,
+          "damage_die": 0,
+          "damage_flat_bonus": 1,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 bludgeoning damage, and the target is grappled (escape DC 10). Until this grapple ends, the octopus can't use its tentacles on another target."
+    },
+    {
+      "action_id": "octopus_ink_cloud_recharges_after_a_short_or_long_rest",
+      "name": "Ink Cloud (Recharges after a Short or Long Rest)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "A 5-foot-radius cloud of ink extends all around the octopus if it is underwater. The area is heavily obscured for 1 minute, although a significant current can disperse the ink. After releasing the ink, the octopus can use the Dash action as a bonus action."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

@@ -1,0 +1,78 @@
+{
+  "creature_id": "rhinoceros",
+  "name": "Rhinoceros",
+  "description": "",
+  "creature_type": "beast",
+  "size": "large",
+  "ability_scores": {
+    "strength": 21,
+    "dexterity": 8,
+    "constitution": 15,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 6
+  },
+  "armor_class": 11,
+  "armor_type": "natural armor",
+  "hp_dice_count": 6,
+  "hp_die": 10,
+  "hp_flat_bonus": 12,
+  "hp_average": 45,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 11,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "rhinoceros_charge",
+      "name": "Charge",
+      "source": "rhinoceros",
+      "description": "If the rhinoceros moves at least 20 ft. straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) bludgeoning damage. If the target is a creature, it must succeed on a DC 15 Strength saving throw or be knocked prone."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "rhinoceros_gore",
+      "name": "Gore",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 7,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 5,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 450,
+  "challenge_rating": "2"
+}

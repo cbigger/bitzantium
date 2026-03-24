@@ -1,0 +1,93 @@
+{
+  "creature_id": "lemure",
+  "name": "Lemure",
+  "description": "",
+  "creature_type": "fiend",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 10,
+    "dexterity": 5,
+    "constitution": 11,
+    "intelligence": 1,
+    "wisdom": 11,
+    "charisma": 3
+  },
+  "armor_class": 7,
+  "armor_type": "",
+  "hp_dice_count": 3,
+  "hp_die": 8,
+  "hp_flat_bonus": 0,
+  "hp_average": 13,
+  "speed": {
+    "walk": 15,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 120,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "cold"
+  ],
+  "immunities": [
+    "fire",
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "frightened",
+    "poisoned"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "lemure_devil_s_sight",
+      "name": "Devil's Sight",
+      "source": "lemure",
+      "description": "Magical darkness doesn't impede the lemure's darkvision."
+    },
+    {
+      "feature_id": "lemure_hellish_rejuvenation",
+      "name": "Hellish Rejuvenation",
+      "source": "lemure",
+      "description": "A lemure that dies in the Nine Hells comes back to life with all its hit points in 1d10 days unless it is killed by a good-aligned creature with a bless spell cast on that creature or its remains are sprinkled with holy water."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "lemure_fist",
+      "name": "Fist",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 0,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

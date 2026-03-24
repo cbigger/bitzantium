@@ -1,0 +1,108 @@
+{
+  "creature_id": "giant-scorpion",
+  "name": "Giant Scorpion",
+  "description": "",
+  "creature_type": "beast",
+  "size": "large",
+  "ability_scores": {
+    "strength": 15,
+    "dexterity": 13,
+    "constitution": 15,
+    "intelligence": 1,
+    "wisdom": 9,
+    "charisma": 3
+  },
+  "armor_class": 15,
+  "armor_type": "natural armor",
+  "hp_dice_count": 7,
+  "hp_die": 10,
+  "hp_flat_bonus": 14,
+  "hp_average": 52,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 9,
+    "darkvision_ft": 0,
+    "blindsight_ft": 60,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "giant-scorpion_claw",
+      "name": "Claw",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 2,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) bludgeoning damage, and the target is grappled (escape DC 12). The scorpion has two claws, each of which can grapple only one target."
+    },
+    {
+      "action_id": "giant-scorpion_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The scorpion makes three attacks: two with its claws and one with its sting."
+    },
+    {
+      "action_id": "giant-scorpion_sting",
+      "name": "Sting",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": "constitution",
+      "save_dc": 12,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 10,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target must make a DC 12 Constitution saving throw, taking 22 (4d10) poison damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 700,
+  "challenge_rating": "3"
+}

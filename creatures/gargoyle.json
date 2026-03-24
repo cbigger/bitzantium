@@ -1,0 +1,125 @@
+{
+  "creature_id": "gargoyle",
+  "name": "Gargoyle",
+  "description": "",
+  "creature_type": "elemental",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 15,
+    "dexterity": 11,
+    "constitution": 16,
+    "intelligence": 6,
+    "wisdom": 11,
+    "charisma": 7
+  },
+  "armor_class": 15,
+  "armor_type": "natural armor",
+  "hp_dice_count": 7,
+  "hp_die": 8,
+  "hp_flat_bonus": 21,
+  "hp_average": 52,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 60,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks not made with adamantine weapons"
+  ],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "exhaustion",
+    "petrified",
+    "poisoned"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "gargoyle_false_appearance",
+      "name": "False Appearance",
+      "source": "gargoyle",
+      "description": "While the gargoyle remains motion less, it is indistinguishable from an inanimate statue."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "gargoyle_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The gargoyle makes two attacks: one with its bite and one with its claws."
+    },
+    {
+      "action_id": "gargoyle_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "action_id": "gargoyle_claws",
+      "name": "Claws",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 450,
+  "challenge_rating": "2"
+}

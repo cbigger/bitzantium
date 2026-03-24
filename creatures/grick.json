@@ -1,0 +1,119 @@
+{
+  "creature_id": "grick",
+  "name": "Grick",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 14,
+    "dexterity": 14,
+    "constitution": 11,
+    "intelligence": 3,
+    "wisdom": 14,
+    "charisma": 5
+  },
+  "armor_class": 14,
+  "armor_type": "natural armor",
+  "hp_dice_count": 6,
+  "hp_die": 8,
+  "hp_flat_bonus": 0,
+  "hp_average": 27,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 30,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "grick_stone_camouflage",
+      "name": "Stone Camouflage",
+      "source": "grick",
+      "description": "The grick has advantage on Dexterity (Stealth) checks made to hide in rocky terrain."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "grick_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The grick makes one attack with its tentacles. If that attack hits, the grick can make one beak attack against the same target."
+    },
+    {
+      "action_id": "grick_tentacles",
+      "name": "Tentacles",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) slashing damage."
+    },
+    {
+      "action_id": "grick_beak",
+      "name": "Beak",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 450,
+  "challenge_rating": "2"
+}

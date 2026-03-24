@@ -1,0 +1,216 @@
+{
+  "creature_id": "mummy-lord",
+  "name": "Mummy Lord",
+  "description": "",
+  "creature_type": "undead",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 10,
+    "constitution": 17,
+    "intelligence": 11,
+    "wisdom": 18,
+    "charisma": 16
+  },
+  "armor_class": 17,
+  "armor_type": "natural armor",
+  "hp_dice_count": 13,
+  "hp_die": 8,
+  "hp_flat_bonus": 39,
+  "hp_average": 97,
+  "speed": {
+    "walk": 20,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 14,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "necrotic",
+    "poison",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "vulnerabilities": [
+    "bludgeoning"
+  ],
+  "condition_immunities": [
+    "charmed",
+    "exhaustion",
+    "frightened",
+    "paralyzed",
+    "poisoned"
+  ],
+  "proficiency_bonus": 5,
+  "traits": [
+    {
+      "feature_id": "mummy-lord_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "mummy-lord",
+      "description": "The mummy lord has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "feature_id": "mummy-lord_rejuvenation",
+      "name": "Rejuvenation",
+      "source": "mummy-lord",
+      "description": "A destroyed mummy lord gains a new body in 24 hours if its heart is intact, regaining all its hit points and becoming active again. The new body appears within 5 feet of the mummy lord's heart."
+    },
+    {
+      "feature_id": "mummy-lord_spellcasting",
+      "name": "Spellcasting",
+      "source": "mummy-lord",
+      "description": "The mummy lord is a 10th-level spellcaster. Its spellcasting ability is Wisdom (spell save DC 17, +9 to hit with spell attacks). The mummy lord has the following cleric spells prepared:\n\n* Cantrips (at will): sacred flame, thaumaturgy\n* 1st level (4 slots): command, guiding bolt, shield of faith\n* 2nd level (3 slots): hold person, silence, spiritual weapon\n* 3rd level (3 slots): animate dead, dispel magic\n* 4th level (3 slots): divination, guardian of faith\n* 5th level (2 slots): contagion, insect plague\n* 6th level (1 slot): harm"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "mummy-lord_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The mummy can use its Dreadful Glare and makes one attack with its rotting fist."
+    },
+    {
+      "action_id": "mummy-lord_rotting_fist",
+      "name": "Rotting Fist",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 9,
+      "save_ability": "constitution",
+      "save_dc": 16,
+      "on_hit": [
+        {
+          "damage_dice_count": 3,
+          "damage_die": 6,
+          "damage_flat_bonus": 4,
+          "damage_type": "bludgeoning"
+        },
+        {
+          "damage_dice_count": 6,
+          "damage_die": 6,
+          "damage_flat_bonus": 0,
+          "damage_type": "necrotic"
+        }
+      ],
+      "description": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 14 (3d6 + 4) bludgeoning damage plus 21 (6d6) necrotic damage. If the target is a creature, it must succeed on a DC 16 Constitution saving throw or be cursed with mummy rot. The cursed target can't regain hit points, and its hit point maximum decreases by 10 (3d6) for every 24 hours that elapse. If the curse reduces the target's hit point maximum to 0, the target dies, and its body turns to dust. The curse lasts until removed by the remove curse spell or other magic."
+    },
+    {
+      "action_id": "mummy-lord_dreadful_glare",
+      "name": "Dreadful Glare",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "wisdom",
+      "save_dc": 16,
+      "on_hit": [],
+      "description": "The mummy lord targets one creature it can see within 60 feet of it. If the target can see the mummy lord, it must succeed on a DC 16 Wisdom saving throw against this magic or become frightened until the end of the mummy's next turn. If the target fails the saving throw by 5 or more, it is also paralyzed for the same duration. A target that succeeds on the saving throw is immune to the Dreadful Glare of all mummies and mummy lords for the next 24 hours."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [
+    {
+      "action_id": "mummy-lord_attack",
+      "name": "Attack",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The mummy lord makes one attack with its rotting fist or uses its Dreadful Glare."
+    },
+    {
+      "action_id": "mummy-lord_blinding_dust",
+      "name": "Blinding Dust",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "constitution",
+      "save_dc": 16,
+      "on_hit": [],
+      "description": "Blinding dust and sand swirls magically around the mummy lord. Each creature within 5 feet of the mummy lord must succeed on a DC 16 Constitution saving throw or be blinded until the end of the creature's next turn."
+    },
+    {
+      "action_id": "mummy-lord_blasphemous_word_costs_2_actions",
+      "name": "Blasphemous Word (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "constitution",
+      "save_dc": 16,
+      "on_hit": [],
+      "description": "The mummy lord utters a blasphemous word. Each non-undead creature within 10 feet of the mummy lord that can hear the magical utterance must succeed on a DC 16 Constitution saving throw or be stunned until the end of the mummy lord's next turn."
+    },
+    {
+      "action_id": "mummy-lord_channel_negative_energy_costs_2_actions",
+      "name": "Channel Negative Energy (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The mummy lord magically unleashes negative energy. Creatures within 60 feet of the mummy lord, including ones behind barriers and around corners, can't regain hit points until the end of the mummy lord's next turn."
+    },
+    {
+      "action_id": "mummy-lord_whirlwind_of_sand_costs_2_actions",
+      "name": "Whirlwind of Sand (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The mummy lord magically transforms into a whirlwind of sand, moves up to 60 feet, and reverts to its normal form. While in whirlwind form, the mummy lord is immune to all damage, and it can't be grappled, petrified, knocked prone, restrained, or stunned. Equipment worn or carried by the mummy lord remain in its possession."
+    }
+  ],
+  "legendary_action_count": 3,
+  "xp_value": 13000,
+  "challenge_rating": "15"
+}

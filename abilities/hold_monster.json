@@ -1,0 +1,45 @@
+{
+  "ability_id": "hold_monster",
+  "name": "Hold Monster",
+  "description": "Choose a creature you can see within range. The target must make a saving throw of Wisdom or be paralyzed for the duration of the spell. This spell has no effect against the undead. At the end of each round, the target can make a new saving throw of Wisdom. If successful, the spell ends for the creature.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "multiple",
+  "range_ft": 90,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "apply_condition",
+          "condition": "paralyzed",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "enchantment",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A small piece of iron.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "bard",
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

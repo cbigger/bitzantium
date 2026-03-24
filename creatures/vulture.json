@@ -1,0 +1,84 @@
+{
+  "creature_id": "vulture",
+  "name": "Vulture",
+  "description": "",
+  "creature_type": "beast",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 7,
+    "dexterity": 10,
+    "constitution": 13,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 4
+  },
+  "armor_class": 10,
+  "armor_type": "",
+  "hp_dice_count": 1,
+  "hp_die": 8,
+  "hp_flat_bonus": 1,
+  "hp_average": 5,
+  "speed": {
+    "walk": 10,
+    "swim": 0,
+    "climb": 0,
+    "fly": 50,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 13,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "vulture_keen_sight_and_smell",
+      "name": "Keen Sight and Smell",
+      "source": "vulture",
+      "description": "The vulture has advantage on Wisdom (Perception) checks that rely on sight or smell."
+    },
+    {
+      "feature_id": "vulture_pack_tactics",
+      "name": "Pack Tactics",
+      "source": "vulture",
+      "description": "The vulture has advantage on an attack roll against a creature if at least one of the vulture's allies is within 5 ft. of the creature and the ally isn't incapacitated."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "vulture_beak",
+      "name": "Beak",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 2,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 0,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

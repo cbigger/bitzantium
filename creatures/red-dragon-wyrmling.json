@@ -1,0 +1,94 @@
+{
+  "creature_id": "red-dragon-wyrmling",
+  "name": "Red Dragon Wyrmling",
+  "description": "",
+  "creature_type": "dragon",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 19,
+    "dexterity": 10,
+    "constitution": 17,
+    "intelligence": 12,
+    "wisdom": 11,
+    "charisma": 15
+  },
+  "armor_class": 17,
+  "armor_type": "natural armor",
+  "hp_dice_count": 10,
+  "hp_die": 8,
+  "hp_flat_bonus": 30,
+  "hp_average": 75,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 30,
+    "fly": 60,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 14,
+    "darkvision_ft": 60,
+    "blindsight_ft": 10,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "fire"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "red-dragon-wyrmling_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 10,
+          "damage_flat_bonus": 4,
+          "damage_type": "piercing"
+        },
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 0,
+          "damage_type": "fire"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage plus 3 (1d6) fire damage."
+    },
+    {
+      "action_id": "red-dragon-wyrmling_fire_breath_recharge_5_6",
+      "name": "Fire Breath (Recharge 5-6)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "dexterity",
+      "save_dc": 13,
+      "on_hit": [],
+      "description": "The dragon exhales fire in a 15-foot cone. Each creature in that area must make a DC 13 Dexterity saving throw, taking 24 (7d6) fire damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 1100,
+  "challenge_rating": "4"
+}

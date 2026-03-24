@@ -1,0 +1,135 @@
+{
+  "creature_id": "chain-devil",
+  "name": "Chain Devil",
+  "description": "",
+  "creature_type": "fiend",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 15,
+    "constitution": 18,
+    "intelligence": 11,
+    "wisdom": 12,
+    "charisma": 14
+  },
+  "armor_class": 16,
+  "armor_type": "natural armor",
+  "hp_dice_count": 10,
+  "hp_die": 8,
+  "hp_flat_bonus": 40,
+  "hp_average": 85,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 8,
+    "darkvision_ft": 120,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "cold",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks not made with silvered weapons"
+  ],
+  "immunities": [
+    "fire",
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "poisoned"
+  ],
+  "proficiency_bonus": 4,
+  "traits": [
+    {
+      "feature_id": "chain-devil_devil_s_sight",
+      "name": "Devil's Sight",
+      "source": "chain-devil",
+      "description": "Magical darkness doesn't impede the devil's darkvision."
+    },
+    {
+      "feature_id": "chain-devil_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "chain-devil",
+      "description": "The devil has advantage on saving throws against spells and other magical effects."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "chain-devil_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The devil makes two attacks with its chains."
+    },
+    {
+      "action_id": "chain-devil_chain",
+      "name": "Chain",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 8,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 4,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 11 (2d6 + 4) slashing damage. The target is grappled (escape DC 14) if the devil isn't already grappling a creature. Until this grapple ends, the target is restrained and takes 7 (2d6) piercing damage at the start of each of its turns."
+    },
+    {
+      "action_id": "chain-devil_animate_chains_recharges_after_a_short_or_long_rest",
+      "name": "Animate Chains (Recharges after a Short or Long Rest)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "Up to four chains the devil can see within 60 feet of it magically sprout razor-edged barbs and animate under the devil's control, provided that the chains aren't being worn or carried.\nEach animated chain is an object with AC 20, 20 hit points, resistance to piercing damage, and immunity to psychic and thunder damage. When the devil uses Multiattack on its turn, it can use each animated chain to make one additional chain attack. An animated chain can grapple one creature of its own but can't make attacks while grappling. An animated chain reverts to its inanimate state if reduced to 0 hit points or if the devil is incapacitated or dies."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [
+    {
+      "action_id": "chain-devil_unnerving_mask",
+      "name": "Unnerving Mask",
+      "trigger": "When a creature the devil can see starts its turn within 30 feet of the devil",
+      "attack_bonus": null,
+      "save_ability": "wisdom",
+      "save_dc": 14,
+      "on_hit": [],
+      "description": "When a creature the devil can see starts its turn within 30 feet of the devil, the devil can create the illusion that it looks like one of the creature's departed loved ones or bitter enemies. If the creature can see the devil, it must succeed on a DC 14 Wisdom saving throw or be frightened until the end of its turn."
+    }
+  ],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 7200,
+  "challenge_rating": "11"
+}

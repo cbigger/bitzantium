@@ -1,0 +1,30 @@
+{
+  "background_id": "charlatan",
+  "name": "Charlatan",
+  "description": "People call you a con artist, but you're really an entertainer. You make people happy—the separation of fools and villains from their money is purely a pleasant side effect.\n\nWhat is your most common con? Selling fake magic items? Speaking to ghosts? Posing as a long-lost relative? Or do you let dishonest people think they're cheating you?",
+  "proficiency_grants": [
+    {
+      "type": "skill:deception",
+      "choose": 0
+    },
+    {
+      "type": "skill:culture|insight|sleight_of_hand",
+      "choose": 1
+    }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "common_clothes",
+    "disguise_kit",
+    "forgery_kit"
+  ],
+  "starting_currency_gp": 0,
+  "features": [
+    {
+      "feature_id": "many_identities",
+      "name": "Many Identities",
+      "source": "charlatan",
+      "description": ""
+    }
+  ]
+}

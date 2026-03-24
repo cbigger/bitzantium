@@ -1,0 +1,33 @@
+{
+  "ability_id": "augury",
+  "name": "Augury",
+  "description": "By casting gem-inlaid sticks, rolling dragon bones, laying out ornate cards, or employing some other divining tool, you receive an omen from an otherworldly entity about the results of a specific course of action that you plan to take within the next 30 minutes. The DM chooses from the following possible omens: \n- Weal, for good results \n- Woe, for bad results \n- Weal and woe, for both good and bad results \n- Nothing, for results that aren't especially good or bad The spell doesn't take into account any possible circumstances that might change the outcome, such as the casting of additional spells or the loss or gain of a companion. If you cast the spell two or more times before completing your next long rest, there is a cumulative 25 percent chance for each casting after the first that you get a random reading. The DM makes this roll in secret.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": []
+    }
+  ],
+  "spell_school": "divination",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "Specially marked sticks, bones, or similar tokens worth at least 25gp.",
+    "material_cost_gp": 25.0,
+    "consumed_on_cast": false
+  },
+  "ritual": true,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

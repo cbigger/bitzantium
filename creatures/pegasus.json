@@ -1,0 +1,71 @@
+{
+  "creature_id": "pegasus",
+  "name": "Pegasus",
+  "description": "",
+  "creature_type": "celestial",
+  "size": "large",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 15,
+    "constitution": 16,
+    "intelligence": 10,
+    "wisdom": 15,
+    "charisma": 13
+  },
+  "armor_class": 12,
+  "armor_type": "",
+  "hp_dice_count": 7,
+  "hp_die": 10,
+  "hp_flat_bonus": 21,
+  "hp_average": 59,
+  "speed": {
+    "walk": 60,
+    "swim": 0,
+    "climb": 0,
+    "fly": 90,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 16,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "pegasus_hooves",
+      "name": "Hooves",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 4,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 450,
+  "challenge_rating": "2"
+}

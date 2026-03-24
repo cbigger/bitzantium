@@ -1,0 +1,141 @@
+{
+  "creature_id": "storm-giant",
+  "name": "Storm Giant",
+  "description": "",
+  "creature_type": "giant",
+  "size": "huge",
+  "ability_scores": {
+    "strength": 29,
+    "dexterity": 14,
+    "constitution": 20,
+    "intelligence": 16,
+    "wisdom": 18,
+    "charisma": 18
+  },
+  "armor_class": 16,
+  "armor_type": "scale mail",
+  "hp_dice_count": 20,
+  "hp_die": 12,
+  "hp_flat_bonus": 100,
+  "hp_average": 230,
+  "speed": {
+    "walk": 50,
+    "swim": 50,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 19,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "cold"
+  ],
+  "immunities": [
+    "lightning",
+    "thunder"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 5,
+  "traits": [
+    {
+      "feature_id": "storm-giant_amphibious",
+      "name": "Amphibious",
+      "source": "storm-giant",
+      "description": "The giant can breathe air and water."
+    },
+    {
+      "feature_id": "storm-giant_innate_spellcasting",
+      "name": "Innate Spellcasting",
+      "source": "storm-giant",
+      "description": "The giant's innate spellcasting ability is Charisma (spell save DC 17). It can innately cast the following spells, requiring no material components:\n\nAt will: detect magic, feather fall, levitate, light\n3/day each: control weather, water breathing"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "storm-giant_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The giant makes two greatsword attacks."
+    },
+    {
+      "action_id": "storm-giant_greatsword",
+      "name": "Greatsword",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 14,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 6,
+          "damage_die": 6,
+          "damage_flat_bonus": 9,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 30 (6d6 + 9) slashing damage."
+    },
+    {
+      "action_id": "storm-giant_rock",
+      "name": "Rock",
+      "action_cost": "action",
+      "attack_type": "ranged_weapon",
+      "reach_ft": null,
+      "range_normal_ft": 60,
+      "range_max_ft": 240,
+      "target_count": 1,
+      "attack_bonus": 14,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 12,
+          "damage_flat_bonus": 9,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Ranged Weapon Attack: +14 to hit, range 60/240 ft., one target. Hit: 35 (4d12 + 9) bludgeoning damage."
+    },
+    {
+      "action_id": "storm-giant_lightning_strike_recharge_5_6",
+      "name": "Lightning Strike (Recharge 5-6)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "dexterity",
+      "save_dc": 17,
+      "on_hit": [],
+      "description": "The giant hurls a magical lightning bolt at a point it can see within 500 feet of it. Each creature within 10 feet of that point must make a DC 17 Dexterity saving throw, taking 54 (12d8) lightning damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 10000,
+  "challenge_rating": "13"
+}

@@ -1,0 +1,37 @@
+{
+  "ability_id": "confusion",
+  "name": "Confusion",
+  "description": "This spell assaults and twists creatures' minds, spawning delusions and provoking uncontrolled action. Each creature in a 10 foot radius sphere centered on a point you choose within range must succeed on a Wisdom saving throw when you cast this spell or be affected by it.\n\nAn affected target can't take reactions and must roll a d10 at the start of each of its turns to determine its behavior for that turn.\n\n| d10 | Behavior |\n|---|---|\n| 1 | The creature uses all its movement to move in a random direction. To determine the direction, roll a d8 and assign a direction to each die face. The creature doesn’t take an action this turn. |\n| 2-6 | The creature doesn’t move or take actions this turn. |\n| 7-8 | The creature uses its action to make a melee attack against a randomly determined creature within its reach. If there is no creature within its reach, the creature does nothing this turn. |\n| 9-10 | The creature can act and move normally. |\n\nAt the end of each of its turns, an affected target can make a Wisdom saving throw. If it succeeds, this effect ends for that target.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_sphere",
+  "range_ft": 90,
+  "range_max_ft": null,
+  "area_ft": 10,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": []
+    }
+  ],
+  "spell_school": "enchantment",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "Three walnut shells.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "bard",
+    "sorcerer",
+    "wizard"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "ability_id": "planar_binding",
+  "name": "Planar Binding",
+  "description": "With this spell, you attempt to bind a celestial, an elemental, a fey, or a fiend to your service. The creature must be within range for the entire casting of the spell. (Typically, the creature is first summoned into the center of an inverted magic circle in order to keep it trapped while this spell is cast.) At the completion of the casting, the target must make a charisma saving throw. On a failed save, it is bound to serve you for the duration. If the creature was summoned or created by another spell, that spell's duration is extended to match the duration of this spell. A bound creature must follow your instructions to the best of its ability. You might command the creature to accompany you on an adventure, to guard a location, or to deliver a message. The creature obeys the letter of your instructions, but if the creature is hostile to you, it strives to twist your words to achieve its own objectives. If the creature carries out your instructions completely before the spell ends, it travels to you to report this fact if you are on the same plane of existence. If you are on a different plane of existence, it returns to the place where you bound it and remains there until the spell ends.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 60,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "24 hours",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 5,
+      "effects": []
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A jewel worth at least 1,000 gp, which the spell consumes.",
+    "material_cost_gp": 0.0,
+    "consumed_on_cast": true
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "bard",
+    "wizard"
+  ]
+}

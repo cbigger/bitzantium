@@ -1,0 +1,36 @@
+{
+  "ability_id": "darkvision",
+  "name": "Darkvision",
+  "description": "You touch a willing creature to grant it the ability to see in the dark. For the duration, that creature has darkvision out to a range of 60 feet.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "8 hours",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": []
+    }
+  ],
+  "spell_school": "transmutation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "Either a pinch of dried carrot or an agate.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid",
+    "ranger",
+    "sorcerer",
+    "wizard"
+  ]
+}

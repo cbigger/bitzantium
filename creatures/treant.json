@@ -1,0 +1,141 @@
+{
+  "creature_id": "treant",
+  "name": "Treant",
+  "description": "",
+  "creature_type": "plant",
+  "size": "huge",
+  "ability_scores": {
+    "strength": 23,
+    "dexterity": 8,
+    "constitution": 21,
+    "intelligence": 12,
+    "wisdom": 16,
+    "charisma": 12
+  },
+  "armor_class": 16,
+  "armor_type": "natural armor",
+  "hp_dice_count": 12,
+  "hp_die": 12,
+  "hp_flat_bonus": 60,
+  "hp_average": 138,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 13,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "bludgeoning",
+    "piercing"
+  ],
+  "immunities": [],
+  "vulnerabilities": [
+    "fire"
+  ],
+  "condition_immunities": [],
+  "proficiency_bonus": 4,
+  "traits": [
+    {
+      "feature_id": "treant_false_appearance",
+      "name": "False Appearance",
+      "source": "treant",
+      "description": "While the treant remains motionless, it is indistinguishable from a normal tree."
+    },
+    {
+      "feature_id": "treant_siege_monster",
+      "name": "Siege Monster",
+      "source": "treant",
+      "description": "The treant deals double damage to objects and structures."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "treant_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The treant makes two slam attacks."
+    },
+    {
+      "action_id": "treant_slam",
+      "name": "Slam",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 10,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 3,
+          "damage_die": 6,
+          "damage_flat_bonus": 6,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 16 (3d6 + 6) bludgeoning damage."
+    },
+    {
+      "action_id": "treant_rock",
+      "name": "Rock",
+      "action_cost": "action",
+      "attack_type": "ranged_weapon",
+      "reach_ft": null,
+      "range_normal_ft": 60,
+      "range_max_ft": 180,
+      "target_count": 1,
+      "attack_bonus": 10,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 10,
+          "damage_flat_bonus": 6,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Ranged Weapon Attack: +10 to hit, range 60/180 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage."
+    },
+    {
+      "action_id": "treant_animate_trees_1_day",
+      "name": "Animate Trees (1/Day)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The treant magically animates one or two trees it can see within 60 feet of it. These trees have the same statistics as a treant, except they have Intelligence and Charisma scores of 1, they can't speak, and they have only the Slam action option. An animated tree acts as an ally of the treant. The tree remains animate for 1 day or until it dies; until the treant dies or is more than 120 feet from the tree; or until the treant takes a bonus action to turn it back into an inanimate tree. The tree then takes root if possible."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 5000,
+  "challenge_rating": "9"
+}

@@ -1,0 +1,37 @@
+{
+  "item_id": "potion_of_clairvoyance",
+  "name": "Potion of Clairvoyance",
+  "item_type": "potion",
+  "description": "When you drink this potion, you gain the effect of the _clairvoyance_ spell. An eyeball bobs in this yellowish liquid but vanishes when the potion is opened.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "rare",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": {
+    "consumption_type": "drink",
+    "charges": 1,
+    "effects": [],
+    "addiction_risk": false
+  },
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

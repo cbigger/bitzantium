@@ -1,0 +1,211 @@
+{
+  "creature_id": "kraken",
+  "name": "Kraken",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "gargantuan",
+  "ability_scores": {
+    "strength": 30,
+    "dexterity": 11,
+    "constitution": 25,
+    "intelligence": 22,
+    "wisdom": 18,
+    "charisma": 20
+  },
+  "armor_class": 18,
+  "armor_type": "natural armor",
+  "hp_dice_count": 27,
+  "hp_die": 20,
+  "hp_flat_bonus": 189,
+  "hp_average": 472,
+  "speed": {
+    "walk": 20,
+    "swim": 60,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 14,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 120
+  },
+  "resistances": [],
+  "immunities": [
+    "lightning",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "frightened",
+    "paralyzed"
+  ],
+  "proficiency_bonus": 7,
+  "traits": [
+    {
+      "feature_id": "kraken_amphibious",
+      "name": "Amphibious",
+      "source": "kraken",
+      "description": "The kraken can breathe air and water."
+    },
+    {
+      "feature_id": "kraken_freedom_of_movement",
+      "name": "Freedom of Movement",
+      "source": "kraken",
+      "description": "The kraken ignores difficult terrain, and magical effects can't reduce its speed or cause it to be restrained. It can spend 5 feet of movement to escape from nonmagical restraints or being grappled."
+    },
+    {
+      "feature_id": "kraken_siege_monster",
+      "name": "Siege Monster",
+      "source": "kraken",
+      "description": "The kraken deals double damage to objects and structures."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "kraken_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The kraken makes three tentacle attacks, each of which it can replace with one use of Fling."
+    },
+    {
+      "action_id": "kraken_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 7,
+      "save_ability": "constitution",
+      "save_dc": 25,
+      "on_hit": [
+        {
+          "damage_dice_count": 3,
+          "damage_die": 8,
+          "damage_flat_bonus": 10,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 23 (3d8 + 10) piercing damage. If the target is a Large or smaller creature grappled by the kraken, that creature is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns. If the kraken takes 50 damage or more on a single turn from a creature inside it, the kraken must succeed on a DC 25 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet of the kraken. If the kraken dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 15 feet of movement, exiting prone."
+    },
+    {
+      "action_id": "kraken_tentacle",
+      "name": "Tentacle",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 30,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 7,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 3,
+          "damage_die": 6,
+          "damage_flat_bonus": 10,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +7 to hit, reach 30 ft., one target. Hit: 20 (3d6 + 10) bludgeoning damage, and the target is grappled (escape DC 18). Until this grapple ends, the target is restrained. The kraken has ten tentacles, each of which can grapple one target."
+    },
+    {
+      "action_id": "kraken_fling",
+      "name": "Fling",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "dexterity",
+      "save_dc": 18,
+      "on_hit": [],
+      "description": "One Large or smaller object held or creature grappled by the kraken is thrown up to 60 feet in a random direction and knocked prone. If a thrown target strikes a solid surface, the target takes 3 (1d6) bludgeoning damage for every 10 feet it was thrown. If the target is thrown at another creature, that creature must succeed on a DC 18 Dexterity saving throw or take the same damage and be knocked prone."
+    },
+    {
+      "action_id": "kraken_lightning_storm",
+      "name": "Lightning Storm",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "dexterity",
+      "save_dc": 23,
+      "on_hit": [],
+      "description": "The kraken magically creates three bolts of lightning, each of which can strike a target the kraken can see within 120 feet of it. A target must make a DC 23 Dexterity saving throw, taking 22 (4d10) lightning damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [
+    {
+      "action_id": "kraken_tentacle_attack_or_fling",
+      "name": "Tentacle Attack or Fling",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The kraken makes one tentacle attack or uses its Fling."
+    },
+    {
+      "action_id": "kraken_lightning_storm_costs_2_actions",
+      "name": "Lightning Storm (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The kraken uses Lightning Storm."
+    },
+    {
+      "action_id": "kraken_ink_cloud_costs_3_actions",
+      "name": "Ink Cloud (Costs 3 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "constitution",
+      "save_dc": 23,
+      "on_hit": [],
+      "description": "While underwater, the kraken expels an ink cloud in a 60-foot radius. The cloud spreads around corners, and that area is heavily obscured to creatures other than the kraken. Each creature other than the kraken that ends its turn there must succeed on a DC 23 Constitution saving throw, taking 16 (3d10) poison damage on a failed save, or half as much damage on a successful one. A strong current disperses the cloud, which otherwise disappears at the end of the kraken's next turn."
+    }
+  ],
+  "legendary_action_count": 3,
+  "xp_value": 50000,
+  "challenge_rating": "23"
+}

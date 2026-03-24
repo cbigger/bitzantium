@@ -1,0 +1,71 @@
+{
+  "creature_id": "guard",
+  "name": "Guard",
+  "description": "**Guards** include members of a city watch, sentries in a citadel or fortified town, and the bodyguards of merchants and nobles.",
+  "creature_type": "humanoid",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 13,
+    "dexterity": 12,
+    "constitution": 12,
+    "intelligence": 10,
+    "wisdom": 11,
+    "charisma": 10
+  },
+  "armor_class": 16,
+  "armor_type": "chain shirt, shield",
+  "hp_dice_count": 2,
+  "hp_die": 8,
+  "hp_flat_bonus": 2,
+  "hp_average": 11,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "guard_spear",
+      "name": "Spear",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": 20,
+      "range_max_ft": 60,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 1,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage, or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 25,
+  "challenge_rating": "1/8"
+}

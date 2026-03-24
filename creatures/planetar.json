@@ -1,0 +1,141 @@
+{
+  "creature_id": "planetar",
+  "name": "Planetar",
+  "description": "",
+  "creature_type": "celestial",
+  "size": "large",
+  "ability_scores": {
+    "strength": 24,
+    "dexterity": 20,
+    "constitution": 24,
+    "intelligence": 19,
+    "wisdom": 22,
+    "charisma": 25
+  },
+  "armor_class": 19,
+  "armor_type": "natural armor",
+  "hp_dice_count": 16,
+  "hp_die": 10,
+  "hp_flat_bonus": 112,
+  "hp_average": 200,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 120,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 21,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 120
+  },
+  "resistances": [
+    "radiant",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "exhaustion",
+    "frightened"
+  ],
+  "proficiency_bonus": 5,
+  "traits": [
+    {
+      "feature_id": "planetar_angelic_weapons",
+      "name": "Angelic Weapons",
+      "source": "planetar",
+      "description": "The planetar's weapon attacks are magical. When the planetar hits with any weapon, the weapon deals an extra 5d8 radiant damage (included in the attack)."
+    },
+    {
+      "feature_id": "planetar_divine_awareness",
+      "name": "Divine Awareness",
+      "source": "planetar",
+      "description": "The planetar knows if it hears a lie."
+    },
+    {
+      "feature_id": "planetar_innate_spellcasting",
+      "name": "Innate Spellcasting",
+      "source": "planetar",
+      "description": "The planetar's spellcasting ability is Charisma (spell save DC 20). The planetar can innately cast the following spells, requiring no material components:\nAt will: detect evil and good, invisibility (self only)\n3/day each: blade barrier, dispel evil and good, flame strike, raise dead\n1/day each: commune, control weather, insect plague"
+    },
+    {
+      "feature_id": "planetar_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "planetar",
+      "description": "The planetar has advantage on saving throws against spells and other magical effects."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "planetar_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The planetar makes two melee attacks."
+    },
+    {
+      "action_id": "planetar_greatsword",
+      "name": "Greatsword",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 12,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 6,
+          "damage_flat_bonus": 7,
+          "damage_type": "slashing"
+        },
+        {
+          "damage_dice_count": 5,
+          "damage_die": 8,
+          "damage_flat_bonus": 0,
+          "damage_type": "radiant"
+        }
+      ],
+      "description": "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 21 (4d6 + 7) slashing damage plus 22 (5d8) radiant damage."
+    },
+    {
+      "action_id": "planetar_healing_touch_4_day",
+      "name": "Healing Touch (4/Day)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The planetar touches another creature. The target magically regains 30 (6d8 + 3) hit points and is freed from any curse, disease, poison, blindness, or deafness."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 15000,
+  "challenge_rating": "16"
+}

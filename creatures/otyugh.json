@@ -1,0 +1,136 @@
+{
+  "creature_id": "otyugh",
+  "name": "Otyugh",
+  "description": "",
+  "creature_type": "aberration",
+  "size": "large",
+  "ability_scores": {
+    "strength": 16,
+    "dexterity": 11,
+    "constitution": 19,
+    "intelligence": 6,
+    "wisdom": 13,
+    "charisma": 6
+  },
+  "armor_class": 14,
+  "armor_type": "natural armor",
+  "hp_dice_count": 12,
+  "hp_die": 10,
+  "hp_flat_bonus": 48,
+  "hp_average": 114,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 11,
+    "darkvision_ft": 120,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 3,
+  "traits": [
+    {
+      "feature_id": "otyugh_limited_telepathy",
+      "name": "Limited Telepathy",
+      "source": "otyugh",
+      "description": "The otyugh can magically transmit simple messages and images to any creature within 120 ft. of it that can understand a language. This form of telepathy doesn't allow the receiving creature to telepathically respond."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "otyugh_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The otyugh makes three attacks: one with its bite and two with its tentacles."
+    },
+    {
+      "action_id": "otyugh_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": "constitution",
+      "save_dc": 15,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 3,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 12 (2d8 + 3) piercing damage. If the target is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease is cured."
+    },
+    {
+      "action_id": "otyugh_tentacle",
+      "name": "Tentacle",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 3,
+          "damage_type": "bludgeoning"
+        },
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 0,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 7 (1d8 + 3) bludgeoning damage plus 4 (1d8) piercing damage. If the target is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The otyugh has two tentacles, each of which can grapple one target."
+    },
+    {
+      "action_id": "otyugh_tentacle_slam",
+      "name": "Tentacle Slam",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "constitution",
+      "save_dc": 14,
+      "on_hit": [],
+      "description": "The otyugh slams creatures grappled by it into each other or a solid surface. Each creature must succeed on a DC 14 Constitution saving throw or take 10 (2d6 + 3) bludgeoning damage and be stunned until the end of the otyugh's next turn. On a successful save, the target takes half the bludgeoning damage and isn't stunned."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 1800,
+  "challenge_rating": "5"
+}

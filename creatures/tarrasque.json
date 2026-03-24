@@ -1,0 +1,264 @@
+{
+  "creature_id": "tarrasque",
+  "name": "Tarrasque",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "gargantuan",
+  "ability_scores": {
+    "strength": 30,
+    "dexterity": 11,
+    "constitution": 30,
+    "intelligence": 3,
+    "wisdom": 11,
+    "charisma": 11
+  },
+  "armor_class": 25,
+  "armor_type": "natural armor",
+  "hp_dice_count": 33,
+  "hp_die": 20,
+  "hp_flat_bonus": 330,
+  "hp_average": 676,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 0,
+    "blindsight_ft": 120,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "fire",
+    "poison",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "frightened",
+    "paralyzed",
+    "poisoned"
+  ],
+  "proficiency_bonus": 9,
+  "traits": [
+    {
+      "feature_id": "tarrasque_legendary_resistance_3_day",
+      "name": "Legendary Resistance (3/Day)",
+      "source": "tarrasque",
+      "description": "If the tarrasque fails a saving throw, it can choose to succeed instead."
+    },
+    {
+      "feature_id": "tarrasque_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "tarrasque",
+      "description": "The tarrasque has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "feature_id": "tarrasque_reflective_carapace",
+      "name": "Reflective Carapace",
+      "source": "tarrasque",
+      "description": "Any time the tarrasque is targeted by a magic missile spell, a line spell, or a spell that requires a ranged attack roll, roll a d6. On a 1 to 5, the tarrasque is unaffected. On a 6, the tarrasque is unaffected, and the effect is reflected back at the caster as though it originated from the tarrasque, turning the caster into the target."
+    },
+    {
+      "feature_id": "tarrasque_siege_monster",
+      "name": "Siege Monster",
+      "source": "tarrasque",
+      "description": "The tarrasque deals double damage to objects and structures."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "tarrasque_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The tarrasque can use its Frightful Presence. It then makes five attacks: one with its bite, two with its claws, one with its horns, and one with its tail. It can use its Swallow instead of its bite."
+    },
+    {
+      "action_id": "tarrasque_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 19,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 12,
+          "damage_flat_bonus": 10,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +19 to hit, reach 10 ft., one target. Hit: 36 (4d12 + 10) piercing damage. If the target is a creature, it is grappled (escape DC 20). Until this grapple ends, the target is restrained, and the tarrasque can't bite another target."
+    },
+    {
+      "action_id": "tarrasque_claw",
+      "name": "Claw",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 15,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 19,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 8,
+          "damage_flat_bonus": 10,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +19 to hit, reach 15 ft., one target. Hit: 28 (4d8 + 10) slashing damage."
+    },
+    {
+      "action_id": "tarrasque_horns",
+      "name": "Horns",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 19,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 10,
+          "damage_flat_bonus": 10,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +19 to hit, reach 10 ft., one target. Hit: 32 (4d10 + 10) piercing damage."
+    },
+    {
+      "action_id": "tarrasque_tail",
+      "name": "Tail",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 20,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 19,
+      "save_ability": "strength",
+      "save_dc": 20,
+      "on_hit": [
+        {
+          "damage_dice_count": 4,
+          "damage_die": 6,
+          "damage_flat_bonus": 10,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +19 to hit, reach 20 ft., one target. Hit: 24 (4d6 + 10) bludgeoning damage. If the target is a creature, it must succeed on a DC 20 Strength saving throw or be knocked prone."
+    },
+    {
+      "action_id": "tarrasque_frightful_presence",
+      "name": "Frightful Presence",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "wisdom",
+      "save_dc": 17,
+      "on_hit": [],
+      "description": "Each creature of the tarrasque's choice within 120 feet of it and aware of it must succeed on a DC 17 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, with disadvantage if the tarrasque is within line of sight, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the tarrasque's Frightful Presence for the next 24 hours."
+    },
+    {
+      "action_id": "tarrasque_swallow",
+      "name": "Swallow",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "constitution",
+      "save_dc": 20,
+      "on_hit": [],
+      "description": "The tarrasque makes one bite attack against a Large or smaller creature it is grappling. If the attack hits, the target takes the bite's damage, the target is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the tarrasque, and it takes 56 (16d6) acid damage at the start of each of the tarrasque's turns.\nIf the tarrasque takes 60 damage or more on a single turn from a creature inside it, the tarrasque must succeed on a DC 20 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet of the tarrasque. If the tarrasque dies, a swallowed creature is no longer restrained by it and can escape from the corpse by using 30 feet of movement, exiting prone."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [
+    {
+      "action_id": "tarrasque_attack",
+      "name": "Attack",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The tarrasque makes one claw attack or tail attack."
+    },
+    {
+      "action_id": "tarrasque_move",
+      "name": "Move",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The tarrasque moves up to half its speed."
+    },
+    {
+      "action_id": "tarrasque_chomp_costs_2_actions",
+      "name": "Chomp (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The tarrasque makes one bite attack or uses its Swallow."
+    }
+  ],
+  "legendary_action_count": 3,
+  "xp_value": 155000,
+  "challenge_rating": "30"
+}

@@ -1,0 +1,32 @@
+{
+  "item_id": "robe_of_the_archmagi",
+  "name": "Robe of the Archmagi",
+  "item_type": "wondrous",
+  "description": "This elegant garment is made from exquisite cloth of white, gray, or black and adorned with silvery runes. The robe's color corresponds to the alignment for which the item was created. A white robe was made for good, gray for neutral, and black for evil. You can't attune to a _robe of the archmagi_ that doesn't correspond to your alignment.\n\nYou gain these benefits while wearing the robe:\n\n* If you aren't wearing armor, your base Armor Class is 15 + your Dexterity modifier.\n* You have advantage on saving throws against spells and other magical effects.\n* Your spell save DC and spell attack bonus each increase by 2.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "legendary",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": "a sorcerer, warlock, or wizard",
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

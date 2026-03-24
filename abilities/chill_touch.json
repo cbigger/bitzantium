@@ -1,0 +1,83 @@
+{
+  "ability_id": "chill_touch",
+  "name": "Chill Touch",
+  "description": "You create a ghostly, skeletal hand in the space of a creature within range. Make a ranged spell attack against the creature to assail it with the chill of the grave. On a hit, the target takes 1d8 necrotic damage, and it can't regain hit points until the start of your next turn. Until then, the hand clings to the target. If you hit an undead target, it also has disadvantage on attack rolls against you until the end of your next turn.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 120,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "1 round",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 0,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "1d8",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "2d8",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 11,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d8",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 17,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d8",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    }
+  ],
+  "spell_school": "necromancy",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "ability_id": "stinking_cloud",
+  "name": "Stinking Cloud",
+  "description": "You create a 20-foot-radius sphere of yellow, nauseating gas centered on a point within range. The cloud spreads around corners, and its area is heavily obscured. The cloud lingers in the air for the duration. Each creature that is completely within the cloud at the start of its turn must make a constitution saving throw against poison. On a failed save, the creature spends its action that turn retching and reeling. Creatures that don't need to breathe or are immune to poison automatically succeed on this saving throw. A moderate wind (at least 10 miles per hour) disperses the cloud after 4 rounds. A strong wind (at least 20 miles per hour) disperses it after 1 round.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_sphere",
+  "range_ft": 90,
+  "range_max_ft": null,
+  "area_ft": 20,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 3,
+      "effects": []
+    }
+  ],
+  "spell_school": "conjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A rotten egg or several skunk cabbage leaves.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid",
+    "bard",
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

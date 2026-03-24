@@ -1,0 +1,84 @@
+{
+  "creature_id": "reef-shark",
+  "name": "Reef Shark",
+  "description": "Smaller than giant sharks and hunter sharks, **reef sharks** inhabit shallow waters and coral reefs, gathering in small packs to hunt. A full-grown specimen measures 6 to 10 feet long.",
+  "creature_type": "beast",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 14,
+    "dexterity": 13,
+    "constitution": 13,
+    "intelligence": 1,
+    "wisdom": 10,
+    "charisma": 4
+  },
+  "armor_class": 12,
+  "armor_type": "natural armor",
+  "hp_dice_count": 4,
+  "hp_die": 8,
+  "hp_flat_bonus": 1,
+  "hp_average": 22,
+  "speed": {
+    "walk": 0,
+    "swim": 40,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 0,
+    "blindsight_ft": 30,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "reef-shark_pack_tactics",
+      "name": "Pack Tactics",
+      "source": "reef-shark",
+      "description": "The shark has advantage on an attack roll against a creature if at least one of the shark's allies is within 5 ft. of the creature and the ally isn't incapacitated."
+    },
+    {
+      "feature_id": "reef-shark_water_breathing",
+      "name": "Water Breathing",
+      "source": "reef-shark",
+      "description": "The shark can breathe only underwater."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "reef-shark_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 100,
+  "challenge_rating": "1/2"
+}

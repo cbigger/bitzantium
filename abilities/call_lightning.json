@@ -1,0 +1,121 @@
+{
+  "ability_id": "call_lightning",
+  "name": "Call Lightning",
+  "description": "A storm cloud appears in the shape of a cylinder that is 10 feet tall with a 60-foot radius, centered on a point you can see 100 feet directly above you. The spell fails if you can't see a point in the air where the storm cloud could appear (for example, if you are in a room that can't accommodate the cloud). When you cast the spell, choose a point you can see within range. A bolt of lightning flashes down from the cloud to that point. Each creature within 5 feet of that point must make a dexterity saving throw. A creature takes 3d10 lightning damage on a failed save, or half as much damage on a successful one. On each of your turns until the spell ends, you can use your action to call down lightning in this way again, targeting the same point or a different one. If you are outdoors in stormy conditions when you cast this spell, the spell gives you control over the existing storm instead of creating a new one. Under such conditions, the spell's damage increases by 1d10.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_sphere",
+  "range_ft": 120,
+  "range_max_ft": null,
+  "area_ft": 60,
+  "duration": "up to 10 minutes",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "6d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d10",
+          "damage_type": "lightning",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    }
+  ],
+  "spell_school": "conjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid"
+  ]
+}

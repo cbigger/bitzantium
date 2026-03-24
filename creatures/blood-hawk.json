@@ -1,0 +1,84 @@
+{
+  "creature_id": "blood-hawk",
+  "name": "Blood Hawk",
+  "description": "Taking its name from its crimson feathers and aggressive nature, the **blood hawk** fearlessly attacks almost any animal, stabbing it with its daggerlike beak. Blood hawks flock together in large numbers, attacking as a pack to take down prey.",
+  "creature_type": "beast",
+  "size": "small",
+  "ability_scores": {
+    "strength": 6,
+    "dexterity": 14,
+    "constitution": 10,
+    "intelligence": 3,
+    "wisdom": 14,
+    "charisma": 5
+  },
+  "armor_class": 12,
+  "armor_type": "",
+  "hp_dice_count": 2,
+  "hp_die": 6,
+  "hp_flat_bonus": 0,
+  "hp_average": 7,
+  "speed": {
+    "walk": 10,
+    "swim": 0,
+    "climb": 0,
+    "fly": 60,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 14,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "blood-hawk_keen_sight",
+      "name": "Keen Sight",
+      "source": "blood-hawk",
+      "description": "The hawk has advantage on Wisdom (Perception) checks that rely on sight."
+    },
+    {
+      "feature_id": "blood-hawk_pack_tactics",
+      "name": "Pack Tactics",
+      "source": "blood-hawk",
+      "description": "The hawk has advantage on an attack roll against a creature if at least one of the hawk's allies is within 5 ft. of the creature and the ally isn't incapacitated."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "blood-hawk_beak",
+      "name": "Beak",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 25,
+  "challenge_rating": "1/8"
+}

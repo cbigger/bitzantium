@@ -1,0 +1,179 @@
+{
+  "creature_id": "marilith",
+  "name": "Marilith",
+  "description": "",
+  "creature_type": "fiend",
+  "size": "large",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 20,
+    "constitution": 20,
+    "intelligence": 18,
+    "wisdom": 16,
+    "charisma": 20
+  },
+  "armor_class": 18,
+  "armor_type": "natural armor",
+  "hp_dice_count": 18,
+  "hp_die": 10,
+  "hp_flat_bonus": 90,
+  "hp_average": 189,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 13,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 120
+  },
+  "resistances": [
+    "cold",
+    "fire",
+    "lightning",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "poisoned"
+  ],
+  "proficiency_bonus": 5,
+  "traits": [
+    {
+      "feature_id": "marilith_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "marilith",
+      "description": "The marilith has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "feature_id": "marilith_magic_weapons",
+      "name": "Magic Weapons",
+      "source": "marilith",
+      "description": "The marilith's weapon attacks are magical."
+    },
+    {
+      "feature_id": "marilith_reactive",
+      "name": "Reactive",
+      "source": "marilith",
+      "description": "The marilith can take one reaction on every turn in combat."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "marilith_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The marilith can make seven attacks: six with its longswords and one with its tail."
+    },
+    {
+      "action_id": "marilith_longsword",
+      "name": "Longsword",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 9,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 4,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage."
+    },
+    {
+      "action_id": "marilith_tail",
+      "name": "Tail",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 9,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 10,
+          "damage_flat_bonus": 4,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +9 to hit, reach 10 ft., one creature. Hit: 15 (2d10 + 4) bludgeoning damage. If the target is Medium or smaller, it is grappled (escape DC 19). Until this grapple ends, the target is restrained, the marilith can automatically hit the target with its tail, and the marilith can't make tail attacks against other targets."
+    },
+    {
+      "action_id": "marilith_teleport",
+      "name": "Teleport",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The marilith magically teleports, along with any equipment it is wearing or carrying, up to 120 feet to an unoccupied space it can see."
+    },
+    {
+      "action_id": "marilith_variant_summon_demon_1_day",
+      "name": "Variant: Summon Demon (1/Day)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The demon chooses what to summon and attempts a magical summoning.\nA marilith has a 50 percent chance of summoning 1d6 vrocks, 1d4 hezrous, 1d3 glabrezus, 1d2 nalfeshnees, or one marilith.\nA summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [
+    {
+      "action_id": "marilith_parry",
+      "name": "Parry",
+      "trigger": "The marilith adds 5 to its AC against one melee attack that would hit it",
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The marilith adds 5 to its AC against one melee attack that would hit it. To do so, the marilith must see the attacker and be wielding a melee weapon."
+    }
+  ],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 15000,
+  "challenge_rating": "16"
+}

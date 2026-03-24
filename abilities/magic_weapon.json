@@ -1,0 +1,41 @@
+{
+  "ability_id": "magic_weapon",
+  "name": "Magic Weapon",
+  "description": "You touch a nonmagical weapon. Until the spell ends, that weapon becomes a magic weapon with a +1 bonus to attack rolls and damage rolls.",
+  "ability_type": "spell",
+  "action_cost": "bonus_action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 hour",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "modify_stat",
+          "stat": "ac",
+          "modifier": 1,
+          "set_value": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "transmutation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "wizard"
+  ]
+}

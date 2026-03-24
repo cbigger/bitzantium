@@ -1,0 +1,26 @@
+{
+  "background_id": "guildmember",
+  "name": "Guildmember",
+  "description": "It never hurts to be part of a team, and when you're part of a guild opportunities knock at your door.\n\nAre you a member of a trade or artisan's guild? Or an order of mages or monster hunters? Or have you found entry into a secretive guild of thieves or assassins?",
+  "proficiency_grants": [
+    {
+      "type": "skill:any",
+      "choose": 2
+    }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "set_of_artisan_s_tools_or_one_instrument",
+    "traveler_s_clothes",
+    "guild_badge"
+  ],
+  "starting_currency_gp": 0,
+  "features": [
+    {
+      "feature_id": "guild_business",
+      "name": "Guild Business",
+      "source": "guildmember",
+      "description": ""
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "creature_id": "noble",
+  "name": "Noble",
+  "description": "**Nobles** wield great authority and influence as members of the upper class, possessing wealth and connections that can make them as powerful as monarchs and generals. A noble often travels in the company of guards, as well as servants who are commoners.\nThe noble's statistics can also be used to represent **courtiers** who aren't of noble birth.",
+  "creature_type": "humanoid",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 11,
+    "dexterity": 12,
+    "constitution": 11,
+    "intelligence": 12,
+    "wisdom": 14,
+    "charisma": 16
+  },
+  "armor_class": 15,
+  "armor_type": "breastplate",
+  "hp_dice_count": 2,
+  "hp_die": 8,
+  "hp_flat_bonus": 0,
+  "hp_average": 9,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "noble_rapier",
+      "name": "Rapier",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 3,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 1,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [
+    {
+      "action_id": "noble_parry",
+      "name": "Parry",
+      "trigger": "The noble adds 2 to its AC against one melee attack that would hit it",
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The noble adds 2 to its AC against one melee attack that would hit it. To do so, the noble must see the attacker and be wielding a melee weapon."
+    }
+  ],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 25,
+  "challenge_rating": "1/8"
+}

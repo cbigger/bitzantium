@@ -1,0 +1,35 @@
+{
+  "ability_id": "remove_curse",
+  "name": "Remove Curse",
+  "description": "At your touch, all curses affecting one creature or object end. If the object is a cursed magic item, its curse remains, but the spell breaks its owner's attunement to the object so it can be removed or discarded.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 3,
+      "effects": []
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "warlock",
+    "wizard"
+  ]
+}

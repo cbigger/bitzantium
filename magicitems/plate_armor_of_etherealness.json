@@ -1,0 +1,33 @@
+{
+  "item_id": "plate_armor_of_etherealness",
+  "name": "Plate Armor of Etherealness",
+  "item_type": "armor",
+  "description": "While you're wearing this armor, you can speak its command word as an action to gain the effect of the _etherealness_ spell, which last for 10 minutes or until you remove the armor or use an action to speak the command word again. This property of the armor can't be used again until the next dawn.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "legendary",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "armor"
+  ],
+  "weapon_properties": null,
+  "armor_properties": {
+    "armor_type": "heavy",
+    "base_ac": 0,
+    "ac_bonus": 0,
+    "max_dex_bonus": null,
+    "strength_requirement": 0,
+    "stealth_disadvantage": false,
+    "don_time_minutes": 1,
+    "doff_time_minutes": 1
+  },
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": null
+}

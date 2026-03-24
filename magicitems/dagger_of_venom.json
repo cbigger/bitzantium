@@ -1,0 +1,37 @@
+{
+  "item_id": "dagger_of_venom",
+  "name": "Dagger of Venom",
+  "item_type": "weapon",
+  "description": "You gain a +1 bonus to attack and damage rolls made with this magic weapon.\n\nYou can use an action to cause thick, black poison to coat the blade. The poison remains for 1 minute or until an attack using this weapon hits a creature. That creature must succeed on a DC 15 Constitution saving throw or take 2d10 poison damage and become poisoned for 1 minute. The dagger can't be used this way again until the next dawn.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "rare",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [
+    "weapon"
+  ],
+  "weapon_properties": {
+    "category": "martial",
+    "weapon_type": "melee",
+    "damage_dice": "1d4",
+    "damage_type": "piercing",
+    "versatile_damage": null,
+    "attack_bonus": 1,
+    "damage_bonus": 1,
+    "range_normal": null,
+    "range_max": null,
+    "properties": [],
+    "silvered": false,
+    "adamantine": false
+  },
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": null
+}

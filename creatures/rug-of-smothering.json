@@ -1,0 +1,94 @@
+{
+  "creature_id": "rug-of-smothering",
+  "name": "Rug of Smothering",
+  "description": "",
+  "creature_type": "construct",
+  "size": "large",
+  "ability_scores": {
+    "strength": 17,
+    "dexterity": 14,
+    "constitution": 10,
+    "intelligence": 1,
+    "wisdom": 3,
+    "charisma": 1
+  },
+  "armor_class": 12,
+  "armor_type": "",
+  "hp_dice_count": 6,
+  "hp_die": 10,
+  "hp_flat_bonus": 0,
+  "hp_average": 33,
+  "speed": {
+    "walk": 10,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 6,
+    "darkvision_ft": 0,
+    "blindsight_ft": 60,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "poison",
+    "psychic"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "blinded",
+    "charmed",
+    "deafened",
+    "frightened",
+    "paralyzed",
+    "petrified",
+    "poisoned"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "rug-of-smothering_antimagic_susceptibility",
+      "name": "Antimagic Susceptibility",
+      "source": "rug-of-smothering",
+      "description": "The rug is incapacitated while in the area of an antimagic field. If targeted by dispel magic, the rug must succeed on a Constitution saving throw against the caster's spell save DC or fall unconscious for 1 minute."
+    },
+    {
+      "feature_id": "rug-of-smothering_damage_transfer",
+      "name": "Damage Transfer",
+      "source": "rug-of-smothering",
+      "description": "While it is grappling a creature, the rug takes only half the damage dealt to it, and the creature grappled by the rug takes the other half."
+    },
+    {
+      "feature_id": "rug-of-smothering_false_appearance",
+      "name": "False Appearance",
+      "source": "rug-of-smothering",
+      "description": "While the rug remains motionless, it is indistinguishable from a normal rug."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "rug-of-smothering_smother",
+      "name": "Smother",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 5,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one Medium or smaller creature. Hit: The creature is grappled (escape DC 13). Until this grapple ends, the target is restrained, blinded, and at risk of suffocating, and the rug can't smother another target. In addition, at the start of each of the target's turns, the target takes 10 (2d6 + 3) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 450,
+  "challenge_rating": "2"
+}

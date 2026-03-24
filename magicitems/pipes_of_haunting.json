@@ -1,0 +1,38 @@
+{
+  "item_id": "pipes_of_haunting",
+  "name": "Pipes of Haunting",
+  "item_type": "wondrous",
+  "description": "You must be proficient with wind instruments to use these pipes. They have 3 charges. You can use an action to play them and expend 1 charge to create an eerie, spellbinding tune. Each creature within 30 feet of you that hears you play must succeed on a DC 15 Wisdom saving throw or become frightened of you for 1 minute. If you wish, all creatures in the area that aren't hostile toward you automatically succeed on the saving throw. A creature that fails the saving throw can repeat it at the end of each of its turns, ending the effect on itself on a success. A creature that succeeds on its saving throw is immune to the effect of these pipes for 24 hours. The pipes regain 1d3 expended charges daily at dawn.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "uncommon",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "dawn",
+    "recharge_amount": "1d3",
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [
+      {
+        "effect_type": "grant_immunity",
+        "damage_type": "the",
+        "condition": null
+      }
+    ],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

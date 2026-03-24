@@ -1,0 +1,137 @@
+{
+  "creature_id": "bone-devil",
+  "name": "Bone Devil",
+  "description": "",
+  "creature_type": "fiend",
+  "size": "large",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 16,
+    "constitution": 18,
+    "intelligence": 13,
+    "wisdom": 14,
+    "charisma": 16
+  },
+  "armor_class": 19,
+  "armor_type": "natural armor",
+  "hp_dice_count": 15,
+  "hp_die": 10,
+  "hp_flat_bonus": 60,
+  "hp_average": 142,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 40,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 9,
+    "darkvision_ft": 120,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "cold",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks not made with silvered weapons"
+  ],
+  "immunities": [
+    "fire",
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "poisoned"
+  ],
+  "proficiency_bonus": 4,
+  "traits": [
+    {
+      "feature_id": "bone-devil_devil_s_sight",
+      "name": "Devil's Sight",
+      "source": "bone-devil",
+      "description": "Magical darkness doesn't impede the devil's darkvision."
+    },
+    {
+      "feature_id": "bone-devil_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "bone-devil",
+      "description": "The devil has advantage on saving throws against spells and other magical effects."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "bone-devil_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The devil makes three attacks: two with its claws and one with its sting."
+    },
+    {
+      "action_id": "bone-devil_claw",
+      "name": "Claw",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 8,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 8,
+          "damage_flat_bonus": 4,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 8 (1d8 + 4) slashing damage."
+    },
+    {
+      "action_id": "bone-devil_sting",
+      "name": "Sting",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 10,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 8,
+      "save_ability": "constitution",
+      "save_dc": 14,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 4,
+          "damage_type": "piercing"
+        },
+        {
+          "damage_dice_count": 5,
+          "damage_die": 6,
+          "damage_flat_bonus": 0,
+          "damage_type": "poison"
+        }
+      ],
+      "description": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 13 (2d8 + 4) piercing damage plus 17 (5d6) poison damage, and the target must succeed on a DC 14 Constitution saving throw or become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 5000,
+  "challenge_rating": "9"
+}

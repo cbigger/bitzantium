@@ -1,0 +1,29 @@
+{
+  "background_id": "folk_hero",
+  "name": "Folk Hero",
+  "description": "You were born to a commoner family, but some event earned you fame. You're admired locally, and tales of your deeds have reached the far corners of the world.\n\nDid you win your fame by battling an oppressive tyrant? Saving your village from a monster? Or by something more prosaic like winning a wrestling bout or a pie-eating contest?",
+  "proficiency_grants": [
+    {
+      "type": "skill:survival",
+      "choose": 0
+    },
+    {
+      "type": "skill:animal_handling|nature",
+      "choose": 1
+    }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "any_artisan_s_tools_except_alchemist_s_supplies",
+    "common_clothes"
+  ],
+  "starting_currency_gp": 0,
+  "features": [
+    {
+      "feature_id": "local_fame",
+      "name": "Local Fame",
+      "source": "folk_hero",
+      "description": ""
+    }
+  ]
+}

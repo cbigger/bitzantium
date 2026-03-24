@@ -1,0 +1,33 @@
+{
+  "ability_id": "thaumaturgy",
+  "name": "Thaumaturgy",
+  "description": "You manifest a minor wonder, a sign of supernatural power, within range. You create one of the following magical effects within range. \n- Your voice booms up to three times as loud as normal for 1 minute. \n- You cause flames to flicker, brighten, dim, or change color for 1 minute. \n- You cause harmless tremors in the ground for 1 minute. \n- You create an instantaneous sound that originates from a point of your choice within range, such as a rumble of thunder, the cry of a raven, or ominous whispers. \n- You instantaneously cause an unlocked door or window to fly open or slam shut. \n- You alter the appearance of your eyes for 1 minute. \nIf you cast this spell multiple times, you can have up to three of its 1-minute effects active at a time, and you can dismiss such an effect as an action.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 30,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "1 minute",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 0,
+      "effects": []
+    }
+  ],
+  "spell_school": "transmutation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": false,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

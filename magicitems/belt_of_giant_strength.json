@@ -1,0 +1,32 @@
+{
+  "item_id": "belt_of_giant_strength",
+  "name": "Belt of Giant Strength",
+  "item_type": "wondrous",
+  "description": "While wearing this belt, your Strength score changes to a score granted by the belt. If your Strength is already equal to or greater than the belt's score, the item has no effect on you.\n\nSix varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The _belt of stone giant strength_ and the _belt of frost giant strength_ look different, but they have the same effect.\n\n| Type              | Strength | Rarity    |\n|-------------------|----------|-----------|\n| Hill giant        | 21       | Rare      |\n| Stone/frost giant | 23       | Very rare |\n| Fire giant        | 25       | Very rare |\n| Cloud giant       | 27       | Legendary |\n| Storm giant       | 29       | Legendary |",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "uncommon",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "creature_id": "spider",
+  "name": "Spider",
+  "description": "",
+  "creature_type": "beast",
+  "size": "tiny",
+  "ability_scores": {
+    "strength": 2,
+    "dexterity": 14,
+    "constitution": 8,
+    "intelligence": 1,
+    "wisdom": 10,
+    "charisma": 2
+  },
+  "armor_class": 12,
+  "armor_type": "",
+  "hp_dice_count": 1,
+  "hp_die": 4,
+  "hp_flat_bonus": -1,
+  "hp_average": 1,
+  "speed": {
+    "walk": 20,
+    "swim": 0,
+    "climb": 20,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 30,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "spider_spider_climb",
+      "name": "Spider Climb",
+      "source": "spider",
+      "description": "The spider can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+    },
+    {
+      "feature_id": "spider_web_sense",
+      "name": "Web Sense",
+      "source": "spider",
+      "description": "While in contact with a web, the spider knows the exact location of any other creature in contact with the same web."
+    },
+    {
+      "feature_id": "spider_web_walker",
+      "name": "Web Walker",
+      "source": "spider",
+      "description": "The spider ignores movement restrictions caused by webbing."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "spider_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": "constitution",
+      "save_dc": 9,
+      "on_hit": [
+        {
+          "damage_dice_count": 0,
+          "damage_die": 0,
+          "damage_flat_bonus": 1,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 1 piercing damage, and the target must succeed on a DC 9 Constitution saving throw or take 2 (1d4) poison damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

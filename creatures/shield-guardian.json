@@ -1,0 +1,124 @@
+{
+  "creature_id": "shield-guardian",
+  "name": "Shield Guardian",
+  "description": "",
+  "creature_type": "construct",
+  "size": "large",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 8,
+    "constitution": 18,
+    "intelligence": 7,
+    "wisdom": 10,
+    "charisma": 3
+  },
+  "armor_class": 17,
+  "armor_type": "natural armor",
+  "hp_dice_count": 15,
+  "hp_die": 10,
+  "hp_flat_bonus": 60,
+  "hp_average": 142,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 60,
+    "blindsight_ft": 10,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "exhaustion",
+    "frightened",
+    "paralyzed",
+    "poisoned"
+  ],
+  "proficiency_bonus": 3,
+  "traits": [
+    {
+      "feature_id": "shield-guardian_bound",
+      "name": "Bound",
+      "source": "shield-guardian",
+      "description": "The shield guardian is magically bound to an amulet. As long as the guardian and its amulet are on the same plane of existence, the amulet's wearer can telepathically call the guardian to travel to it, and the guardian knows the distance and direction to the amulet. If the guardian is within 60 feet of the amulet's wearer, half of any damage the wearer takes (rounded up) is transferred to the guardian."
+    },
+    {
+      "feature_id": "shield-guardian_regeneration",
+      "name": "Regeneration",
+      "source": "shield-guardian",
+      "description": "The shield guardian regains 10 hit points at the start of its turn if it has at least 1 hit. point."
+    },
+    {
+      "feature_id": "shield-guardian_spell_storing",
+      "name": "Spell Storing",
+      "source": "shield-guardian",
+      "description": "A spellcaster who wears the shield guardian's amulet can cause the guardian to store one spell of 4th level or lower. To do so, the wearer must cast the spell on the guardian. The spell has no effect but is stored within the guardian. When commanded to do so by the wearer or when a situation arises that was predefined by the spellcaster, the guardian casts the stored spell with any parameters set by the original caster, requiring no components. When the spell is cast or a new spell is stored, any previously stored spell is lost."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "shield-guardian_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The guardian makes two fist attacks."
+    },
+    {
+      "action_id": "shield-guardian_fist",
+      "name": "Fist",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 7,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 4,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [
+    {
+      "action_id": "shield-guardian_shield",
+      "name": "Shield",
+      "trigger": "When a creature makes an attack against the wearer of the guardian's amulet",
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "When a creature makes an attack against the wearer of the guardian's amulet, the guardian grants a +2 bonus to the wearer's AC if the guardian is within 5 feet of the wearer."
+    }
+  ],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 2900,
+  "challenge_rating": "7"
+}

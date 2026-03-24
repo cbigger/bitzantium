@@ -1,16 +1,16 @@
 {
   "creature_id": "human",
   "name": "Human",
-  "description": "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of their worlds. They are the most common and widespread sapient species.",
+  "description": "It's hard to make generalizations about humans, but your human character has these traits.",
   "creature_type": "humanoid",
   "size": "medium",
   "ability_scores": {
-    "strength": 10,
-    "dexterity": 10,
-    "constitution": 10,
-    "intelligence": 10,
-    "wisdom": 10,
-    "charisma": 10
+    "strength": 11,
+    "dexterity": 11,
+    "constitution": 11,
+    "intelligence": 11,
+    "wisdom": 11,
+    "charisma": 11
   },
   "armor_class": 10,
   "armor_type": "none",
@@ -18,7 +18,13 @@
   "hp_die": 8,
   "hp_flat_bonus": 0,
   "hp_average": 5,
-  "speed": { "walk": 30, "swim": 0, "climb": 0, "fly": 0, "burrow": 0 },
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
   "senses": {
     "passive_perception": 10,
     "darkvision_ft": 0,
@@ -33,10 +39,10 @@
   "proficiency_bonus": 2,
   "traits": [
     {
-      "feature_id": "human_versatility",
-      "name": "Versatility",
+      "feature_id": "human_languages",
+      "name": "Languages",
       "source": "human",
-      "description": "Humans do not receive innate traits from their species; their strength lies in cultural adaptability. Racial variant selection (see races/) determines ability score increases, bonus skills, and optional feats."
+      "description": "You can speak, read, and write Elvish, Common, Orc, Dwarvish. You also know 1 additional language(s) of your choice."
     }
   ],
   "actions": [],

@@ -1,0 +1,73 @@
+{
+  "creature_id": "halfling",
+  "name": "Halfling",
+  "description": "Your halfling character has a number of traits in common with all other halflings.",
+  "creature_type": "humanoid",
+  "size": "small",
+  "ability_scores": {
+    "strength": 10,
+    "dexterity": 12,
+    "constitution": 10,
+    "intelligence": 10,
+    "wisdom": 10,
+    "charisma": 10
+  },
+  "armor_class": 10,
+  "armor_type": "none",
+  "hp_dice_count": 1,
+  "hp_die": 8,
+  "hp_flat_bonus": 0,
+  "hp_average": 5,
+  "speed": {
+    "walk": 25,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "halfling_lucky",
+      "name": "Lucky",
+      "source": "halfling",
+      "description": "When you roll a 1 on the d20 for an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll."
+    },
+    {
+      "feature_id": "halfling_brave",
+      "name": "Brave",
+      "source": "halfling",
+      "description": "You have advantage on saving throws against being frightened."
+    },
+    {
+      "feature_id": "halfling_halfling_nimbleness",
+      "name": "Halfling Nimbleness",
+      "source": "halfling",
+      "description": "You can move through the space of any creature that is of a size larger than yours."
+    },
+    {
+      "feature_id": "halfling_languages",
+      "name": "Languages",
+      "source": "halfling",
+      "description": "You can speak, read, and write Common, Halfling."
+    }
+  ],
+  "actions": [],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

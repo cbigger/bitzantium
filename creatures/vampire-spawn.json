@@ -1,0 +1,138 @@
+{
+  "creature_id": "vampire-spawn",
+  "name": "Vampire Spawn",
+  "description": "",
+  "creature_type": "undead",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 16,
+    "dexterity": 16,
+    "constitution": 16,
+    "intelligence": 11,
+    "wisdom": 10,
+    "charisma": 12
+  },
+  "armor_class": 15,
+  "armor_type": "natural armor",
+  "hp_dice_count": 11,
+  "hp_die": 8,
+  "hp_flat_bonus": 33,
+  "hp_average": 82,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 13,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "necrotic",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 3,
+  "traits": [
+    {
+      "feature_id": "vampire-spawn_regeneration",
+      "name": "Regeneration",
+      "source": "vampire-spawn",
+      "description": "The vampire regains 10 hit points at the start of its turn if it has at least 1 hit point and isn't in sunlight or running water. If the vampire takes radiant damage or damage from holy water, this trait doesn't function at the start of the vampire's next turn."
+    },
+    {
+      "feature_id": "vampire-spawn_spider_climb",
+      "name": "Spider Climb",
+      "source": "vampire-spawn",
+      "description": "The vampire can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+    },
+    {
+      "feature_id": "vampire-spawn_vampire_weaknesses",
+      "name": "Vampire Weaknesses",
+      "source": "vampire-spawn",
+      "description": "The vampire has the following flaws:\nForbiddance. The vampire can't enter a residence without an invitation from one of the occupants.\nHarmed by Running Water. The vampire takes 20 acid damage when it ends its turn in running water.\nStake to the Heart. The vampire is destroyed if a piercing weapon made of wood is driven into its heart while it is incapacitated in its resting place.\nSunlight Hypersensitivity. The vampire takes 20 radiant damage when it starts its turn in sunlight. While in sunlight, it has disadvantage on attack rolls and ability checks."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "vampire-spawn_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The vampire makes two attacks, only one of which can be a bite attack."
+    },
+    {
+      "action_id": "vampire-spawn_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 3,
+          "damage_type": "piercing"
+        },
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 0,
+          "damage_type": "necrotic"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one willing creature, or a creature that is grappled by the vampire, incapacitated, or restrained. Hit: 6 (1d6 + 3) piercing damage plus 7 (2d6) necrotic damage. The target's hit point maximum is reduced by an amount equal to the necrotic damage taken, and the vampire regains hit points equal to that amount. The reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+    },
+    {
+      "action_id": "vampire-spawn_claws",
+      "name": "Claws",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 4,
+          "damage_flat_bonus": 3,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one creature. Hit: 8 (2d4 + 3) slashing damage. Instead of dealing damage, the vampire can grapple the target (escape DC 13)."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 1800,
+  "challenge_rating": "5"
+}

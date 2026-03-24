@@ -1,0 +1,110 @@
+{
+  "ability_id": "blight",
+  "name": "Blight",
+  "description": "Necromantic energy washes over a creature of your choice that you can see within range, draining moisture and vitality from it. The target must make a constitution saving throw. The target takes 8d8 necrotic damage on a failed save, or half as much damage on a successful one. The spell has no effect on undead or constructs. If you target a plant creature or a magical plant, it makes the saving throw with disadvantage, and the spell deals maximum damage to it. If you target a nonmagical plant that isn't a creature, such as a tree or shrub, it doesn't make a saving throw; it simply withers and dies.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 30,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d8",
+          "damage_type": "necrotic",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d8",
+          "damage_type": "necrotic",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "10d8",
+          "damage_type": "necrotic",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "11d8",
+          "damage_type": "necrotic",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "12d8",
+          "damage_type": "necrotic",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "13d8",
+          "damage_type": "necrotic",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    }
+  ],
+  "spell_school": "necromancy",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid",
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

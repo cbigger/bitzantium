@@ -1,0 +1,94 @@
+{
+  "creature_id": "blue-dragon-wyrmling",
+  "name": "Blue Dragon Wyrmling",
+  "description": "",
+  "creature_type": "dragon",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 17,
+    "dexterity": 10,
+    "constitution": 15,
+    "intelligence": 12,
+    "wisdom": 11,
+    "charisma": 15
+  },
+  "armor_class": 17,
+  "armor_type": "natural armor",
+  "hp_dice_count": 8,
+  "hp_die": 8,
+  "hp_flat_bonus": 16,
+  "hp_average": 52,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 60,
+    "burrow": 15
+  },
+  "senses": {
+    "passive_perception": 14,
+    "darkvision_ft": 60,
+    "blindsight_ft": 10,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "lightning"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [],
+  "actions": [
+    {
+      "action_id": "blue-dragon-wyrmling_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 5,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 10,
+          "damage_flat_bonus": 3,
+          "damage_type": "piercing"
+        },
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 0,
+          "damage_type": "lightning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage plus 3 (1d6) lightning damage."
+    },
+    {
+      "action_id": "blue-dragon-wyrmling_lightning_breath_recharge_5_6",
+      "name": "Lightning Breath (Recharge 5-6)",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "dexterity",
+      "save_dc": 12,
+      "on_hit": [],
+      "description": "The dragon exhales lightning in a 30-foot line that is 5 feet wide. Each creature in that line must make a DC 12 Dexterity saving throw, taking 22 (4d10) lightning damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 700,
+  "challenge_rating": "3"
+}

@@ -1,0 +1,114 @@
+{
+  "creature_id": "invisible-stalker",
+  "name": "Invisible Stalker",
+  "description": "",
+  "creature_type": "elemental",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 16,
+    "dexterity": 19,
+    "constitution": 14,
+    "intelligence": 10,
+    "wisdom": 15,
+    "charisma": 11
+  },
+  "armor_class": 14,
+  "armor_type": "",
+  "hp_dice_count": 16,
+  "hp_die": 8,
+  "hp_flat_bonus": 32,
+  "hp_average": 104,
+  "speed": {
+    "walk": 50,
+    "swim": 0,
+    "climb": 0,
+    "fly": 50,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 18,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "exhaustion",
+    "grappled",
+    "paralyzed",
+    "petrified",
+    "poisoned",
+    "prone",
+    "restrained",
+    "unconscious"
+  ],
+  "proficiency_bonus": 3,
+  "traits": [
+    {
+      "feature_id": "invisible-stalker_invisibility",
+      "name": "Invisibility",
+      "source": "invisible-stalker",
+      "description": "The stalker is invisible."
+    },
+    {
+      "feature_id": "invisible-stalker_faultless_tracker",
+      "name": "Faultless Tracker",
+      "source": "invisible-stalker",
+      "description": "The stalker is given a quarry by its summoner. The stalker knows the direction and distance to its quarry as long as the two of them are on the same plane of existence. The stalker also knows the location of its summoner."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "invisible-stalker_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The stalker makes two slam attacks."
+    },
+    {
+      "action_id": "invisible-stalker_slam",
+      "name": "Slam",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 6,
+          "damage_flat_bonus": 3,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 2300,
+  "challenge_rating": "6"
+}

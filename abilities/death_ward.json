@@ -1,0 +1,33 @@
+{
+  "ability_id": "death_ward",
+  "name": "Death Ward",
+  "description": "You touch a creature and grant it a measure of protection from death. The first time the target would drop to 0 hit points as a result of taking damage, the target instead drops to 1 hit point, and the spell ends. If the spell is still in effect when the target is subjected to an effect that would kill it instantaneously without dealing damage, that effect is instead negated against the target, and the spell ends.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "8 hours",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": []
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

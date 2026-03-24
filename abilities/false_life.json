@@ -1,0 +1,34 @@
+{
+  "ability_id": "false_life",
+  "name": "False Life",
+  "description": "Bolstering yourself with a necromantic facsimile of life, you gain 1d4 + 4 temporary hit points for the duration.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "1 hour",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 1,
+      "effects": []
+    }
+  ],
+  "spell_school": "necromancy",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A small amount of alcohol or distilled spirits.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "sorcerer",
+    "wizard"
+  ]
+}

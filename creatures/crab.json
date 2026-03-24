@@ -1,0 +1,78 @@
+{
+  "creature_id": "crab",
+  "name": "Crab",
+  "description": "",
+  "creature_type": "beast",
+  "size": "tiny",
+  "ability_scores": {
+    "strength": 2,
+    "dexterity": 11,
+    "constitution": 10,
+    "intelligence": 1,
+    "wisdom": 8,
+    "charisma": 2
+  },
+  "armor_class": 11,
+  "armor_type": "natural armor",
+  "hp_dice_count": 1,
+  "hp_die": 4,
+  "hp_flat_bonus": 0,
+  "hp_average": 2,
+  "speed": {
+    "walk": 20,
+    "swim": 20,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 9,
+    "darkvision_ft": 0,
+    "blindsight_ft": 30,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "crab_amphibious",
+      "name": "Amphibious",
+      "source": "crab",
+      "description": "The crab can breathe air and water."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "crab_claw",
+      "name": "Claw",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 0,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 0,
+          "damage_die": 0,
+          "damage_flat_bonus": 1,
+          "damage_type": "bludgeoning"
+        }
+      ],
+      "description": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 bludgeoning damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

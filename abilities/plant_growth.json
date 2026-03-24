@@ -1,0 +1,37 @@
+{
+  "ability_id": "plant_growth",
+  "name": "Plant Growth",
+  "description": "This spell channels vitality into plants within a specific area. There are two possible uses for the spell, granting either immediate or long-term benefits. If you cast this spell using 1 action, choose a point within range. All normal plants in a 100-foot radius centered on that point become thick and overgrown. A creature moving through the area must spend 4 feet of movement for every 1 foot it moves. You can exclude one or more areas of any size within the spell's area from being affected. If you cast this spell over 8 hours, you enrich the land. All plants in a half-mile radius centered on a point within range become enriched for 1 year. The plants yield twice the normal amount of food when harvested.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_sphere",
+  "range_ft": 150,
+  "range_max_ft": null,
+  "area_ft": 100,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 3,
+      "effects": []
+    }
+  ],
+  "spell_school": "transmutation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "ranger",
+    "bard",
+    "warlock"
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "creature_id": "lich",
+  "name": "Lich",
+  "description": "",
+  "creature_type": "undead",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 11,
+    "dexterity": 16,
+    "constitution": 16,
+    "intelligence": 20,
+    "wisdom": 14,
+    "charisma": 16
+  },
+  "armor_class": 17,
+  "armor_type": "natural armor",
+  "hp_dice_count": 18,
+  "hp_die": 8,
+  "hp_flat_bonus": 54,
+  "hp_average": 135,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 19,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 120
+  },
+  "resistances": [
+    "cold",
+    "lightning",
+    "necrotic"
+  ],
+  "immunities": [
+    "poison",
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "exhaustion",
+    "frightened",
+    "paralyzed",
+    "poisoned"
+  ],
+  "proficiency_bonus": 7,
+  "traits": [
+    {
+      "feature_id": "lich_legendary_resistance_3_day",
+      "name": "Legendary Resistance (3/Day)",
+      "source": "lich",
+      "description": "If the lich fails a saving throw, it can choose to succeed instead."
+    },
+    {
+      "feature_id": "lich_rejuvenation",
+      "name": "Rejuvenation",
+      "source": "lich",
+      "description": "If it has a phylactery, a destroyed lich gains a new body in 1d10 days, regaining all its hit points and becoming active again. The new body appears within 5 feet of the phylactery."
+    },
+    {
+      "feature_id": "lich_spellcasting",
+      "name": "Spellcasting",
+      "source": "lich",
+      "description": "The lich is an 18th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 20, +12 to hit with spell attacks). The lich has the following wizard spells prepared:\n\n* Cantrips (at will): mage hand, prestidigitation, ray of frost\n* 1st level (4 slots): detect magic, magic missile, shield, thunderwave\n* 2nd level (3 slots): detect thoughts, invisibility, acid arrow, mirror image\n* 3rd level (3 slots): animate dead, counterspell, dispel magic, fireball\n* 4th level (3 slots): blight, dimension door\n* 5th level (3 slots): cloudkill, scrying\n* 6th level (1 slot): disintegrate, globe of invulnerability\n* 7th level (1 slot): finger of death, plane shift\n* 8th level (1 slot): dominate monster, power word stun\n* 9th level (1 slot): power word kill"
+    },
+    {
+      "feature_id": "lich_turn_resistance",
+      "name": "Turn Resistance",
+      "source": "lich",
+      "description": "The lich has advantage on saving throws against any effect that turns undead."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "lich_paralyzing_touch",
+      "name": "Paralyzing Touch",
+      "action_cost": "action",
+      "attack_type": "melee_spell",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 12,
+      "save_ability": "constitution",
+      "save_dc": 18,
+      "on_hit": [
+        {
+          "damage_dice_count": 3,
+          "damage_die": 6,
+          "damage_flat_bonus": 0,
+          "damage_type": "cold"
+        }
+      ],
+      "description": "Melee Spell Attack: +12 to hit, reach 5 ft., one creature. Hit: 10 (3d6) cold damage. The target must succeed on a DC 18 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [
+    {
+      "action_id": "lich_cantrip",
+      "name": "Cantrip",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The lich casts a cantrip."
+    },
+    {
+      "action_id": "lich_paralyzing_touch_costs_2_actions",
+      "name": "Paralyzing Touch (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The lich uses its Paralyzing Touch."
+    },
+    {
+      "action_id": "lich_frightening_gaze_costs_2_actions",
+      "name": "Frightening Gaze (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "wisdom",
+      "save_dc": 18,
+      "on_hit": [],
+      "description": "The lich fixes its gaze on one creature it can see within 10 feet of it. The target must succeed on a DC 18 Wisdom saving throw against this magic or become frightened for 1 minute. The frightened target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a target's saving throw is successful or the effect ends for it, the target is immune to the lich's gaze for the next 24 hours."
+    },
+    {
+      "action_id": "lich_disrupt_life_costs_3_actions",
+      "name": "Disrupt Life (Costs 3 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": "constitution",
+      "save_dc": 18,
+      "on_hit": [],
+      "description": "Each non-undead creature within 20 feet of the lich must make a DC 18 Constitution saving throw against this magic, taking 21 (6d6) necrotic damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "legendary_action_count": 3,
+  "xp_value": 33000,
+  "challenge_rating": "21"
+}

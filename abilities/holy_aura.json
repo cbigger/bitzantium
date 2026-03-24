@@ -1,0 +1,41 @@
+{
+  "ability_id": "holy_aura",
+  "name": "Holy Aura",
+  "description": "Divine light washes out from you and coalesces in a soft radiance in a 30-foot radius around you. Creatures of your choice in that radius when you cast this spell shed dim light in a 5-foot radius and have advantage on all saving throws, and other creatures have disadvantage on attack rolls against them until the spell ends. In addition, when a fiend or an undead hits an affected creature with a melee attack, the aura flashes with brilliant light. The attacker must succeed on a constitution saving throw or be blinded until the spell ends.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_sphere",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": 30,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "apply_condition",
+          "condition": "blinded",
+          "duration_turns": null,
+          "save_ability": "constitution",
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A tiny reliquary worth at least 1,000gp containing a sacred relic, such as a scrap of cloth from a saint's robe or a piece of parchment from a religious text.",
+    "material_cost_gp": 0.0,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

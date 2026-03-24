@@ -1,0 +1,83 @@
+{
+  "creature_id": "homunculus",
+  "name": "Homunculus",
+  "description": "",
+  "creature_type": "construct",
+  "size": "tiny",
+  "ability_scores": {
+    "strength": 4,
+    "dexterity": 15,
+    "constitution": 11,
+    "intelligence": 10,
+    "wisdom": 10,
+    "charisma": 7
+  },
+  "armor_class": 13,
+  "armor_type": "natural armor",
+  "hp_dice_count": 2,
+  "hp_die": 4,
+  "hp_flat_bonus": 0,
+  "hp_average": 5,
+  "speed": {
+    "walk": 20,
+    "swim": 0,
+    "climb": 0,
+    "fly": 40,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 60,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "poisoned"
+  ],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "homunculus_telepathic_bond",
+      "name": "Telepathic Bond",
+      "source": "homunculus",
+      "description": "While the homunculus is on the same plane of existence as its master, it can magically convey what it senses to its master, and the two can communicate telepathically."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "homunculus_bite",
+      "name": "Bite",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 4,
+      "save_ability": "constitution",
+      "save_dc": 10,
+      "on_hit": [
+        {
+          "damage_dice_count": 0,
+          "damage_die": 0,
+          "damage_flat_bonus": 1,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 1 piercing damage, and the target must succeed on a DC 10 Constitution saving throw or be poisoned for 1 minute. If the saving throw fails by 5 or more, the target is instead poisoned for 5 (1d10) minutes and unconscious while poisoned in this way."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

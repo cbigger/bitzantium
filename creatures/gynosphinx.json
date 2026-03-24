@@ -1,0 +1,160 @@
+{
+  "creature_id": "gynosphinx",
+  "name": "Gynosphinx",
+  "description": "",
+  "creature_type": "monstrosity",
+  "size": "large",
+  "ability_scores": {
+    "strength": 18,
+    "dexterity": 15,
+    "constitution": 16,
+    "intelligence": 18,
+    "wisdom": 18,
+    "charisma": 18
+  },
+  "armor_class": 17,
+  "armor_type": "natural armor",
+  "hp_dice_count": 16,
+  "hp_die": 10,
+  "hp_flat_bonus": 48,
+  "hp_average": 136,
+  "speed": {
+    "walk": 40,
+    "swim": 0,
+    "climb": 0,
+    "fly": 60,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 18,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 120
+  },
+  "resistances": [
+    "bludgeoning",
+    "piercing",
+    "slashing from nonmagical attacks"
+  ],
+  "immunities": [
+    "psychic"
+  ],
+  "vulnerabilities": [],
+  "condition_immunities": [
+    "charmed",
+    "frightened"
+  ],
+  "proficiency_bonus": 4,
+  "traits": [
+    {
+      "feature_id": "gynosphinx_inscrutable",
+      "name": "Inscrutable",
+      "source": "gynosphinx",
+      "description": "The sphinx is immune to any effect that would sense its emotions or read its thoughts, as well as any divination spell that it refuses. Wisdom (Insight) checks made to ascertain the sphinx's intentions or sincerity have disadvantage."
+    },
+    {
+      "feature_id": "gynosphinx_magic_weapons",
+      "name": "Magic Weapons",
+      "source": "gynosphinx",
+      "description": "The sphinx's weapon attacks are magical."
+    },
+    {
+      "feature_id": "gynosphinx_spellcasting",
+      "name": "Spellcasting",
+      "source": "gynosphinx",
+      "description": "The sphinx is a 9th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 16, +8 to hit with spell attacks). It requires no material components to cast its spells. The sphinx has the following wizard spells prepared:\n\n* Cantrips (at will): mage hand, minor illusion, prestidigitation\n* 1st level (4 slots): detect magic, identify, shield\n* 2nd level (3 slots): darkness, locate object, suggestion\n* 3rd level (3 slots): dispel magic, remove curse, tongues\n* 4th level (3 slots): banishment, greater invisibility\n* 5th level (1 slot): legend lore"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "gynosphinx_multiattack",
+      "name": "Multiattack",
+      "action_cost": "action",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The sphinx makes two claw attacks."
+    },
+    {
+      "action_id": "gynosphinx_claw",
+      "name": "Claw",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 1,
+      "attack_bonus": 8,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 2,
+          "damage_die": 8,
+          "damage_flat_bonus": 4,
+          "damage_type": "slashing"
+        }
+      ],
+      "description": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [
+    {
+      "action_id": "gynosphinx_claw_attack",
+      "name": "Claw Attack",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The sphinx makes one claw attack."
+    },
+    {
+      "action_id": "gynosphinx_teleport_costs_2_actions",
+      "name": "Teleport (Costs 2 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The sphinx magically teleports, along with any equipment it is wearing or carrying, up to 120 feet to an unoccupied space it can see."
+    },
+    {
+      "action_id": "gynosphinx_cast_a_spell_costs_3_actions",
+      "name": "Cast a Spell (Costs 3 Actions)",
+      "action_cost": "legendary",
+      "attack_type": null,
+      "reach_ft": null,
+      "range_normal_ft": null,
+      "range_max_ft": null,
+      "target_count": 0,
+      "attack_bonus": null,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [],
+      "description": "The sphinx casts a spell from its list of prepared spells, using a spell slot as normal."
+    }
+  ],
+  "legendary_action_count": 3,
+  "xp_value": 7200,
+  "challenge_rating": "11"
+}

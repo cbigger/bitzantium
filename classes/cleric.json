@@ -1,0 +1,522 @@
+{
+  "class_id": "cleric",
+  "name": "Cleric",
+  "description": "The Cleric class.",
+  "hit_die": 8,
+  "proficiency_grants": [
+    {
+      "type": "armor:light",
+      "choose": 0
+    },
+    {
+      "type": "armor:medium",
+      "choose": 0
+    },
+    {
+      "type": "armor:shields",
+      "choose": 0
+    },
+    {
+      "type": "weapons:simple",
+      "choose": 0
+    },
+    {
+      "type": "saving_throw:wisdom",
+      "choose": 0
+    },
+    {
+      "type": "saving_throw:charisma",
+      "choose": 0
+    },
+    {
+      "type": "skill:history|insight|medicine|persuasion|religion",
+      "choose": 2
+    }
+  ],
+  "starting_equipment": [
+    "mace",
+    "scale_mail",
+    "b_leather_armor",
+    "or_c_chain_mail_if_proficient",
+    "light_crossbow",
+    "bolts",
+    "priest_s_pack",
+    "shield",
+    "holy_symbol"
+  ],
+  "starting_equipment_currency_gp": 0,
+  "spellcasting_ability": "wisdom",
+  "spell_prepare_style": "prepared",
+  "level_progression": [
+    {
+      "level": 1,
+      "proficiency_bonus": 2,
+      "features": [
+        {
+          "feature_id": "cleric_spellcasting",
+          "name": "Spellcasting",
+          "source": "cleric_1",
+          "description": "As a conduit for divine power, you can cast cleric spells."
+        },
+        {
+          "feature_id": "cleric_divine_domain",
+          "name": "Divine Domain",
+          "source": "cleric_1",
+          "description": "Choose one domain related to your deity: Knowledge, Life, Light, Nature, Tempest, Trickery, or War. Each domain is detailed at the end of the class description, and each one provides examples of gods associated with it. Your choice grants you domain spells and other features when you choose it at 1st level. It also grants you additional ways to use Channel Divinity when you gain that feature at 2nd level, and additional benefits at 6th, 8th, and 17th levels."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 2
+      },
+      "cantrips_knowable": 3,
+      "spells_knowable": null
+    },
+    {
+      "level": 2,
+      "proficiency_bonus": 2,
+      "features": [
+        {
+          "feature_id": "cleric_channel_divinity_1_rest",
+          "name": "Channel Divinity (1/rest)",
+          "source": "cleric_2",
+          "description": "At 2nd level, you gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain. Some domains grant you additional effects as you advance in levels, as noted in the domain description. \n \nWhen you use your Channel Divinity, you choose which effect to create. You must then finish a short or long rest to use your Channel Divinity again. \n \nSome Channel Divinity effects require saving throws. When you use such an effect from this class, the DC equals your cleric spell save DC. \n \nBeginning at 6th level, you can use your Channel \n \nDivinity twice between rests, and beginning at 18th level, you can use it three times between rests. When you finish a short or long rest, you regain your expended uses."
+        },
+        {
+          "feature_id": "cleric_divine_domain_feature",
+          "name": "Divine Domain Feature",
+          "source": "cleric_2",
+          "description": ""
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 3
+      },
+      "cantrips_knowable": 3,
+      "spells_knowable": null
+    },
+    {
+      "level": 3,
+      "proficiency_bonus": 2,
+      "features": [],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 2
+      },
+      "cantrips_knowable": 3,
+      "spells_knowable": null
+    },
+    {
+      "level": 4,
+      "proficiency_bonus": 2,
+      "features": [
+        {
+          "feature_id": "cleric_ability_score_improvement",
+          "name": "Ability Score Improvement",
+          "source": "cleric_4",
+          "description": "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3
+      },
+      "cantrips_knowable": 4,
+      "spells_knowable": null
+    },
+    {
+      "level": 5,
+      "proficiency_bonus": 3,
+      "features": [
+        {
+          "feature_id": "cleric_destroy_undead_cr_1_2",
+          "name": "Destroy Undead (CR 1/2)",
+          "source": "cleric_5",
+          "description": "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table. \n \nDestroy Undead (table) \n \n| Cleric Level | Destroys Undead of CR... | \n|--------------|--------------------------| \n| 5th          | 1/2 or lower             | \n| 8th          | 1 or lower               | \n| 11th         | 2 or lower               | \n| 14th         | 3 or lower               | \n| 17th         | 4 or lower               |"
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 2
+      },
+      "cantrips_knowable": 4,
+      "spells_knowable": null
+    },
+    {
+      "level": 6,
+      "proficiency_bonus": 3,
+      "features": [
+        {
+          "feature_id": "cleric_channel_divinity_2_rest",
+          "name": "Channel Divinity (2/rest)",
+          "source": "cleric_6",
+          "description": "At 2nd level, you gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain. Some domains grant you additional effects as you advance in levels, as noted in the domain description. \n \nWhen you use your Channel Divinity, you choose which effect to create. You must then finish a short or long rest to use your Channel Divinity again. \n \nSome Channel Divinity effects require saving throws. When you use such an effect from this class, the DC equals your cleric spell save DC. \n \nBeginning at 6th level, you can use your Channel \n \nDivinity twice between rests, and beginning at 18th level, you can use it three times between rests. When you finish a short or long rest, you regain your expended uses."
+        },
+        {
+          "feature_id": "cleric_divine_domain_feature",
+          "name": "Divine Domain Feature",
+          "source": "cleric_6",
+          "description": ""
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3
+      },
+      "cantrips_knowable": 4,
+      "spells_knowable": null
+    },
+    {
+      "level": 7,
+      "proficiency_bonus": 3,
+      "features": [],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 1
+      },
+      "cantrips_knowable": 4,
+      "spells_knowable": null
+    },
+    {
+      "level": 8,
+      "proficiency_bonus": 3,
+      "features": [
+        {
+          "feature_id": "cleric_ability_score_improvement",
+          "name": "Ability Score Improvement",
+          "source": "cleric_8",
+          "description": "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+        },
+        {
+          "feature_id": "cleric_destroy_undead_cr_1",
+          "name": "Destroy Undead (CR 1)",
+          "source": "cleric_8",
+          "description": "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table. \n \nDestroy Undead (table) \n \n| Cleric Level | Destroys Undead of CR... | \n|--------------|--------------------------| \n| 5th          | 1/2 or lower             | \n| 8th          | 1 or lower               | \n| 11th         | 2 or lower               | \n| 14th         | 3 or lower               | \n| 17th         | 4 or lower               |"
+        },
+        {
+          "feature_id": "cleric_divine_domain_feature",
+          "name": "Divine Domain Feature",
+          "source": "cleric_8",
+          "description": ""
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 2
+      },
+      "cantrips_knowable": 4,
+      "spells_knowable": null
+    },
+    {
+      "level": 9,
+      "proficiency_bonus": 4,
+      "features": [],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 1
+      },
+      "cantrips_knowable": 4,
+      "spells_knowable": null
+    },
+    {
+      "level": 10,
+      "proficiency_bonus": 4,
+      "features": [
+        {
+          "feature_id": "cleric_divine_intervention",
+          "name": "Divine Intervention",
+          "source": "cleric_10",
+          "description": "Beginning at 10th level, you can call on your deity to intervene on your behalf when your need is great. \n \nImploring your deity's aid requires you to use your action. Describe the assistance you seek, and roll percentile dice. If you roll a number equal to or lower than your cleric level, your deity intervenes. The GM chooses the nature of the intervention; the effect of any cleric spell or cleric domain spell would be appropriate. \n \nIf your deity intervenes, you can't use this feature again for 7 days. Otherwise, you can use it again after you finish a long rest. \n \nAt 20th level, your call for intervention succeeds automatically, no roll required."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 11,
+      "proficiency_bonus": 4,
+      "features": [
+        {
+          "feature_id": "cleric_destroy_undead_cr_2",
+          "name": "Destroy Undead (CR 2)",
+          "source": "cleric_11",
+          "description": "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table. \n \nDestroy Undead (table) \n \n| Cleric Level | Destroys Undead of CR... | \n|--------------|--------------------------| \n| 5th          | 1/2 or lower             | \n| 8th          | 1 or lower               | \n| 11th         | 2 or lower               | \n| 14th         | 3 or lower               | \n| 17th         | 4 or lower               |"
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 12,
+      "proficiency_bonus": 4,
+      "features": [
+        {
+          "feature_id": "cleric_ability_score_improvement",
+          "name": "Ability Score Improvement",
+          "source": "cleric_12",
+          "description": "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 13,
+      "proficiency_bonus": 5,
+      "features": [],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1,
+        "7": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 14,
+      "proficiency_bonus": 5,
+      "features": [
+        {
+          "feature_id": "cleric_destroy_undead_cr_3",
+          "name": "Destroy Undead (CR 3)",
+          "source": "cleric_14",
+          "description": "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table. \n \nDestroy Undead (table) \n \n| Cleric Level | Destroys Undead of CR... | \n|--------------|--------------------------| \n| 5th          | 1/2 or lower             | \n| 8th          | 1 or lower               | \n| 11th         | 2 or lower               | \n| 14th         | 3 or lower               | \n| 17th         | 4 or lower               |"
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1,
+        "7": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 15,
+      "proficiency_bonus": 5,
+      "features": [],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1,
+        "7": 1,
+        "8": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 16,
+      "proficiency_bonus": 5,
+      "features": [
+        {
+          "feature_id": "cleric_ability_score_improvement",
+          "name": "Ability Score Improvement",
+          "source": "cleric_16",
+          "description": "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1,
+        "7": 1,
+        "8": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 17,
+      "proficiency_bonus": 6,
+      "features": [
+        {
+          "feature_id": "cleric_destroy_undead_cr_4",
+          "name": "Destroy Undead (CR 4)",
+          "source": "cleric_17",
+          "description": "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table. \n \nDestroy Undead (table) \n \n| Cleric Level | Destroys Undead of CR... | \n|--------------|--------------------------| \n| 5th          | 1/2 or lower             | \n| 8th          | 1 or lower               | \n| 11th         | 2 or lower               | \n| 14th         | 3 or lower               | \n| 17th         | 4 or lower               |"
+        },
+        {
+          "feature_id": "cleric_divine_domain_feature",
+          "name": "Divine Domain Feature",
+          "source": "cleric_17",
+          "description": ""
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 2,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 18,
+      "proficiency_bonus": 6,
+      "features": [
+        {
+          "feature_id": "cleric_channel_divinity_3_rest",
+          "name": "Channel Divinity (3/rest)",
+          "source": "cleric_18",
+          "description": "At 2nd level, you gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain. Some domains grant you additional effects as you advance in levels, as noted in the domain description. \n \nWhen you use your Channel Divinity, you choose which effect to create. You must then finish a short or long rest to use your Channel Divinity again. \n \nSome Channel Divinity effects require saving throws. When you use such an effect from this class, the DC equals your cleric spell save DC. \n \nBeginning at 6th level, you can use your Channel \n \nDivinity twice between rests, and beginning at 18th level, you can use it three times between rests. When you finish a short or long rest, you regain your expended uses."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 3,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 19,
+      "proficiency_bonus": 6,
+      "features": [
+        {
+          "feature_id": "cleric_ability_score_improvement",
+          "name": "Ability Score Improvement",
+          "source": "cleric_19",
+          "description": "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 3,
+        "6": 2,
+        "7": 1,
+        "8": 1,
+        "9": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    },
+    {
+      "level": 20,
+      "proficiency_bonus": 6,
+      "features": [
+        {
+          "feature_id": "cleric_divine_intervention_improvement",
+          "name": "Divine Intervention improvement",
+          "source": "cleric_20",
+          "description": ""
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 3,
+        "6": 2,
+        "7": 2,
+        "8": 1,
+        "9": 1
+      },
+      "cantrips_knowable": 5,
+      "spells_knowable": null
+    }
+  ],
+  "subclass_level": 1
+}

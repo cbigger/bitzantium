@@ -1,0 +1,81 @@
+{
+  "ability_id": "sacred_flame",
+  "name": "Sacred Flame",
+  "description": "Flame-like radiance descends on a creature that you can see within range. The target must succeed on a dexterity saving throw or take 1d8 radiant damage. The target gains no benefit from cover for this saving throw.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 60,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 0,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "1d8",
+          "damage_type": "radiant",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "2d8",
+          "damage_type": "radiant",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 11,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d8",
+          "damage_type": "radiant",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 17,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d8",
+          "damage_type": "radiant",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

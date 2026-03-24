@@ -1,0 +1,30 @@
+{
+  "background_id": "criminal",
+  "name": "Criminal",
+  "description": "As a career criminal you were acquainted with murderers, thieves, and those who hunt them. Your new career as an adventurer is, relatively speaking, an honest trade.\n\nWere you a pickpocket? An assassin? A back-alley mugger? Are you still?",
+  "proficiency_grants": [
+    {
+      "type": "skill:stealth",
+      "choose": 0
+    },
+    {
+      "type": "skill:deception|intimidation",
+      "choose": 1
+    }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "common_clothes",
+    "dark_cloak",
+    "thieves_tools"
+  ],
+  "starting_currency_gp": 0,
+  "features": [
+    {
+      "feature_id": "thieves_cant",
+      "name": "Thieves' Cant",
+      "source": "criminal",
+      "description": ""
+    }
+  ]
+}

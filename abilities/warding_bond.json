@@ -1,0 +1,40 @@
+{
+  "ability_id": "warding_bond",
+  "name": "Warding Bond",
+  "description": "This spell wards a willing creature you touch and creates a mystic connection between you and the target until the spell ends. While the target is within 60 feet of you, it gains a +1 bonus to AC and saving throws, and it has resistance to all damage. Also, each time it takes damage, you take the same amount of damage. The spell ends if you drop to 0 hit points or if you and the target become separated by more than 60 feet. It also ends if the spell is cast again on either of the connected creatures. You can also dismiss the spell as an action.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "1 hour",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "modify_stat",
+          "stat": "ac",
+          "modifier": 1,
+          "set_value": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A pair of platinum rings worth at least 50gp each, which you and the target must wear for the duration.",
+    "material_cost_gp": 50.0,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

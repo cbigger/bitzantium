@@ -1,0 +1,34 @@
+{
+  "ability_id": "conjure_minor_elementals",
+  "name": "Conjure Minor Elementals",
+  "description": "You summon elementals that appear in unoccupied spaces that you can see within range. You choose one the following options for what appears: \n- One elemental of challenge rating 2 or lower \n- Two elementals of challenge rating 1 or lower \n- Four elementals of challenge rating 1/2 or lower \n- Eight elementals of challenge rating 1/4 or lower. An elemental summoned by this spell disappears when it drops to 0 hit points or when the spell ends. The summoned creatures are friendly to you and your companions. Roll initiative for the summoned creatures as a group, which has its own turns. They obey any verbal commands that you issue to them (no action required by you). If you don't issue any commands to them, they defend themselves from hostile creatures, but otherwise take no actions. The DM has the creatures' statistics.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 90,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 hour",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": []
+    }
+  ],
+  "spell_school": "conjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid",
+    "wizard"
+  ]
+}

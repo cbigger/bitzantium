@@ -1,0 +1,29 @@
+{
+  "background_id": "entertainer",
+  "name": "Entertainer",
+  "description": "You're a performer who knows how to dazzle a crowd, an artist but also a professional: you never forget to pass the hat after a show.\n\nAre you a lute-strumming singer? An actor? A poet or author? A tumbler or juggler? Are you a rising talent, or a star with an established following?",
+  "proficiency_grants": [
+    {
+      "type": "skill:performance",
+      "choose": 0
+    },
+    {
+      "type": "skill:acrobatics|culture|persuasion",
+      "choose": 1
+    }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "lute_or_other_musical_instrument",
+    "costume"
+  ],
+  "starting_currency_gp": 0,
+  "features": [
+    {
+      "feature_id": "pay_the_piper",
+      "name": "Pay the Piper",
+      "source": "entertainer",
+      "description": ""
+    }
+  ]
+}

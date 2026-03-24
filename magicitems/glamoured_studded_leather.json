@@ -1,0 +1,50 @@
+{
+  "item_id": "glamoured_studded_leather",
+  "name": "Glamoured Studded Leather",
+  "item_type": "armor",
+  "description": "While wearing this armor, you gain a +1 bonus to AC. You can also use a bonus action to speak the armor's command word and cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like, including color, style, and accessories, but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or remove the armor.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "rare",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [
+    "armor"
+  ],
+  "weapon_properties": null,
+  "armor_properties": {
+    "armor_type": "light",
+    "base_ac": 0,
+    "ac_bonus": 1,
+    "max_dex_bonus": null,
+    "strength_requirement": 0,
+    "stealth_disadvantage": false,
+    "don_time_minutes": 1,
+    "doff_time_minutes": 1
+  },
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "bonus_action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [
+      {
+        "effect_type": "modify_stat",
+        "stat": "ac",
+        "modifier": 1,
+        "set_value": null
+      }
+    ],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

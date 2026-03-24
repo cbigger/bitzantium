@@ -1,0 +1,121 @@
+{
+  "ability_id": "vampiric_touch",
+  "name": "Vampiric Touch",
+  "description": "The touch of your shadow-wreathed hand can siphon life force from others to heal your wounds. Make a melee spell attack against a creature within your reach. On a hit, the target takes 3d6 necrotic damage, and you regain hit points equal to half the amount of necrotic damage dealt. Until the spell ends, you can make the attack again on each of your turns as an action.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "6d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d6",
+          "damage_type": "necrotic",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    }
+  ],
+  "spell_school": "necromancy",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "warlock",
+    "wizard"
+  ]
+}

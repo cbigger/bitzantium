@@ -1,0 +1,89 @@
+{
+  "creature_id": "archmage",
+  "name": "Archmage",
+  "description": "**Archmages** are powerful (and usually quite old) spellcasters dedicated to the study of the arcane arts. Benevolent ones counsel kings and queens, while evil ones rule as tyrants and pursue lichdom. Those who are neither good nor evil sequester themselves in remote towers to practice their magic without interruption.\nAn archmage typically has one or more apprentice mages, and an archmage's abode has numerous magical wards and guardians to discourage interlopers.",
+  "creature_type": "humanoid",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 10,
+    "dexterity": 14,
+    "constitution": 12,
+    "intelligence": 20,
+    "wisdom": 15,
+    "charisma": 16
+  },
+  "armor_class": 12,
+  "armor_type": "15 with _mage armor_",
+  "hp_dice_count": 18,
+  "hp_die": 8,
+  "hp_flat_bonus": 18,
+  "hp_average": 99,
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 12,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [
+    "damage from spells",
+    "non magical bludgeoning",
+    "piercing",
+    "slashing (from stoneskin)"
+  ],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 4,
+  "traits": [
+    {
+      "feature_id": "archmage_magic_resistance",
+      "name": "Magic Resistance",
+      "source": "archmage",
+      "description": "The archmage has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "feature_id": "archmage_spellcasting",
+      "name": "Spellcasting",
+      "source": "archmage",
+      "description": "The archmage is an 18th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 17, +9 to hit with spell attacks). The archmage can cast disguise self and invisibility at will and has the following wizard spells prepared:\n\n* Cantrips (at will): fire bolt, light, mage hand, prestidigitation, shocking grasp\n* 1st level (4 slots): detect magic, identify, mage armor*, magic missile\n* 2nd level (3 slots): detect thoughts, mirror image, misty step\n* 3rd level (3 slots): counterspell,fly, lightning bolt\n* 4th level (3 slots): banishment, fire shield, stoneskin*\n* 5th level (3 slots): cone of cold, scrying, wall of force\n* 6th level (1 slot): globe of invulnerability\n* 7th level (1 slot): teleport\n* 8th level (1 slot): mind blank*\n* 9th level (1 slot): time stop\n* The archmage casts these spells on itself before combat."
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "archmage_dagger",
+      "name": "Dagger",
+      "action_cost": "action",
+      "attack_type": "melee_weapon",
+      "reach_ft": 5,
+      "range_normal_ft": 20,
+      "range_max_ft": 60,
+      "target_count": 1,
+      "attack_bonus": 6,
+      "save_ability": null,
+      "save_dc": null,
+      "on_hit": [
+        {
+          "damage_dice_count": 1,
+          "damage_die": 4,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
+      ],
+      "description": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+    }
+  ],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 8400,
+  "challenge_rating": "12"
+}

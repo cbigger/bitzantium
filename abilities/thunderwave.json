@@ -1,0 +1,150 @@
+{
+  "ability_id": "thunderwave",
+  "name": "Thunderwave",
+  "description": "A wave of thunderous force sweeps out from you. Each creature in a 15-foot cube originating from you must make a constitution saving throw. On a failed save, a creature takes 2d8 thunder damage and is pushed 10 feet away from you. On a successful save, the creature takes half as much damage and isn't pushed. In addition, unsecured objects that are completely within the area of effect are automatically pushed 10 feet away from you by the spell's effect, and the spell emits a thunderous boom audible out to 300 feet.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_cube",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": 15,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 1,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "2d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "6d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "10d8",
+          "damage_type": "thunder",
+          "save_ability": "constitution",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "bard",
+    "sorcerer",
+    "wizard"
+  ]
+}

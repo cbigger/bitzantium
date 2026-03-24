@@ -1,0 +1,30 @@
+{
+  "background_id": "marauder",
+  "name": "Marauder",
+  "description": "You were a member of an outlaw band. You might have been part of a troop of cutthroat bandits, or a resistance movement battling a tyrant, or a pirate fleet. You lived outside of settled lands, and your name was a terror to rich travelers.\n\nHow did you join your outlaw band? Why did you leave it—or did you?",
+  "proficiency_grants": [
+    {
+      "type": "skill:survival",
+      "choose": 0
+    },
+    {
+      "type": "skill:intimidation|stealth",
+      "choose": 1
+    }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "traveler_s_clothes",
+    "signal_whistle",
+    "tent"
+  ],
+  "starting_currency_gp": 0,
+  "features": [
+    {
+      "feature_id": "secret_ways",
+      "name": "Secret Ways",
+      "source": "marauder",
+      "description": ""
+    }
+  ]
+}
