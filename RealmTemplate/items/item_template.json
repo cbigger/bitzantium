@@ -1,0 +1,22 @@
+{
+  "item_id": "",
+  "name": "",
+  "item_type": null,
+  "description": "",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": null,
+  "magical": false,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": null
+}

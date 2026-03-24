@@ -1,0 +1,24 @@
+{
+  "background_id": "soldier",
+  "name": "Soldier",
+  "description": "War has been your life for as long as you care to remember. You trained as a youth, studied the use of weapons and armor, and learned basic survival techniques, including how to stay alive on the battlefield.",
+  "proficiency_grants": [
+    { "type": "skill:athletics",       "choose": 0 },
+    { "type": "skill:intimidation",    "choose": 0 },
+    { "type": "tool:gaming_set",       "choose": 1 },
+    { "type": "tool:vehicles_land",    "choose": 0 }
+  ],
+  "bonus_languages": 0,
+  "starting_equipment": [
+    "insignia_of_rank", "trophy_from_fallen_enemy", "bone_dice_set", "common_clothes", "pouch"
+  ],
+  "starting_currency_gp": 10,
+  "features": [
+    {
+      "feature_id": "military_rank",
+      "name": "Military Rank",
+      "source": "soldier",
+      "description": "You have a military rank from your career as a soldier. Soldiers loyal to your former military organization still recognize your authority and defer to you if they are of a lower rank. You can invoke your rank to exert influence over other soldiers and requisition simple equipment, horses, food, and lodging from military establishments and settlements that are friendly to your former organization."
+    }
+  ]
+}

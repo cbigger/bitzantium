@@ -1,0 +1,49 @@
+{
+  "creature_id": "human",
+  "name": "Human",
+  "description": "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of their worlds. They are the most common and widespread sapient species.",
+  "creature_type": "humanoid",
+  "size": "medium",
+  "ability_scores": {
+    "strength": 10,
+    "dexterity": 10,
+    "constitution": 10,
+    "intelligence": 10,
+    "wisdom": 10,
+    "charisma": 10
+  },
+  "armor_class": 10,
+  "armor_type": "none",
+  "hp_dice_count": 1,
+  "hp_die": 8,
+  "hp_flat_bonus": 0,
+  "hp_average": 5,
+  "speed": { "walk": 30, "swim": 0, "climb": 0, "fly": 0, "burrow": 0 },
+  "senses": {
+    "passive_perception": 10,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 2,
+  "traits": [
+    {
+      "feature_id": "human_versatility",
+      "name": "Versatility",
+      "source": "human",
+      "description": "Humans do not receive innate traits from their species; their strength lies in cultural adaptability. Racial variant selection (see races/) determines ability score increases, bonus skills, and optional feats."
+    }
+  ],
+  "actions": [],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": "0"
+}

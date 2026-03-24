@@ -1,0 +1,15 @@
+{
+  "race_id": "",
+  "name": "",
+  "description": "",
+  "ability_score_increases": [],
+  "senses_override": {},
+  "speed_override": {},
+  "traits": [],
+  "proficiency_grants": [],
+  "languages": [],
+  "bonus_languages": 0,
+  "resistances": [],
+  "immunities": [],
+  "parent_creature_id": ""
+}

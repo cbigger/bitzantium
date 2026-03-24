@@ -1,0 +1,53 @@
+{
+  "subclass_id": "life_domain",
+  "name": "Life Domain",
+  "parent_class_id": "cleric",
+  "granted_at_level": 1,
+  "description": "The Life domain focuses on the vibrant positive energy that sustains all life. Clerics of the Life domain are exceptional healers, among the most powerful in any group of adventurers.",
+  "spellcasting_ability": "wisdom",
+  "spell_prepare_style": "prepare",
+  "level_progression": [
+    {
+      "level": 1, "proficiency_bonus": 2,
+      "features": [
+        { "feature_id": "life_domain_spells", "name": "Life Domain Spells", "source": "life_domain_1", "description": "Always-prepared domain spells by minimum cleric level — 1st: bless, cure_wounds; 3rd: lesser_restoration, spiritual_weapon; 5th: beacon_of_hope, revivify; 7th: death_ward, guardian_of_faith; 9th: mass_cure_wounds, raise_dead. These count as cleric spells for you and do not count against your prepared spells total." },
+        { "feature_id": "life_bonus_proficiency", "name": "Bonus Proficiency", "source": "life_domain_1", "description": "You gain proficiency with heavy armor." },
+        { "feature_id": "disciple_of_life", "name": "Disciple of Life", "source": "life_domain_1", "description": "Your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional HP equal to 2 + the spell's level." }
+      ],
+      "resource_grants": [], "resource_updates": [],
+      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+    },
+    {
+      "level": 2, "proficiency_bonus": 2,
+      "features": [
+        { "feature_id": "cd_preserve_life", "name": "Channel Divinity: Preserve Life", "source": "life_domain_2", "description": "As an action, present your holy symbol and evoke healing energy. Choose any creatures within 30 feet and divide a pool of HP equal to 5 × your cleric level among them. You can restore a creature to no more than half of its maximum HP with this feature. It has no effect on undead or constructs." }
+      ],
+      "resource_grants": [], "resource_updates": [],
+      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+    },
+    {
+      "level": 6, "proficiency_bonus": 3,
+      "features": [
+        { "feature_id": "blessed_healer", "name": "Blessed Healer", "source": "life_domain_6", "description": "The healing spells you cast on others heal you as well. When you cast a healing spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level." }
+      ],
+      "resource_grants": [], "resource_updates": [],
+      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+    },
+    {
+      "level": 8, "proficiency_bonus": 3,
+      "features": [
+        { "feature_id": "divine_strike_life", "name": "Divine Strike", "source": "life_domain_8", "description": "Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage. When you reach 14th level, the extra damage increases to 2d8." }
+      ],
+      "resource_grants": [], "resource_updates": [],
+      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+    },
+    {
+      "level": 17, "proficiency_bonus": 6,
+      "features": [
+        { "feature_id": "supreme_healing", "name": "Supreme Healing", "source": "life_domain_17", "description": "When you would normally roll one or more dice to restore hit points with a spell, you instead use the highest number possible for each die. For example, instead of restoring 2d6 hit points, you restore 12." }
+      ],
+      "resource_grants": [], "resource_updates": [],
+      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+    }
+  ]
+}

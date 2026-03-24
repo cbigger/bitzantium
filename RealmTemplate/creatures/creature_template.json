@@ -1,0 +1,48 @@
+{
+  "creature_id": "",
+  "name": "",
+  "description": "",
+  "creature_type": "",
+  "size": "",
+  "ability_scores": {
+    "strength": 0,
+    "dexterity": 0,
+    "constitution": 0,
+    "intelligence": 0,
+    "wisdom": 0,
+    "charisma": 0
+  },
+  "armor_class": 0,
+  "armor_type": "",
+  "hp_dice_count": 0,
+  "hp_die": 0,
+  "hp_flat_bonus": 0,
+  "hp_average": 0,
+  "speed": {
+    "walk": 0,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
+  "senses": {
+    "passive_perception": 0,
+    "darkvision_ft": 0,
+    "blindsight_ft": 0,
+    "tremorsense_ft": 0,
+    "truesight_ft": 0
+  },
+  "resistances": [],
+  "immunities": [],
+  "vulnerabilities": [],
+  "condition_immunities": [],
+  "proficiency_bonus": 0,
+  "traits": [],
+  "actions": [],
+  "bonus_actions": [],
+  "reactions": [],
+  "legendary_actions": [],
+  "legendary_action_count": 0,
+  "xp_value": 0,
+  "challenge_rating": ""
+}
