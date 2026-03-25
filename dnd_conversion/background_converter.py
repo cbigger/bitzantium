@@ -20,7 +20,7 @@ import requests
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from data import BackgroundDefinition
+from bitzantium_schemas.data import BackgroundDefinition
 
 # ---------------------------------------------------------------------------
 # Configuration

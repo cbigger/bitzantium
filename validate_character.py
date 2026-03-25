@@ -12,7 +12,7 @@ import json
 import sys
 from pathlib import Path
 
-from character import PlayerSheet, CharacterState, ActionEconomy
+from bitzantium_schemas.character import PlayerSheet, CharacterState, ActionEconomy
 from registry import get_available_tools
 
 

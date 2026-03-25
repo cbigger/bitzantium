@@ -17,14 +17,14 @@ from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field
 
-from data import (
+from bitzantium_schemas.data import (
     AbilityScores,
     EquipmentSlots,
     Feature,
     ItemInstance,
     DamageType,
 )
-from schemas import (
+from bitzantium_schemas.schemas import (
     ActiveEffect,
     Condition,
 )

@@ -36,8 +36,8 @@ from loader import (
     list_classes, list_subclasses, list_backgrounds,
     list_sapient_creatures, list_races, list_items, list_abilities,
 )
-from data import ClassDefinition, SubclassDefinition, BackgroundDefinition, CreatureDefinition, RaceDefinition, ItemBase
-from character import (
+from bitzantium_schemas.data import ClassDefinition, SubclassDefinition, BackgroundDefinition, CreatureDefinition, RaceDefinition, ItemBase
+from bitzantium_schemas.character import (
     PlayerSheet, CharacterState, ActionEconomy,
     HitDicePool, SkillProficiency, ProficiencyLevel, SpellReference, ClassResource,
 )

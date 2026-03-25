@@ -22,7 +22,7 @@ import requests
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
-from data import CreatureDefinition
+from bitzantium_schemas.data import CreatureDefinition
 
 # ---------------------------------------------------------------------------
 # Configuration

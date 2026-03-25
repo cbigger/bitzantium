@@ -17,8 +17,8 @@ Tool definitions follow the MCP tool schema:
   }
 """
 
-from character import CharacterState
-from schemas import Condition
+from bitzantium_schemas.character import CharacterState
+from bitzantium_schemas.schemas import Condition
 
 # ---------------------------------------------------------------------------
 # Master tool catalogue

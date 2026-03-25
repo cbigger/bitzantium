@@ -14,7 +14,7 @@ from enum import Enum
 from typing import Any, Optional
 from pydantic import BaseModel, Field
 
-from data import DamageType, ItemInstance, AbilityScores
+from bitzantium_schemas.data import DamageType, ItemInstance, AbilityScores
 
 
 # ---------------------------------------------------------------------------

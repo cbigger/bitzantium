@@ -20,7 +20,7 @@ import requests
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from data import CreatureDefinition, RaceDefinition
+from bitzantium_schemas.data import CreatureDefinition, RaceDefinition
 
 # ---------------------------------------------------------------------------
 # Configuration

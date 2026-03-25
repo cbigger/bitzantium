@@ -18,7 +18,7 @@ import requests
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from data import ClassDefinition, SubclassDefinition
+from bitzantium_schemas.data import ClassDefinition, SubclassDefinition
 
 # ---------------------------------------------------------------------------
 # Configuration

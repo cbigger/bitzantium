@@ -8,7 +8,7 @@ The MCP server reads from it each context request to gate tools and return the s
 
 import threading
 from typing import Optional
-from character import CharacterState, PlayerSheet, ActionEconomy
+from bitzantium_schemas.character import CharacterState, PlayerSheet, ActionEconomy
 
 
 _store: dict[str, CharacterState] = {}

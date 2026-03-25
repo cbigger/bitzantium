@@ -15,7 +15,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from data import (
+from bitzantium_schemas.data import (
     AbilityDefinition,
     BackgroundDefinition,
     ClassDefinition,
