@@ -1,2 +1,4 @@
 Realms/
-
+__pycache__/
+*.pyc
+*.pyo
