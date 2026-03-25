@@ -18,7 +18,13 @@
   "hp_die": 8,
   "hp_flat_bonus": 4,
   "hp_average": 13,
-  "speed": { "walk": 30, "swim": 0, "climb": 0, "fly": 0, "burrow": 0 },
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
   "senses": {
     "passive_perception": 9,
     "darkvision_ft": 60,
@@ -27,9 +33,16 @@
     "truesight_ft": 0
   },
   "resistances": [],
-  "immunities": ["poison"],
-  "vulnerabilities": ["bludgeoning"],
-  "condition_immunities": ["exhaustion", "poisoned"],
+  "immunities": [
+    "poison"
+  ],
+  "vulnerabilities": [
+    "bludgeoning"
+  ],
+  "condition_immunities": [
+    "exhaustion",
+    "poisoned"
+  ],
   "proficiency_bonus": 2,
   "traits": [],
   "actions": [
@@ -46,7 +59,12 @@
       "save_ability": null,
       "save_dc": null,
       "on_hit": [
-        { "damage_dice_count": 1, "damage_die": 6, "damage_flat_bonus": 2, "damage_type": "piercing" }
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
       ],
       "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
     },
@@ -63,7 +81,12 @@
       "save_ability": null,
       "save_dc": null,
       "on_hit": [
-        { "damage_dice_count": 1, "damage_die": 6, "damage_flat_bonus": 2, "damage_type": "piercing" }
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
       ],
       "description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
     }
@@ -73,5 +96,7 @@
   "legendary_actions": [],
   "legendary_action_count": 0,
   "xp_value": 50,
-  "challenge_rating": "1/4"
+  "challenge_rating": "1/4",
+  "languages": [],
+  "bonus_languages": 0
 }

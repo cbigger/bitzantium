@@ -3,51 +3,100 @@
   "name": "Life Domain",
   "parent_class_id": "cleric",
   "granted_at_level": 1,
-  "description": "The Life domain focuses on the vibrant positive energy that sustains all life. Clerics of the Life domain are exceptional healers, among the most powerful in any group of adventurers.",
-  "spellcasting_ability": "wisdom",
-  "spell_prepare_style": "prepare",
+  "description": "The Life domain focuses on the vibrant positive energy-one of the fundamental forces of the universe-that sustains all life. The gods of life promote vitality and health through healing the sick and wounded, caring for those in need, and driving away the forces of death and undeath. Almost any non-evil deity can claim influence over this domain, particularly agricultural deities (such as Chauntea, Arawai, and Demeter), sun gods (such as Lathander, Pelor, and Re-Horakhty), gods of healing or endurance (such as Ilmater, Mishakal, Apollo, and Diancecht), and gods of home and community (such as Hestia, Hathor, and Boldrei). \n \nLife Domain Spells (table) \n \n Spells                               -------------- \n bless, cure wounds                    3rd           \n beacon of hope, revivify              7th           \n mass cure wounds, raise dead         |",
+  "spellcasting_ability": "",
+  "spell_prepare_style": "",
   "level_progression": [
     {
-      "level": 1, "proficiency_bonus": 2,
+      "level": 1,
+      "proficiency_bonus": 2,
       "features": [
-        { "feature_id": "life_domain_spells", "name": "Life Domain Spells", "source": "life_domain_1", "description": "Always-prepared domain spells by minimum cleric level — 1st: bless, cure_wounds; 3rd: lesser_restoration, spiritual_weapon; 5th: beacon_of_hope, revivify; 7th: death_ward, guardian_of_faith; 9th: mass_cure_wounds, raise_dead. These count as cleric spells for you and do not count against your prepared spells total." },
-        { "feature_id": "life_bonus_proficiency", "name": "Bonus Proficiency", "source": "life_domain_1", "description": "You gain proficiency with heavy armor." },
-        { "feature_id": "disciple_of_life", "name": "Disciple of Life", "source": "life_domain_1", "description": "Your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional HP equal to 2 + the spell's level." }
+        {
+          "feature_id": "life_domain_bonus_proficiency",
+          "name": "Bonus Proficiency",
+          "source": "life_domain_1",
+          "description": "When you choose this domain at 1st level, you gain proficiency with heavy armor."
+        },
+        {
+          "feature_id": "life_domain_disciple_of_life",
+          "name": "Disciple of Life",
+          "source": "life_domain_1",
+          "description": "Also starting at 1st level, your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional hit points equal to 2 + the spell's level."
+        }
       ],
-      "resource_grants": [], "resource_updates": [],
-      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
     },
     {
-      "level": 2, "proficiency_bonus": 2,
+      "level": 2,
+      "proficiency_bonus": 2,
       "features": [
-        { "feature_id": "cd_preserve_life", "name": "Channel Divinity: Preserve Life", "source": "life_domain_2", "description": "As an action, present your holy symbol and evoke healing energy. Choose any creatures within 30 feet and divide a pool of HP equal to 5 × your cleric level among them. You can restore a creature to no more than half of its maximum HP with this feature. It has no effect on undead or constructs." }
+        {
+          "feature_id": "life_domain_channel_divinity_preserve_life",
+          "name": "Channel Divinity: Preserve Life",
+          "source": "life_domain_2",
+          "description": "Starting at 2nd level, you can use your Channel Divinity to heal the badly injured. \n \nAs an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This feature can restore a creature to no more than half of its hit point maximum. You can't use this feature on an undead or a construct."
+        }
       ],
-      "resource_grants": [], "resource_updates": [],
-      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
     },
     {
-      "level": 6, "proficiency_bonus": 3,
+      "level": 6,
+      "proficiency_bonus": 3,
       "features": [
-        { "feature_id": "blessed_healer", "name": "Blessed Healer", "source": "life_domain_6", "description": "The healing spells you cast on others heal you as well. When you cast a healing spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level." }
+        {
+          "feature_id": "life_domain_blessed_healer",
+          "name": "Blessed Healer",
+          "source": "life_domain_6",
+          "description": "Beginning at 6th level, the healing spells you cast on others heal you as well. When you cast a spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level."
+        }
       ],
-      "resource_grants": [], "resource_updates": [],
-      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
     },
     {
-      "level": 8, "proficiency_bonus": 3,
+      "level": 8,
+      "proficiency_bonus": 3,
       "features": [
-        { "feature_id": "divine_strike_life", "name": "Divine Strike", "source": "life_domain_8", "description": "Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage. When you reach 14th level, the extra damage increases to 2d8." }
+        {
+          "feature_id": "life_domain_divine_strike",
+          "name": "Divine Strike",
+          "source": "life_domain_8",
+          "description": "At 8th level, you gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage to the target. When you reach 14th level, the extra damage increases to 2d8."
+        }
       ],
-      "resource_grants": [], "resource_updates": [],
-      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
     },
     {
-      "level": 17, "proficiency_bonus": 6,
+      "level": 17,
+      "proficiency_bonus": 6,
       "features": [
-        { "feature_id": "supreme_healing", "name": "Supreme Healing", "source": "life_domain_17", "description": "When you would normally roll one or more dice to restore hit points with a spell, you instead use the highest number possible for each die. For example, instead of restoring 2d6 hit points, you restore 12." }
+        {
+          "feature_id": "life_domain_supreme_healing",
+          "name": "Supreme Healing",
+          "source": "life_domain_17",
+          "description": "Starting at 17th level, when you would normally roll one or more dice to restore hit points with a spell, you instead use the highest number possible for each die. For example, instead of restoring 2d6 hit points to a creature, you restore 12."
+        }
       ],
-      "resource_grants": [], "resource_updates": [],
-      "spell_slots": null, "cantrips_knowable": null, "spells_knowable": null
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
     }
   ]
 }

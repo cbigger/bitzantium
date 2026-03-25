@@ -257,6 +257,9 @@ def parse_languages_from_text(lang_str: str) -> Tuple[List[str], int]:
     """
     Parse languages description text into (fixed_languages, bonus_count).
     E.g., "You can speak, read, and write Common and Dwarvish." → (["common","dwarvish"], 0)
+
+    Only parses the first sentence (up to the first period followed by a space
+    or end-of-string) to avoid picking up language names from flavor text.
     """
     if not lang_str:
         return [], 0
@@ -264,6 +267,13 @@ def parse_languages_from_text(lang_str: str) -> Tuple[List[str], int]:
     # Strip markdown
     text = re.sub(r'\*+_?|_?\*+', '', lang_str)
     text = re.sub(r'^Languages?\.\s*', '', text, flags=re.IGNORECASE)
+
+    # Only use the first sentence — flavor text after the first period
+    # contains language names used in non-language contexts (e.g., "Orc curses,
+    # Elvish musical expressions, Dwarvish military phrases").
+    first_sentence_match = re.match(r'([^.]*\.)', text)
+    if first_sentence_match:
+        text = first_sentence_match.group(1)
 
     # Extract "one extra language" / "one other language"
     bonus = 0
@@ -273,7 +283,6 @@ def parse_languages_from_text(lang_str: str) -> Tuple[List[str], int]:
         bonus = {"one": 1, "two": 2, "three": 3}.get(word, 1)
 
     # Extract named languages
-    # Common patterns: "Common and Dwarvish", "Common, Elvish, and one..."
     known_languages = {
         "common", "dwarvish", "elvish", "giant", "gnomish", "goblin",
         "halfling", "orc", "abyssal", "celestial", "draconic", "deep speech",
@@ -326,19 +335,8 @@ def convert_species(race_data: Dict) -> Dict:
     # Traits from the traits markdown text
     traits = parse_traits_text(race_data.get("traits", ""), creature_id)
 
-    # Languages — add as a trait
+    # Languages — populate as structured fields, not a trait
     languages, bonus_langs = parse_languages_from_text(race_data.get("languages", ""))
-    if languages or bonus_langs:
-        lang_list = ", ".join(lang.replace("_", " ").title() for lang in languages)
-        bonus_text = ""
-        if bonus_langs:
-            bonus_text = f" You also know {bonus_langs} additional language(s) of your choice."
-        traits.append({
-            "feature_id": f"{creature_id}_languages",
-            "name": "Languages",
-            "source": creature_id,
-            "description": f"You can speak, read, and write {lang_list}.{bonus_text}".strip(),
-        })
 
     # Resistances extracted from trait descriptions
     resistances = parse_resistances_from_traits(traits)
@@ -365,6 +363,8 @@ def convert_species(race_data: Dict) -> Dict:
         "hp_average": 5,
         "speed": speed,
         "senses": senses,
+        "languages": languages,
+        "bonus_languages": bonus_langs,
         "resistances": resistances,
         "immunities": [],
         "vulnerabilities": [],

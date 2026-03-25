@@ -126,10 +126,17 @@ def load_all(base_path: str | Path) -> dict[str, int]:
     summary["backgrounds"] = n
     total_errors += e
 
-    # Items
-    n, e = _load_directory(base / "items", ItemBase, _items, "item_id")
-    summary["items"] = n
-    total_errors += e
+    # Items — load from items/ and all subdirectories (e.g., items/mundane/, items/magical/)
+    items_dir = base / "items"
+    item_count = item_errors = 0
+    if items_dir.exists():
+        for path in sorted(items_dir.rglob("*.json")):
+            if _load_file(path, ItemBase, _items, "item_id"):
+                item_count += 1
+            else:
+                item_errors += 1
+    summary["items"] = item_count
+    total_errors += item_errors
 
     # Sapient creatures — one subdirectory per species, creature JSON at root,
     # races in a races/ subdirectory

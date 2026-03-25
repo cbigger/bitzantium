@@ -38,6 +38,11 @@
   "immunities": [],
   "vulnerabilities": [],
   "condition_immunities": [],
+  "languages": [
+    "common",
+    "dwarvish"
+  ],
+  "bonus_languages": 0,
   "proficiency_bonus": 2,
   "traits": [
     {
@@ -63,12 +68,6 @@
       "name": "Stonecunning",
       "source": "dwarf",
       "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus."
-    },
-    {
-      "feature_id": "dwarf_languages",
-      "name": "Languages",
-      "source": "dwarf",
-      "description": "You can speak, read, and write Common, Dwarvish."
     }
   ],
   "actions": [],
