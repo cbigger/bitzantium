@@ -7,8 +7,9 @@ The DM agent has full authority over world state. Tools here are ungated —
 no class/condition/economy filtering. Organisation is by domain:
 
   Scene setup      — init_scene, place_entity
-  State inspection — get_scene_state, get_character_state, get_combat_state
-  Combat lifecycle — start_combat, next_turn, end_combat
+  State inspection — get_scene_state, get_character_state, get_turn_state
+  Turn order       — roll_initiative, set_turn_order, next_turn,
+                     add_to_turn_order, remove_from_turn_order
   Roll resolution  — resolve_attack, resolve_saving_throw,
                      resolve_ability_check, resolve_contested_check
   State mutation   — apply_damage, apply_healing, apply_condition,
@@ -29,7 +30,7 @@ import uuid
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "bitzantium_schemas", "src"))
 
 import state as char_state
-import combat_state as combat
+import turn_state as turns
 import scene_state as scene
 import rules
 
@@ -180,51 +181,68 @@ def _handle_get_character_state(args: dict) -> dict:
     }
 
 
-def _handle_get_combat_state(args: dict) -> dict:
-    cb = combat.get_combat()
-    if cb is None:
-        return {"active": False}
-
+def _handle_get_turn_state(args: dict) -> dict:
+    t = turns.get_turn()
     return {
-        "active":            cb.active,
-        "round":             cb.round,
-        "current_entity":    cb.current_entity,
-        "initiative_order":  cb.initiative_order,
-        "initiative_rolls":  cb.initiative_rolls,
+        "tick":             t.tick,
+        "current_entity":   t.current_entity,
+        "turn_order":       t.turn_order,
+        "initiative_rolls": t.initiative_rolls,
     }
 
 
 # ---------------------------------------------------------------------------
-# Combat lifecycle
+# Turn order management
 # ---------------------------------------------------------------------------
 
-def _handle_start_combat(args: dict) -> dict:
-    entity_ids = args["entity_ids"]  # list[str]
-    cb         = combat.init_combat(entity_ids)
+def _handle_roll_initiative(args: dict) -> dict:
+    entity_ids = args["entity_ids"]
+    t          = turns.roll_initiative(entity_ids)
 
     return {
-        "round":            cb.round,
-        "current_entity":   cb.current_entity,
-        "initiative_order": cb.initiative_order,
-        "initiative_rolls": cb.initiative_rolls,
+        "tick":             t.tick,
+        "current_entity":   t.current_entity,
+        "turn_order":       t.turn_order,
+        "initiative_rolls": t.initiative_rolls,
+    }
+
+
+def _handle_set_turn_order(args: dict) -> dict:
+    entity_ids = args["entity_ids"]
+    t          = turns.set_turn_order(entity_ids)
+
+    return {
+        "tick":       t.tick,
+        "turn_order": t.turn_order,
+        "current_entity": t.current_entity,
     }
 
 
 def _handle_next_turn(args: dict) -> dict:
-    next_id, cb = combat.advance_turn()
-    cs          = char_state.get_character(next_id)
+    next_id, t = turns.advance_turn()
+    cs         = char_state.get_character(next_id)
 
     return {
-        "round":          cb.round,
+        "tick":           t.tick,
         "current_entity": next_id,
         "name":           cs.sheet.name if cs else next_id,
-        "initiative_order": cb.initiative_order,
+        "turn_order":     t.turn_order,
     }
 
 
-def _handle_end_combat(args: dict) -> dict:
-    combat.end_combat()
-    return {"active": False, "message": "Combat ended."}
+def _handle_add_to_turn_order(args: dict) -> dict:
+    entity_id   = args["entity_id"]
+    after_index = args.get("after_index")
+    t           = turns.add_to_order(entity_id, after_index)
+
+    return {"turn_order": t.turn_order, "current_entity": t.current_entity}
+
+
+def _handle_remove_from_turn_order(args: dict) -> dict:
+    entity_id = args["entity_id"]
+    t         = turns.remove_from_order(entity_id)
+
+    return {"turn_order": t.turn_order, "current_entity": t.current_entity}
 
 
 # ---------------------------------------------------------------------------
@@ -731,40 +749,78 @@ _DM_TOOLS: list[dict] = [
         "handler": _handle_get_character_state,
     },
     {
-        "name": "get_combat_state",
-        "description": "Return initiative order, current round, and whose turn it is.",
+        "name": "get_turn_state",
+        "description": "Return the current turn order, whose turn it is, and the realm-time tick counter.",
         "inputSchema": {"type": "object", "properties": {}, "required": []},
-        "handler": _handle_get_combat_state,
+        "handler": _handle_get_turn_state,
     },
 
-    # ── Combat lifecycle ──────────────────────────────────────────────────────
+    # ── Turn order management ─────────────────────────────────────────────────
     {
-        "name": "start_combat",
-        "description": "Roll initiative for all listed entities and begin combat.",
+        "name": "roll_initiative",
+        "description": (
+            "Roll initiative for the listed entities and set the turn order. "
+            "Can be called at any time to re-order or add new participants."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
                 "entity_ids": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "description": "List of entity_ids to include in combat.",
+                    "description": "Entities to roll initiative for.",
                 },
             },
             "required": ["entity_ids"],
         },
-        "handler": _handle_start_combat,
+        "handler": _handle_roll_initiative,
+    },
+    {
+        "name": "set_turn_order",
+        "description": "Manually assign the turn order without rolling. Useful for scripted scenes or DM-driven sequencing.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "entity_ids": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            },
+            "required": ["entity_ids"],
+        },
+        "handler": _handle_set_turn_order,
     },
     {
         "name": "next_turn",
-        "description": "Advance to the next entity in initiative order. Resets that entity's action economy.",
+        "description": "Advance to the next entity in turn order. Resets that entity's action economy. Increments tick when the order wraps.",
         "inputSchema": {"type": "object", "properties": {}, "required": []},
         "handler": _handle_next_turn,
     },
     {
-        "name": "end_combat",
-        "description": "End the current combat and clear combat state.",
-        "inputSchema": {"type": "object", "properties": {}, "required": []},
-        "handler": _handle_end_combat,
+        "name": "add_to_turn_order",
+        "description": "Insert an entity into the turn order at an optional position.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "entity_id":   {"type": "string"},
+                "after_index": {"type": "integer",
+                               "description": "Insert after this index (0-based). Omit to append at end."},
+            },
+            "required": ["entity_id"],
+        },
+        "handler": _handle_add_to_turn_order,
+    },
+    {
+        "name": "remove_from_turn_order",
+        "description": "Remove an entity from the turn order (fled, incapacitated, left scene, etc.).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "entity_id": {"type": "string"},
+            },
+            "required": ["entity_id"],
+        },
+        "handler": _handle_remove_from_turn_order,
     },
 
     # ── Roll resolution ───────────────────────────────────────────────────────
