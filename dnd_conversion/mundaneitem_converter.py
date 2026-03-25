@@ -375,6 +375,18 @@ STATIC_ITEMS: List[Dict] = [
               "attack_bonus": 0, "damage_bonus": 0,
               "range_normal": None, "range_max": None,
               "properties": ["versatile"], "silvered": False, "adamantine": False}),
+    _gear("leather_armor", "Leather Armor", 10.0, 10.0, item_type="armor",
+          armor_properties={
+              "armor_type": "light", "base_ac": 11, "ac_bonus": 0,
+              "max_dex_bonus": None, "strength_requirement": 0,
+              "stealth_disadvantage": False,
+              "don_time_minutes": 1, "doff_time_minutes": 1}),
+    _gear("wooden_shield", "Wooden Shield", 6.0, 5.0, item_type="shield",
+          armor_properties={
+              "armor_type": "shield", "base_ac": 0, "ac_bonus": 2,
+              "max_dex_bonus": None, "strength_requirement": 0,
+              "stealth_disadvantage": False,
+              "don_time_minutes": 1, "doff_time_minutes": 1}),
     _gear("b_leather_armor", "Leather Armor", 10.0, 10.0, item_type="armor",
           armor_properties={
               "armor_type": "light", "base_ac": 11, "ac_bonus": 0,
