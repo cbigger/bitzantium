@@ -1,0 +1,35 @@
+{
+  "ability_id": "locate_animals_or_plants",
+  "name": "Locate Animals or Plants",
+  "description": "Describe or name a specific kind of beast or plant. Concentrating on the voice of nature in your surroundings, you learn the direction and distance to the closest creature or plant of that kind within 5 miles, if any are present.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": []
+    }
+  ],
+  "spell_school": "divination",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A bit of fur from a bloodhound.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": true,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid",
+    "ranger",
+    "bard"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "ability_id": "freedom_of_movement",
+  "name": "Freedom of Movement",
+  "description": "You touch a willing creature. For the duration, the target's movement is unaffected by difficult terrain, and spells and other magical effects can neither reduce the target's speed nor cause the target to be paralyzed or restrained. The target can also spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature that has it grappled. Finally, being underwater imposes no penalties on the target's movement or attacks.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "1 hour",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "apply_condition",
+          "condition": "paralyzed",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A leather strap, bound around the arm or a similar appendage.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "ranger",
+    "bard"
+  ]
+}

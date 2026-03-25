@@ -1,0 +1,52 @@
+{
+  "ability_id": "geas",
+  "name": "Geas",
+  "description": "You place a magical command on a creature that you can see within range, forcing it to carry out some service or refrain from some action or course of activity as you decide. If the creature can understand you, it must succeed on a wisdom saving throw or become charmed by you for the duration. While the creature is charmed by you, it takes 5d10 psychic damage each time it acts in a manner directly counter to your instructions, but no more than once each day. A creature that can't understand you is unaffected by the spell. You can issue any command you choose, short of an activity that would result in certain death. Should you issue a suicidal command, the spell ends. You can end the spell early by using an action to dismiss it. A remove curse, greater restoration, or wish spell also ends it.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 60,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "30 days",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d10",
+          "damage_type": "psychic",
+          "save_ability": "wisdom",
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "charmed",
+          "duration_turns": null,
+          "save_ability": "wisdom",
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "enchantment",
+  "spell_components": {
+    "verbal": true,
+    "somatic": false,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "bard",
+    "wizard"
+  ]
+}

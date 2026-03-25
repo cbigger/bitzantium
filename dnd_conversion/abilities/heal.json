@@ -1,0 +1,34 @@
+{
+  "ability_id": "heal",
+  "name": "Heal",
+  "description": "Choose a creature that you can see within range. A surge of positive energy washes through the creature, causing it to regain 70 hit points. This spell also ends blindness, deafness, and any diseases affecting the target. This spell has no effect on constructs or undead.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "multiple",
+  "range_ft": 60,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 6,
+      "effects": []
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "ability_id": "light",
+  "name": "Light",
+  "description": "You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object sheds bright light in a 20-foot radius and dim light for an additional 20 feet. The light can be colored as you like. Completely covering the object with something opaque blocks the light. The spell ends if you cast it again or dismiss it as an action. If you target an object held or worn by a hostile creature, that creature must succeed on a dexterity saving throw to avoid the spell.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_sphere",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": 20,
+  "duration": "1 hour",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 0,
+      "effects": []
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": false,
+    "material": true,
+    "material_description": "A firefly or phosphorescent moss.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "bard",
+    "sorcerer",
+    "wizard"
+  ]
+}

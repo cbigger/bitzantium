@@ -1,0 +1,33 @@
+{
+  "ability_id": "divine_word",
+  "name": "Divine Word",
+  "description": "You utter a divine word, imbued with the power that shaped the world at the dawn of creation. Choose any number of creatures you can see within range. Each creature that can hear you must make a Charisma saving throw. On a failed save, a creature suffers an effect based on its current hit points: \n- 50hp or less: deafened for 1 minute \n- 40 hp or less: deafened and blinded for 10 minutes \n- 30 hp or less: blinded, deafened and dazed for 1 hour \n- 20 hp or less: killed instantly. Regardless of its current hit points, a celestial, an elemental, a fey, or a fiend that fails its save is forced back to its plane of origin (if it isn't there already) and can't return to your current plane for 24 hours by any means short of a wish spell.",
+  "ability_type": "spell",
+  "action_cost": "bonus_action",
+  "target_type": "multiple",
+  "range_ft": 30,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 7,
+      "effects": []
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": false,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

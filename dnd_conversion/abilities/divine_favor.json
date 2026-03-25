@@ -1,0 +1,42 @@
+{
+  "ability_id": "divine_favor",
+  "name": "Divine Favor",
+  "description": "Your prayer empowers you with divine radiance. Until the spell ends, your weapon attacks deal an extra 1d4 radiant damage on a hit.",
+  "ability_type": "spell",
+  "action_cost": "bonus_action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 1,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "1d4",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric"
+  ]
+}

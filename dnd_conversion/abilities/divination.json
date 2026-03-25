@@ -1,0 +1,34 @@
+{
+  "ability_id": "divination",
+  "name": "Divination",
+  "description": "Your magic and an offering put you in contact with a god or a god's servants. You ask a single question concerning a specific goal, event, or activity to occur within 7 days. The DM offers a truthful reply. The reply might be a short phrase, a cryptic rhyme, or an omen. The spell doesn't take into account any possible circumstances that might change the outcome, such as the casting of additional spells or the loss or gain of a companion. If you cast the spell two or more times before finishing your next long rest, there is a cumulative 25 percent chance for each casting after the first that you get a random reading. The DM makes this roll in secret.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": []
+    }
+  ],
+  "spell_school": "divination",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "Incense and a sacrificial offering appropriate to your religion, together worth at least 25gp, which the spell consumes.",
+    "material_cost_gp": 25.0,
+    "consumed_on_cast": true
+  },
+  "ritual": true,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid"
+  ]
+}

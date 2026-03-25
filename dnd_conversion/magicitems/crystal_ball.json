@@ -1,0 +1,51 @@
+{
+  "item_id": "crystal_ball",
+  "name": "Crystal Ball",
+  "item_type": "wondrous",
+  "description": "The typical _crystal ball_, a very rare item, is about 6 inches in diameter. While touching it, you can cast the _scrying_ spell (save DC 17) with it.\n\nThe following _crystal ball_ variants are legendary items and have additional properties.\n\n**_Crystal Ball of Mind Reading_**. You can use an action to cast the _detect thoughts_ spell (save DC 17) while you are scrying with the _crystal ball_, targeting creatures you can see within 30 feet of the spell's sensor. You don't need to concentrate on this _detect thoughts_ to maintain it during its duration, but it ends if _scrying_ ends.\n\n**_Crystal Ball of Telepathy_**. While scrying with the crystal ball, you can communicate telepathically with creatures you can see within 30 feet of the spell's sensor. You can also use an action to cast the _suggestion_ spell (save DC 17) through the sensor on one of those creatures. You don't need to concentrate on this _suggestion_ to maintain it during its duration, but it ends if _scrying_ ends. Once used, the _suggestion_ power of the _crystal ball_ can't be used again until the next dawn.\n\n**_Crystal Ball of True Seeing_**. While scrying with the crystal ball, you have truesight with a radius of 120 feet centered on the spell's sensor.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "legendary",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [
+      {
+        "effect_type": "cast_spell",
+        "spell_id": "scrying",
+        "cast_at_level": 0,
+        "dc_override": null
+      },
+      {
+        "effect_type": "cast_spell",
+        "spell_id": "detect_thoughts",
+        "cast_at_level": 0,
+        "dc_override": null
+      },
+      {
+        "effect_type": "cast_spell",
+        "spell_id": "suggestion",
+        "cast_at_level": 0,
+        "dc_override": null
+      }
+    ],
+    "concentration_required": false
+  }
+}

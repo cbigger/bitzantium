@@ -1,0 +1,45 @@
+{
+  "ability_id": "invisibility",
+  "name": "Invisibility",
+  "description": "A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target's person. The spell ends for a target that attacks or casts a spell.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "touch",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 hour",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "illusion",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "An eyelash encased in gum arabic.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid",
+    "bard",
+    "sorcerer",
+    "warlock",
+    "wizard"
+  ]
+}

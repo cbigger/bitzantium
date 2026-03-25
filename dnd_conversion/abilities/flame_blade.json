@@ -1,0 +1,133 @@
+{
+  "ability_id": "flame_blade",
+  "name": "Flame Blade",
+  "description": "You evoke a fiery blade in your free hand. The blade is similar in size and shape to a scimitar, and it lasts for the duration. If you let go of the blade, it disappears, but you can evoke the blade again as a bonus action. You can use your action to make a melee spell attack with the fiery blade. On a hit, the target takes 3d6 fire damage. The flaming blade sheds bright light in a 10-foot radius and dim light for an additional 10 feet.",
+  "ability_type": "spell",
+  "action_cost": "bonus_action",
+  "target_type": "area_sphere",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": 10,
+  "duration": "up to 10 minutes",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "6d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "10d6",
+          "damage_type": "fire",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "Leaf of sumac.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "druid"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "item_id": "potion_of_invisibility",
+  "name": "Potion of Invisibility",
+  "item_type": "potion",
+  "description": "This potion's container looks empty but feels as though it holds liquid. When you drink it, you become invisible for 1 hour. Anything you wear or carry is invisible with you. The effect ends early if you attack or cast a spell.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "very_rare",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": {
+    "consumption_type": "drink",
+    "charges": 1,
+    "effects": [],
+    "addiction_risk": false
+  },
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [
+      {
+        "effect_type": "cast_spell",
+        "spell_id": "a_spell",
+        "cast_at_level": 0,
+        "dc_override": null
+      }
+    ],
+    "concentration_required": false
+  }
+}

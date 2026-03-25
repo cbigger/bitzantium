@@ -18,7 +18,13 @@
   "hp_die": 6,
   "hp_flat_bonus": 0,
   "hp_average": 7,
-  "speed": { "walk": 30, "swim": 0, "climb": 0, "fly": 0, "burrow": 0 },
+  "speed": {
+    "walk": 30,
+    "swim": 0,
+    "climb": 0,
+    "fly": 0,
+    "burrow": 0
+  },
   "senses": {
     "passive_perception": 9,
     "darkvision_ft": 60,
@@ -53,7 +59,12 @@
       "save_ability": null,
       "save_dc": null,
       "on_hit": [
-        { "damage_dice_count": 1, "damage_die": 6, "damage_flat_bonus": 2, "damage_type": "slashing" }
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "slashing"
+        }
       ],
       "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
     },
@@ -70,7 +81,12 @@
       "save_ability": null,
       "save_dc": null,
       "on_hit": [
-        { "damage_dice_count": 1, "damage_die": 6, "damage_flat_bonus": 2, "damage_type": "piercing" }
+        {
+          "damage_dice_count": 1,
+          "damage_die": 6,
+          "damage_flat_bonus": 2,
+          "damage_type": "piercing"
+        }
       ],
       "description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
     }
@@ -96,5 +112,10 @@
   "legendary_actions": [],
   "legendary_action_count": 0,
   "xp_value": 50,
-  "challenge_rating": "1/4"
+  "challenge_rating": "1/4",
+  "languages": [
+    "common",
+    "goblin"
+  ],
+  "bonus_languages": 0
 }

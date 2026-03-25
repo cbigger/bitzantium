@@ -1,0 +1,37 @@
+{
+  "item_id": "scimitar_of_speed",
+  "name": "Scimitar of Speed",
+  "item_type": "weapon",
+  "description": "You gain a +2 bonus to attack and damage rolls made with this magic weapon. In addition, you can make one attack with it as a bonus action on each of your turns.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "very_rare",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "weapon"
+  ],
+  "weapon_properties": {
+    "category": "martial",
+    "weapon_type": "melee",
+    "damage_dice": "1d6",
+    "damage_type": "slashing",
+    "versatile_damage": null,
+    "attack_bonus": 2,
+    "damage_bonus": 2,
+    "range_normal": null,
+    "range_max": null,
+    "properties": [],
+    "silvered": false,
+    "adamantine": false
+  },
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": null
+}

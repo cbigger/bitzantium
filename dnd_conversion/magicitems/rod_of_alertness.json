@@ -1,0 +1,48 @@
+{
+  "item_id": "rod_of_alertness",
+  "name": "Rod of Alertness",
+  "item_type": "rod",
+  "description": "This rod has a flanged head and the following properties.\n\n**_Alertness_**. While holding the rod, you have advantage on Wisdom (Perception) checks and on rolls for initiative.\n\n**_Spells_**. While holding the rod, you can use an action to cast one of the following spells from it: _detect evil and good_, _detect magic_, _detect poison and disease_, or _see invisibility._\n\n**_Protective Aura_**. As an action, you can plant the haft end of the rod in the ground, whereupon the rod's head sheds bright light in a 60-foot radius and dim light for an additional 60 feet. While in that bright light, you and any creature that is friendly to you gain a +1 bonus to AC and saving throws and can sense the location of any invisible hostile creature that is also in the bright light.\n\nThe rod's head stops glowing and the effect ends after 10 minutes, or when a creature uses an action to pull the rod from the ground. This property can't be used again until the next dawn.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "very_rare",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "arcane"
+  ],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [
+      {
+        "effect_type": "modify_stat",
+        "stat": "ac",
+        "modifier": 1,
+        "set_value": null
+      }
+    ],
+    "effects_on_use": [
+      {
+        "effect_type": "cast_spell",
+        "spell_id": "one_of_the_following",
+        "cast_at_level": 0,
+        "dc_override": null
+      }
+    ],
+    "concentration_required": false
+  }
+}

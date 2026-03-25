@@ -36,15 +36,12 @@
   "immunities": [],
   "vulnerabilities": [],
   "condition_immunities": [],
-  "proficiency_bonus": 2,
-  "traits": [
-    {
-      "feature_id": "human_languages",
-      "name": "Languages",
-      "source": "human",
-      "description": "You can speak, read, and write Elvish, Common, Orc, Dwarvish. You also know 1 additional language(s) of your choice."
-    }
+  "languages": [
+    "common"
   ],
+  "bonus_languages": 1,
+  "proficiency_bonus": 2,
+  "traits": [],
   "actions": [],
   "bonus_actions": [],
   "reactions": [],

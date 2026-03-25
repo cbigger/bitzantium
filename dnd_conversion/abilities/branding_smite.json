@@ -1,0 +1,187 @@
+{
+  "ability_id": "branding_smite",
+  "name": "Branding Smite",
+  "description": "The next time you hit a creature with a weapon attack before this spell ends, the weapon gleams with astral radiance as you strike. The attack deals an extra 2d6 radiant damage to the target, which becomes visible if it's invisible, and the target sheds dim light in a 5-­--foot radius and can't become invisible until the spell ends.",
+  "ability_type": "spell",
+  "action_cost": "bonus_action",
+  "target_type": "self",
+  "range_ft": null,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "up to 1 minute",
+  "concentration": true,
+  "effects_by_level": [
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "2d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "3d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "4d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "5d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "6d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "8d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "9d6",
+          "damage_type": "radiant",
+          "save_ability": null,
+          "save_dc": null,
+          "half_on_save": false
+        },
+        {
+          "effect_type": "apply_condition",
+          "condition": "invisible",
+          "duration_turns": null,
+          "save_ability": null,
+          "save_dc": null
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": false,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": []
+}

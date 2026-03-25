@@ -1,0 +1,33 @@
+{
+  "ability_id": "private_sanctum",
+  "name": "Private Sanctum",
+  "description": "You make an area within range magically secure. The area is a cube that can be as small as 5 feet to as large as 100 feet on each side. The spell lasts for the duration or until you use an action to dismiss it. When you cast the spell, you decide what sort of security the spell provides, choosing any or all of the following properties: \n- Sound can't pass through the barrier at the edge of the warded area. \n- The barrier of the warded area appears dark and foggy, preventing vision (including darkvision) through it. \n- Sensors created by divination spells can't appear inside the protected area or pass through the barrier at its perimeter. \n- Creatures in the area can't be targeted by divination spells. \n- Nothing can teleport into or out of the warded area. \n- Planar travel is blocked within the warded area. \nCasting this spell on the same spot every day for a year makes this effect permanent.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "single",
+  "range_ft": 120,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "24 hours",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 4,
+      "effects": []
+    }
+  ],
+  "spell_school": "abjuration",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": true,
+    "material_description": "A thin sheet of lead, a piece of opaque glass, a wad of cotton or cloth, and powdered chrysolite.",
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "wizard"
+  ]
+}

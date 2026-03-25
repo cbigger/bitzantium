@@ -1,0 +1,37 @@
+{
+  "item_id": "potion_of_giant_strength",
+  "name": "Potion of Giant Strength",
+  "item_type": "potion",
+  "description": "When you drink this potion, your Strength score changes for 1 hour. The type of giant determines the score (see the table below). The potion has no effect on you if your Strength is equal to or greater than that score.\n\nThis potion's transparent liquid has floating in it a sliver of fingernail from a giant of the appropriate type. The _potion of frost giant strength_ and the _potion of stone giant strength_ have the same effect.\n\n| Type of Giant     | Strength | Rarity    |\n|-------------------|----------|-----------|\n| Hill giant        | 21       | Uncommon  |\n| Frost/stone giant | 23       | Rare      |\n| Fire giant        | 25       | Rare      |\n| Cloud giant       | 27       | Very rare |\n| Storm giant       | 29       | Legendary |",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "uncommon",
+  "magical": true,
+  "requires_attunement": false,
+  "attunement_requirements": null,
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": {
+    "consumption_type": "drink",
+    "charges": 1,
+    "effects": [],
+    "addiction_risk": false
+  },
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

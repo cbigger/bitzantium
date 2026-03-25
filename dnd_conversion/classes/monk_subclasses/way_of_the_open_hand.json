@@ -1,0 +1,79 @@
+{
+  "subclass_id": "way_of_the_open_hand",
+  "name": "Way of the Open Hand",
+  "parent_class_id": "monk",
+  "granted_at_level": 3,
+  "description": "Monks of the Way of the Open Hand are the ultimate masters of martial arts combat, whether armed or unarmed. They learn techniques to push and trip their opponents, manipulate ki to heal damage to their bodies, and practice advanced meditation that can protect them from harm.",
+  "spellcasting_ability": "",
+  "spell_prepare_style": "",
+  "level_progression": [
+    {
+      "level": 3,
+      "proficiency_bonus": 2,
+      "features": [
+        {
+          "feature_id": "way_of_the_open_hand_open_hand_technique",
+          "name": "Open Hand Technique",
+          "source": "way_of_the_open_hand_3",
+          "description": "Starting when you choose this tradition at 3rd level, you can manipulate your enemy's ki when you harness your own. Whenever you hit a creature with one of the attacks granted by your Flurry of Blows, you can impose one of the following effects on that target: \n It must succeed on a Dexterity saving throw or be knocked prone. \n It must make a Strength saving throw. If it fails, you can push it up to 15 feet away from you. \n It can't take reactions until the end of your next turn."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
+    },
+    {
+      "level": 6,
+      "proficiency_bonus": 3,
+      "features": [
+        {
+          "feature_id": "way_of_the_open_hand_wholeness_of_body",
+          "name": "Wholeness of Body",
+          "source": "way_of_the_open_hand_6",
+          "description": "At 6th level, you gain the ability to heal yourself. As an action, you can regain hit points equal to three times your monk level. You must finish a long rest before you can use this feature again."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
+    },
+    {
+      "level": 11,
+      "proficiency_bonus": 4,
+      "features": [
+        {
+          "feature_id": "way_of_the_open_hand_tranquility",
+          "name": "Tranquility",
+          "source": "way_of_the_open_hand_11",
+          "description": "Beginning at 11th level, you can enter a special meditation that surrounds you with an aura of peace. At the end of a long rest, you gain the effect of a sanctuary spell that lasts until the start of your next long rest (the spell can end early as normal). The saving throw DC for the spell equals 8 + your Wisdom modifier + your proficiency bonus."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
+    },
+    {
+      "level": 17,
+      "proficiency_bonus": 6,
+      "features": [
+        {
+          "feature_id": "way_of_the_open_hand_quivering_palm",
+          "name": "Quivering Palm",
+          "source": "way_of_the_open_hand_17",
+          "description": "At 17th level, you gain the ability to set up lethal vibrations in someone's body. When you hit a creature with an unarmed strike, you can spend 3 ki points to start these imperceptible vibrations, which last for a number of days equal to your monk level. The vibrations are harmless unless you use your action to end them. To do so, you and the target must be on the same plane of existence. When you use this action, the creature must make a Constitution saving throw. If it fails, it is reduced to 0 hit points. If it succeeds, it takes 10d10 necrotic damage. \n \nYou can have only one creature under the effect of this feature at a time. You can choose to end the vibrations harmlessly without using an action."
+        }
+      ],
+      "resource_grants": [],
+      "resource_updates": [],
+      "spell_slots": null,
+      "cantrips_knowable": null,
+      "spells_knowable": null
+    }
+  ]
+}

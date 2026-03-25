@@ -1,0 +1,34 @@
+{
+  "item_id": "belt_of_dwarvenkind",
+  "name": "Belt of Dwarvenkind",
+  "item_type": "wondrous",
+  "description": "While wearing this belt, you gain the following benefits:\n\n* Your Constitution score increases by 2, to a maximum of 20.\n* You have advantage on Charisma (Persuasion) checks made to interact with dwarves.\n\nIn addition, while attuned to the belt, you have a 50 percent chance each day at dawn of growing a full beard if you're capable of growing one, or a visibly thicker beard if you already have one.\n\nIf you aren't a dwarf, you gain the following additional benefits while wearing the belt:\n\n* You have advantage on saving throws against poison, and you have resistance against poison damage.\n* You have darkvision out to a range of 60 feet.\n* You can speak, read, and write Dwarvish.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "rare",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "ranged"
+  ],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

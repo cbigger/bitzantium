@@ -1,0 +1,42 @@
+{
+  "race_id": "high_elf",
+  "name": "High Elf",
+  "parent_creature_id": "elf",
+  "description": "As a high elf, you have a keen mind and a mastery of at least the basics of magic. In many fantasy gaming worlds, there are two kinds of high elves. One type is haughty and reclusive, believing themselves to be superior to non-elves and even other elves. The other type is more common and more friendly, and often encountered among humans and other races.",
+  "ability_score_increases": [
+    {
+      "ability": "intelligence",
+      "amount": 1
+    }
+  ],
+  "senses_override": {},
+  "speed_override": {},
+  "traits": [
+    {
+      "feature_id": "high_elf_elf_weapon_training",
+      "name": "Elf Weapon Training",
+      "source": "high_elf",
+      "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow."
+    },
+    {
+      "feature_id": "high_elf_cantrip",
+      "name": "Cantrip",
+      "source": "high_elf",
+      "description": "You know one cantrip of your choice from the wizard spell list. Intelligence is your spellcasting ability for it."
+    },
+    {
+      "feature_id": "high_elf_extra_language",
+      "name": "Extra Language",
+      "source": "high_elf",
+      "description": "You can speak, read, and write one extra language of your choice."
+    }
+  ],
+  "proficiency_grants": [],
+  "languages": [
+    "common",
+    "elvish"
+  ],
+  "bonus_languages": 0,
+  "resistances": [],
+  "immunities": []
+}

@@ -618,6 +618,8 @@ class CreatureDefinition(BaseModel):
     immunities: list[str] = Field(default_factory=list)
     vulnerabilities: list[str] = Field(default_factory=list)
     condition_immunities: list[str] = Field(default_factory=list)
+    languages: list[str] = Field(default_factory=list)
+    bonus_languages: int = 0
     proficiency_bonus: int = 0
     traits: list[Feature] = Field(default_factory=list)
     actions: list[CreatureAction] = Field(default_factory=list)

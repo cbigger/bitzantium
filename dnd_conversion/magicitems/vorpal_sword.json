@@ -1,0 +1,44 @@
+{
+  "item_id": "vorpal_sword",
+  "name": "Vorpal Sword",
+  "item_type": "weapon",
+  "description": "You gain a +3 bonus to attack and damage rolls made with this magic weapon. In addition, the weapon ignores resistance to slashing damage.\n\nWhen you attack a creature that has at least one head with this weapon and roll a 20 on the attack roll, you cut off one of the creature's heads. The creature dies if it can't survive without the lost head. A creature is immune to this effect if it is immune to slashing damage, doesn't have or need a head, has legendary actions, or the GM decides that the creature is too big for its head to be cut off with this weapon. Such a creature instead takes an extra 6d8 slashing damage from the hit.",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "legendary",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": null,
+  "tags": [
+    "weapon"
+  ],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [
+      {
+        "effect_type": "grant_resistance",
+        "damage_type": "slashing"
+      },
+      {
+        "effect_type": "grant_immunity",
+        "damage_type": "this",
+        "condition": null
+      }
+    ],
+    "effects_on_use": [],
+    "concentration_required": false
+  }
+}

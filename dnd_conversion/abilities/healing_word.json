@@ -1,0 +1,130 @@
+{
+  "ability_id": "healing_word",
+  "name": "Healing Word",
+  "description": "A creature of your choice that you can see within range regains hit points equal to 1d4 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",
+  "ability_type": "spell",
+  "action_cost": "bonus_action",
+  "target_type": "single",
+  "range_ft": 60,
+  "range_max_ft": null,
+  "area_ft": null,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 1,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "1d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 2,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "2d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 3,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "3d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 4,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "4d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 5,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "5d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 6,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "6d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "7d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 8,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "8d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    },
+    {
+      "slot_level": 9,
+      "effects": [
+        {
+          "effect_type": "heal",
+          "dice": "9d4",
+          "bonus": 0,
+          "max_hp_only": false
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": false,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "bard"
+  ]
+}

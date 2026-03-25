@@ -667,8 +667,12 @@ def stage_languages(
     section("Languages")
     noob_panel("languages", noob)
 
-    base_languages: list[str] = list(race_def.languages) if race_def else []
-    bonus_count = (race_def.bonus_languages if race_def else 0) + background_def.bonus_languages
+    base_languages: list[str] = list(creature_def.languages) if creature_def.languages else []
+    if race_def and race_def.languages:
+        for lang in race_def.languages:
+            if lang not in base_languages:
+                base_languages.append(lang)
+    bonus_count = creature_def.bonus_languages + (race_def.bonus_languages if race_def else 0) + background_def.bonus_languages
 
     console.print(
         f"  Base languages: [green]{', '.join(base_languages) if base_languages else 'none'}[/green]"

@@ -179,6 +179,69 @@ def parse_legendary_action_count(legendary_desc: str) -> int:
     match = re.search(r'(\d+)\s+legendary actions', legendary_desc, re.IGNORECASE)
     return int(match.group(1)) if match else 0
 
+
+# ---------------------------------------------------------------------------
+# Language parsing
+# ---------------------------------------------------------------------------
+
+# Known D&D languages for extraction from monster stat blocks
+_KNOWN_LANGUAGES = [
+    # Longer names first to avoid partial matches
+    "deep speech", "thieves' cant",
+    "common", "dwarvish", "elvish", "giant", "gnomish", "goblin",
+    "halfling", "orc", "abyssal", "celestial", "draconic", "infernal",
+    "primordial", "sylvan", "undercommon", "druidic",
+    "auran", "aquan", "ignan", "terran",
+]
+
+# Creature-type → default language for creatures that have no explicit languages
+# but can still be communicated with via type-appropriate means.
+_TYPE_DEFAULT_LANGUAGES: Dict[str, List[str]] = {
+    "dragon": ["draconic"],
+    "fiend": ["abyssal", "infernal"],
+    "celestial": ["celestial"],
+    "elemental": ["primordial"],
+    "fey": ["sylvan"],
+    "aberration": ["deep_speech"],
+    "giant": ["giant"],
+    "undead": [],       # typically understand languages from life, varies
+    "beast": [],        # no language
+    "monstrosity": [],  # varies, usually none
+    "ooze": [],         # no language
+    "plant": [],        # no language
+    "construct": [],    # no language
+    "humanoid": ["common"],
+    "swarm of tiny beasts": [],
+}
+
+
+def parse_creature_languages(lang_str: str, creature_type: str) -> List[str]:
+    """Parse the Open5e monster 'languages' field into a list of language strings.
+
+    Open5e stores monster languages as a comma-separated string like
+    "Common, Goblin" or "understands Common but can't speak" or "--" for none.
+
+    For creatures with no listed languages, falls back to type-based defaults.
+    """
+    languages: List[str] = []
+
+    if lang_str:
+        text_lower = lang_str.lower()
+        # "--" or empty means no languages listed
+        if text_lower.strip() not in ("--", "-", ""):
+            for lang in _KNOWN_LANGUAGES:
+                if lang in text_lower:
+                    slug = lang.replace(" ", "_").replace("'", "")
+                    if slug not in languages:
+                        languages.append(slug)
+
+    # If no explicit languages found, assign type-based defaults
+    if not languages:
+        ctype = creature_type.lower().strip()
+        languages = list(_TYPE_DEFAULT_LANGUAGES.get(ctype, []))
+
+    return languages
+
 # ---------------------------------------------------------------------------
 # Action description parser — extracts structured attack data from 5e text
 # ---------------------------------------------------------------------------
@@ -444,11 +507,14 @@ def convert_creature(c: Dict) -> Dict:
     reactions = [parse_reaction(a, creature_id) for a in _list(c.get("reactions"))]
     legendary_actions = [parse_action(a, creature_id, "legendary") for a in _list(c.get("legendary_actions"))]
 
+    creature_type = (c.get("type", "") or "").lower()
+    languages = parse_creature_languages(c.get("languages", ""), creature_type)
+
     return {
         "creature_id": creature_id,
         "name": c.get("name", ""),
         "description": c.get("desc", "") or "",
-        "creature_type": (c.get("type", "") or "").lower(),
+        "creature_type": creature_type,
         "size": (c.get("size", "") or "").lower(),
         "ability_scores": {
             "strength": c.get("strength", 0) or 0,
@@ -470,6 +536,8 @@ def convert_creature(c: Dict) -> Dict:
         "immunities": parse_damage_list(c.get("damage_immunities", "")),
         "vulnerabilities": parse_damage_list(c.get("damage_vulnerabilities", "")),
         "condition_immunities": parse_condition_immunities(c.get("condition_immunities", "")),
+        "languages": languages,
+        "bonus_languages": 0,
         "proficiency_bonus": proficiency_bonus_from_cr(cr_float),
         "traits": traits,
         "actions": actions,

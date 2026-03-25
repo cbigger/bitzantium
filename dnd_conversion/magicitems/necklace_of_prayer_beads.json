@@ -1,0 +1,39 @@
+{
+  "item_id": "necklace_of_prayer_beads",
+  "name": "Necklace of Prayer Beads",
+  "item_type": "wondrous",
+  "description": "This necklace has 1d4 + 2 magic beads made from aquamarine, black pearl, or topaz. It also has many nonmagical beads made from stones such as amber, bloodstone, citrine, coral, jade, pearl, or quartz. If a magic bead is removed from the necklace, that bead loses its magic.\n\nSix types of magic beads exist. The GM decides the type of each bead on the necklace or determines it randomly. A necklace can have more than one bead of the same type. To use one, you must be wearing the necklace. Each bead contains a spell that you can cast from it as a bonus action (using your spell save DC if a save is necessary). Once a magic bead's spell is cast, that bead can't be used again until the next dawn.\n\n| d20   | Bead of...   | Spell                                         |\n|-------|--------------|-----------------------------------------------|\n| 1-6   | Blessing     | Bless                                         |\n| 7-12  | Curing       | Cure wounds (2nd level) or lesser restoration |\n| 13-16 | Favor        | Greater restoration                           |\n| 17-18 | Smiting      | Branding smite                                |\n| 19    | Summons      | Planar ally                                   |\n| 20    | Wind walking | Wind walk                                     |",
+  "weight": 0.0,
+  "value_gp": 0.0,
+  "rarity": "rare",
+  "magical": true,
+  "requires_attunement": true,
+  "attunement_requirements": "a cleric, druid, or paladin",
+  "tags": [],
+  "weapon_properties": null,
+  "armor_properties": null,
+  "ammunition_properties": null,
+  "consumable_properties": null,
+  "scroll_properties": null,
+  "tool_properties": null,
+  "instrument_properties": null,
+  "container_properties": null,
+  "magic_properties": {
+    "activation_type": "bonus_action",
+    "charges": 0,
+    "charges_max": 0,
+    "recharge_on": "none",
+    "recharge_amount": null,
+    "destroy_on_last_charge": false,
+    "effects_on_equip": [],
+    "effects_on_use": [
+      {
+        "effect_type": "cast_spell",
+        "spell_id": "from_it_as_a_bonus_action",
+        "cast_at_level": 0,
+        "dc_override": null
+      }
+    ],
+    "concentration_required": false
+  }
+}

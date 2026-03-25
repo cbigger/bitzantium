@@ -1,0 +1,30 @@
+{
+  "race_id": "hill_dwarf",
+  "name": "Hill Dwarf",
+  "parent_creature_id": "dwarf",
+  "description": "As a hill dwarf, you have keen senses, deep intuition, and remarkable resilience.",
+  "ability_score_increases": [
+    {
+      "ability": "wisdom",
+      "amount": 1
+    }
+  ],
+  "senses_override": {},
+  "speed_override": {},
+  "traits": [
+    {
+      "feature_id": "hill_dwarf_dwarven_toughness",
+      "name": "Dwarven Toughness",
+      "source": "hill_dwarf",
+      "description": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level."
+    }
+  ],
+  "proficiency_grants": [],
+  "languages": [
+    "common",
+    "dwarvish"
+  ],
+  "bonus_languages": 0,
+  "resistances": [],
+  "immunities": []
+}

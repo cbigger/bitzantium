@@ -1,0 +1,44 @@
+{
+  "ability_id": "fire_storm",
+  "name": "Fire Storm",
+  "description": "A storm made up of sheets of roaring flame appears in a location you choose within range. The area of the storm consists of up to ten 10-foot cubes, which you can arrange as you wish. Each cube must have at least one face adjacent to the face of another cube. Each creature in the area must make a dexterity saving throw. It takes 7d10 fire damage on a failed save, or half as much damage on a successful one. The fire damages objects in the area and ignites flammable objects that aren't being worn or carried. If you choose, plant life in the area is unaffected by this spell.",
+  "ability_type": "spell",
+  "action_cost": "action",
+  "target_type": "area_cube",
+  "range_ft": 150,
+  "range_max_ft": null,
+  "area_ft": 10,
+  "duration": "instantaneous",
+  "concentration": false,
+  "effects_by_level": [
+    {
+      "slot_level": 7,
+      "effects": [
+        {
+          "effect_type": "damage",
+          "dice": "7d10",
+          "damage_type": "fire",
+          "save_ability": "dexterity",
+          "save_dc": null,
+          "half_on_save": true
+        }
+      ]
+    }
+  ],
+  "spell_school": "evocation",
+  "spell_components": {
+    "verbal": true,
+    "somatic": true,
+    "material": false,
+    "material_description": null,
+    "material_cost_gp": null,
+    "consumed_on_cast": false
+  },
+  "ritual": false,
+  "reaction_trigger": null,
+  "spell_lists": [
+    "cleric",
+    "druid",
+    "sorcerer"
+  ]
+}
