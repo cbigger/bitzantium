@@ -1,36 +1,36 @@
 {
   "sheet": {
-    "entity_id": "char_7f5c06ef55ae",
-    "name": "Robert ego",
-    "creature_id": "human",
-    "race_id": "variant_human",
-    "description": "d",
-    "background_id": "artisan",
-    "alignment": "Lawful Good",
+    "entity_id": "char_ef3df910580b",
+    "name": "Rodney",
+    "creature_id": "halfling",
+    "race_id": "lightfoot",
+    "description": "Rodney is a good man, but he's not a smart man. He can swing a hammer, but not much else.",
+    "background_id": "farmer",
+    "alignment": "Neutral Good",
     "inspiration": false,
     "classes": [
       {
-        "class_id": "bard",
+        "class_id": "ranger",
         "subclass_id": "",
         "level": 1,
-        "hit_die": "d8"
+        "hit_die": "d10"
       }
     ],
     "level": 1,
     "experience": 0,
     "proficiency_bonus": 2,
-    "hp_current": 10,
-    "hp_max": 10,
+    "hp_current": 11,
+    "hp_max": 11,
     "hp_temp": 0,
     "hit_dice": [
       {
-        "die": "d8",
+        "die": "d10",
         "total": 1,
         "remaining": 1
       }
     ],
-    "armor_class": 12,
-    "speed": 30,
+    "armor_class": 16,
+    "speed": 25,
     "initiative_bonus": 2,
     "death_saves": {
       "successes": 0,
@@ -38,16 +38,16 @@
       "stable": false
     },
     "ability_scores": {
-      "strength": 16,
-      "dexterity": 14,
-      "constitution": 14,
+      "strength": 14,
+      "dexterity": 15,
+      "constitution": 13,
       "intelligence": 12,
       "wisdom": 10,
-      "charisma": 8
+      "charisma": 9
     },
     "saving_throw_proficiencies": [
       "dexterity",
-      "charisma"
+      "strength"
     ],
     "skill_proficiencies": [
       {
@@ -56,7 +56,7 @@
       },
       {
         "skill": "animal_handling",
-        "proficiency_level": "none"
+        "proficiency_level": "proficient"
       },
       {
         "skill": "arcana",
@@ -64,7 +64,7 @@
       },
       {
         "skill": "athletics",
-        "proficiency_level": "none"
+        "proficiency_level": "proficient"
       },
       {
         "skill": "deception",
@@ -72,11 +72,11 @@
       },
       {
         "skill": "history",
-        "proficiency_level": "proficient"
+        "proficiency_level": "none"
       },
       {
         "skill": "insight",
-        "proficiency_level": "none"
+        "proficiency_level": "proficient"
       },
       {
         "skill": "intimidation",
@@ -92,7 +92,7 @@
       },
       {
         "skill": "nature",
-        "proficiency_level": "none"
+        "proficiency_level": "proficient"
       },
       {
         "skill": "perception",
@@ -104,7 +104,7 @@
       },
       {
         "skill": "persuasion",
-        "proficiency_level": "proficient"
+        "proficiency_level": "none"
       },
       {
         "skill": "religion",
@@ -120,14 +120,13 @@
       },
       {
         "skill": "survival",
-        "proficiency_level": "none"
+        "proficiency_level": "proficient"
       }
     ],
     "tool_proficiencies": [],
     "languages": [
-      "common",
-      "elvish",
-      "dwarvish"
+      "halfling",
+      "common"
     ],
     "senses": {
       "passive_perception": 11,
@@ -142,22 +141,40 @@
     "exhaustion_level": 0,
     "features": [
       {
-        "feature_id": "bard_spellcasting",
-        "name": "Spellcasting",
-        "source": "bard_1",
-        "description": "You have learned to untangle and reshape the fabric of reality in harmony with your wishes and music. \n \nYour spells are part of your vast repertoire, magic that you can tune to different situations."
+        "feature_id": "ranger_favored_enemy",
+        "name": "Favored Enemy",
+        "source": "ranger_1",
+        "description": "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. \n \nChoose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead. Alternatively, you can select two races of humanoid (such as gnolls and orcs) as favored enemies. \n \nYou have advantage on Wisdom (Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them. \n \nWhen you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all. \n \nYou choose one additional favored enemy, as well as an associated language, at 6th and 14th level. As you gain levels, your choices should reflect the types of monsters you have encountered on your adventures."
       },
       {
-        "feature_id": "bard_bardic_inspiration_d6",
-        "name": "Bardic Inspiration (d6)",
-        "source": "bard_1",
-        "description": "You can inspire others through stirring words or music. To do so, you use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic Inspiration die, a d6. \n \nOnce within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes. The creature can wait until after it rolls the d20 before deciding to use the Bardic Inspiration die, but must decide before the GM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost. A creature can have only one Bardic Inspiration die at a time. \n \nYou can use this feature a number of times equal to your Charisma modifier (a minimum of once). You regain any expended uses when you finish a long rest. \n \nYour Bardic Inspiration die changes when you reach certain levels in this class. The die becomes a d8 at 5th level, a d10 at 10th level, and a d12 at 15th level."
+        "feature_id": "ranger_natural_explorer",
+        "name": "Natural Explorer",
+        "source": "ranger_1",
+        "description": "You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. Choose one type of favored terrain: arctic, coast, desert, forest, grassland, mountain, or swamp. When you make an Intelligence or Wisdom check related to your favored terrain, your proficiency bonus is doubled if you are using a skill that you're proficient in. \n \nWhile traveling for an hour or more in your favored terrain, you gain the following benefits: \n Difficult terrain doesn't slow your group's travel. \n Your group can't become lost except by magical means. \n Even when you are engaged in another activity while traveling (such as foraging, navigating, or tracking), you remain alert to danger. \n If you are traveling alone, you can move stealthily at a normal pace. \n When you forage, you find twice as much food as you normally would. \n While tracking other creatures, you also learn their exact number, their sizes, and how long ago they passed through the area. \n \nYou choose additional favored terrain types at 6th and 10th level."
       },
       {
-        "feature_id": "variant_human_feat",
-        "name": "Feat",
-        "source": "variant_human",
-        "description": "You gain one feat of your choice."
+        "feature_id": "lightfoot_naturally_stealthy",
+        "name": "Naturally Stealthy",
+        "source": "lightfoot",
+        "description": "You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you."
+      },
+      {
+        "feature_id": "halfling_lucky",
+        "name": "Lucky",
+        "source": "halfling",
+        "description": "When you roll a 1 on the d20 for an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll."
+      },
+      {
+        "feature_id": "halfling_brave",
+        "name": "Brave",
+        "source": "halfling",
+        "description": "You have advantage on saving throws against being frightened."
+      },
+      {
+        "feature_id": "halfling_halfling_nimbleness",
+        "name": "Halfling Nimbleness",
+        "source": "halfling",
+        "description": "You can move through the space of any creature that is of a size larger than yours."
       }
     ],
     "feats": [],
@@ -176,309 +193,320 @@
     },
     "inventory": [
       {
-        "instance_id": "inst_dagger_768b55",
+        "instance_id": "inst_two_shortswords_db3774",
         "item_base": {
-          "item_id": "dagger",
-          "name": "Dagger",
-          "item_type": "weapon",
-          "description": "",
-          "weight": 1.0,
-          "value_gp": 2.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [
-            "finesse",
-            "light",
-            "thrown"
-          ],
-          "weapon_properties": {
-            "category": "simple",
-            "weapon_type": "melee",
-            "damage_dice": "1d4",
-            "damage_type": "piercing",
-            "versatile_damage": null,
-            "attack_bonus": 0,
-            "damage_bonus": 0,
-            "range_normal": 20,
-            "range_max": 60,
-            "properties": [
-              "finesse",
-              "light",
-              "thrown"
-            ],
-            "silvered": false,
-            "adamantine": false
-          },
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": null,
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_lute_b949c3",
-        "item_base": {
-          "item_id": "lute",
-          "name": "Lute",
-          "item_type": "instrument",
-          "description": "",
-          "weight": 2.0,
-          "value_gp": 35.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [],
-          "weapon_properties": null,
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": {
-            "instrument_type": "lute",
-            "associated_skills": [
-              "performance"
-            ]
-          },
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_b_a_longsword_be0895",
-        "item_base": {
-          "item_id": "b_a_longsword",
-          "name": "Longsword",
-          "item_type": "weapon",
-          "description": "",
-          "weight": 3.0,
-          "value_gp": 15.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [],
-          "weapon_properties": {
-            "category": "martial",
-            "weapon_type": "melee",
-            "damage_dice": "1d8",
-            "damage_type": "slashing",
-            "versatile_damage": "1d10",
-            "attack_bonus": 0,
-            "damage_bonus": 0,
-            "range_normal": null,
-            "range_max": null,
-            "properties": [
-              "versatile"
-            ],
-            "silvered": false,
-            "adamantine": false
-          },
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": null,
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_rapier_b3d0e1",
-        "item_base": {
-          "item_id": "rapier",
-          "name": "Rapier",
+          "item_id": "two_shortswords",
+          "name": "Shortsword",
           "item_type": "weapon",
           "description": "",
           "weight": 2.0,
-          "value_gp": 25.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [
-            "finesse"
-          ],
-          "weapon_properties": {
-            "category": "martial",
-            "weapon_type": "melee",
-            "damage_dice": "1d8",
-            "damage_type": "piercing",
-            "versatile_damage": null,
-            "attack_bonus": 0,
-            "damage_bonus": 0,
-            "range_normal": null,
-            "range_max": null,
-            "properties": [
-              "finesse"
-            ],
-            "silvered": false,
-            "adamantine": false
-          },
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": null,
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_traveler_s_clothes_e5077e",
-        "item_base": {
-          "item_id": "traveler_s_clothes",
-          "name": "Traveler's Clothes",
-          "item_type": "adventuring_gear",
-          "description": "",
-          "weight": 4.0,
-          "value_gp": 2.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [],
-          "weapon_properties": null,
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": null,
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_diplomat_s_pack_8f88e2",
-        "item_base": {
-          "item_id": "diplomat_s_pack",
-          "name": "Diplomat's Pack",
-          "item_type": "container",
-          "description": "",
-          "weight": 8.0,
-          "value_gp": 39.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [],
-          "weapon_properties": null,
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": null,
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_or_c_any_simple_weapon_adc118",
-        "item_base": {
-          "item_id": "or_c_any_simple_weapon",
-          "name": "Simple Weapon",
-          "item_type": "weapon",
-          "description": "",
-          "weight": 2.0,
-          "value_gp": 1.0,
-          "rarity": "mundane",
-          "magical": false,
-          "requires_attunement": false,
-          "attunement_requirements": null,
-          "tags": [],
-          "weapon_properties": {
-            "category": "simple",
-            "weapon_type": "melee",
-            "damage_dice": "1d6",
-            "damage_type": "bludgeoning",
-            "versatile_damage": null,
-            "attack_bonus": 0,
-            "damage_bonus": 0,
-            "range_normal": null,
-            "range_max": null,
-            "properties": [],
-            "silvered": false,
-            "adamantine": false
-          },
-          "armor_properties": null,
-          "ammunition_properties": null,
-          "consumable_properties": null,
-          "scroll_properties": null,
-          "tool_properties": null,
-          "instrument_properties": null,
-          "container_properties": null,
-          "magic_properties": null
-        },
-        "quantity": 1,
-        "attuned": false,
-        "charges": null,
-        "custom_name": null,
-        "condition": "normal"
-      },
-      {
-        "instance_id": "inst_set_of_artisan_s_tools_00b2e7",
-        "item_base": {
-          "item_id": "set_of_artisan_s_tools",
-          "name": "Artisan's Tools",
-          "item_type": "tool",
-          "description": "",
-          "weight": 5.0,
           "value_gp": 10.0,
           "rarity": "mundane",
           "magical": false,
           "requires_attunement": false,
           "attunement_requirements": null,
           "tags": [],
+          "weapon_properties": {
+            "category": "martial",
+            "weapon_type": "melee",
+            "damage_dice": "1d6",
+            "damage_type": "piercing",
+            "versatile_damage": null,
+            "attack_bonus": 0,
+            "damage_bonus": 0,
+            "range_normal": null,
+            "range_max": null,
+            "properties": [
+              "finesse",
+              "light"
+            ],
+            "silvered": false,
+            "adamantine": false
+          },
+          "armor_properties": null,
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_dungeoneer_s_pack_3832cf",
+        "item_base": {
+          "item_id": "dungeoneer_s_pack",
+          "name": "Dungeoneer's Pack",
+          "item_type": "container",
+          "description": "",
+          "weight": 12.0,
+          "value_gp": 12.0,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
           "weapon_properties": null,
           "armor_properties": null,
           "ammunition_properties": null,
           "consumable_properties": null,
           "scroll_properties": null,
-          "tool_properties": {
-            "tool_category": "artisan",
-            "associated_skills": []
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_longbow_bc60b0",
+        "item_base": {
+          "item_id": "longbow",
+          "name": "Longbow",
+          "item_type": "weapon",
+          "description": "",
+          "weight": 2.0,
+          "value_gp": 50.0,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [
+            "ammunition",
+            "heavy",
+            "two-handed"
+          ],
+          "weapon_properties": {
+            "category": "martial",
+            "weapon_type": "ranged",
+            "damage_dice": "1d8",
+            "damage_type": "piercing",
+            "versatile_damage": null,
+            "attack_bonus": 0,
+            "damage_bonus": 0,
+            "range_normal": 150,
+            "range_max": 600,
+            "properties": [
+              "ammunition",
+              "heavy",
+              "two-handed"
+            ],
+            "silvered": false,
+            "adamantine": false
           },
+          "armor_properties": null,
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_shovel_fcef07",
+        "item_base": {
+          "item_id": "shovel",
+          "name": "Shovel",
+          "item_type": "adventuring_gear",
+          "description": "",
+          "weight": 5.0,
+          "value_gp": 2.0,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
+          "weapon_properties": null,
+          "armor_properties": null,
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_quiver_of_20_arrows_463912",
+        "item_base": {
+          "item_id": "quiver_of_20_arrows",
+          "name": "Quiver of 20 Arrows",
+          "item_type": "ammunition",
+          "description": "",
+          "weight": 1.0,
+          "value_gp": 1.0,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
+          "weapon_properties": null,
+          "armor_properties": null,
+          "ammunition_properties": {
+            "compatible_weapon_types": [
+              "shortbow",
+              "longbow"
+            ],
+            "attack_bonus": 0,
+            "damage_bonus": 0,
+            "silvered": false,
+            "quantity_per_purchase": 20
+          },
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_scale_mail_d49bc3",
+        "item_base": {
+          "item_id": "scale_mail",
+          "name": "Scale mail",
+          "item_type": "armor",
+          "description": "",
+          "weight": 0.0,
+          "value_gp": 50.0,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
+          "weapon_properties": null,
+          "armor_properties": {
+            "armor_type": "medium",
+            "base_ac": 14,
+            "ac_bonus": 0,
+            "max_dex_bonus": 2,
+            "strength_requirement": 0,
+            "stealth_disadvantage": true,
+            "don_time_minutes": 5,
+            "doff_time_minutes": 5
+          },
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_supply_249540",
+        "item_base": {
+          "item_id": "supply",
+          "name": "Supplies",
+          "item_type": "adventuring_gear",
+          "description": "",
+          "weight": 1.0,
+          "value_gp": 0.1,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
+          "weapon_properties": null,
+          "armor_properties": null,
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_common_clothes_8536a2",
+        "item_base": {
+          "item_id": "common_clothes",
+          "name": "Common Clothes",
+          "item_type": "adventuring_gear",
+          "description": "",
+          "weight": 3.0,
+          "value_gp": 0.5,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
+          "weapon_properties": null,
+          "armor_properties": null,
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
+          "instrument_properties": null,
+          "container_properties": null,
+          "magic_properties": null
+        },
+        "quantity": 1,
+        "attuned": false,
+        "charges": null,
+        "custom_name": null,
+        "condition": "normal"
+      },
+      {
+        "instance_id": "inst_mule_with_saddlebags_dba4f3",
+        "item_base": {
+          "item_id": "mule_with_saddlebags",
+          "name": "Mule with Saddlebags",
+          "item_type": "adventuring_gear",
+          "description": "",
+          "weight": 0.0,
+          "value_gp": 12.0,
+          "rarity": "mundane",
+          "magical": false,
+          "requires_attunement": false,
+          "attunement_requirements": null,
+          "tags": [],
+          "weapon_properties": null,
+          "armor_properties": null,
+          "ammunition_properties": null,
+          "consumable_properties": null,
+          "scroll_properties": null,
+          "tool_properties": null,
           "instrument_properties": null,
           "container_properties": null,
           "magic_properties": null
@@ -497,46 +525,15 @@
       "gp": 0,
       "pp": 0
     },
-    "carrying_capacity": 240,
+    "carrying_capacity": 210,
     "resistances": [],
     "immunities": [],
     "vulnerabilities": [],
-    "spellcasting_ability": "charisma",
-    "spell_save_dc": 9,
-    "spell_attack_bonus": 1,
-    "spell_slots": {
-      "1": {
-        "total": 2,
-        "remaining": 2
-      }
-    },
-    "spells": [
-      {
-        "spell_id": "dancing_lights",
-        "prepared": false,
-        "always_prepared": false
-      },
-      {
-        "spell_id": "light",
-        "prepared": false,
-        "always_prepared": false
-      },
-      {
-        "spell_id": "animal_friendship",
-        "prepared": false,
-        "always_prepared": false
-      },
-      {
-        "spell_id": "arcane_sword",
-        "prepared": false,
-        "always_prepared": false
-      },
-      {
-        "spell_id": "awaken",
-        "prepared": false,
-        "always_prepared": false
-      }
-    ]
+    "spellcasting_ability": "wisdom",
+    "spell_save_dc": 10,
+    "spell_attack_bonus": 2,
+    "spell_slots": {},
+    "spells": []
   },
   "economy": {
     "action_spent": false,

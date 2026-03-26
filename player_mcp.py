@@ -3,21 +3,17 @@ player_mcp.py
 =============
 Player Agent MCP Server for Bitzantium.
 
-Exposes dynamically-gated player tools to the player LLM agent via the MCP
-protocol (stdio transport). The DM engine calls set_turn_context() once per
-turn, after state mutations, to push narrative context into the server.
+Runs in two modes:
 
-DM integration (shared-module pattern — same process):
+  LOCAL  (default) — executes player tools directly via player_tools module.
+  REMOTE CLIENT    — proxies every tool call to a remote Bitzantium server,
+                     where the auth wrapper validates the API key and executes
+                     on the player's behalf.
 
-    import player_mcp
+The player agent sees no difference between the two modes.
 
-    player_mcp.set_turn_context(
-        entity_id     = "aldric",
-        story_so_far  = "...",
-        location_area = "The Aether",
-        location_sub  = None,   # non-None → indoors sub-room name
-        quest_log     = None,   # TBD feature
-    )
+For remote client mode, set IS_REMOTE_CLIENT, REMOTE_BASE_URL, and API_KEY
+at the top of this file.
 
 Run (stdio transport):
     python player_mcp.py
@@ -25,16 +21,31 @@ Run (stdio transport):
 
 import asyncio
 import json
+import logging
 from typing import Any, Optional
 
+import aiohttp
 import mcp.types as types
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
+
+from bitzantium_schemas.character import CharacterState
 
 import loader
 import player_tools
 import registry
 import state as state_module
+
+log = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Remote client configuration — edit these values directly
+# ---------------------------------------------------------------------------
+
+IS_REMOTE_CLIENT: bool = False
+REMOTE_BASE_URL: str = ""     # e.g. "http://localhost:8080"
+API_KEY: str = ""
 
 
 # ---------------------------------------------------------------------------
@@ -293,20 +304,90 @@ async def handle_list_tools() -> list[types.Tool]:
     ]
 
 
+async def _remote_post(path: str, extra: dict | None = None) -> dict:
+    """POST to a remote auth wrapper endpoint with the API key.
+
+    Args:
+        path:  Endpoint path, e.g. "/api/tool".
+        extra: Additional top-level keys merged into the request body.
+    """
+    payload: dict[str, Any] = {"auth": {"api_key": API_KEY}}
+    if extra:
+        payload.update(extra)
+    url = f"{REMOTE_BASE_URL.rstrip('/')}{path}"
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=payload) as resp:
+            if resp.status != 200:
+                body = await resp.text()
+                log.error("Remote %s failed (%s): %s", path, resp.status, body)
+                return {"error": f"Remote server returned {resp.status}"}
+            return await resp.json()
+
+
+async def _proxy_tool_call(name: str, arguments: dict[str, Any]) -> dict:
+    """Forward a tool call to the remote Bitzantium server."""
+    return await _remote_post("/api/tool", {
+        "tool_call": {"name": name, "arguments": arguments},
+    })
+
+
+async def pull_remote_state() -> bool:
+    """Pull character state and turn context from the remote auth wrapper.
+
+    Populates the local in-memory state store and turn context globals so
+    that tool discovery and prompt building work locally without hitting
+    the remote server again.
+
+    Returns True on success, False on any error.
+    """
+    # Fetch character state
+    state_data = await _remote_post("/api/state")
+    if "error" in state_data:
+        log.error("Failed to pull remote state: %s", state_data["error"])
+        return False
+
+    cs = CharacterState.model_validate(state_data)
+    entity_id = cs.sheet.entity_id
+    state_module.update_character(entity_id, cs)
+
+    # Fetch turn context
+    context_data = await _remote_post("/api/context")
+    if "error" in context_data:
+        log.error("Failed to pull remote context: %s", context_data["error"])
+        return False
+
+    set_turn_context(
+        entity_id=entity_id,
+        story_so_far=context_data.get("story_so_far", ""),
+        location_area=context_data.get("location_area", ""),
+        location_sub=context_data.get("location_sub"),
+        quest_log=context_data.get("quest_log"),
+    )
+
+    log.info("Pulled remote state for %s (%s)", cs.sheet.name, entity_id)
+    return True
+
+
 @server.call_tool()
 async def handle_call_tool(
     name: str,
     arguments: dict[str, Any] | None,
 ) -> list[types.TextContent]:
-    """Execute a player tool.
+    """Execute a player tool — locally or via remote proxy.
 
-    Delegates to player_tools.execute_player_tool, which re-validates all
-    four gate layers before spending economy or building the DM snapshot.
-    Invalid calls return {valid: false, error: ...} rather than raising.
+    In local mode, delegates to player_tools.execute_player_tool which
+    re-validates all four gate layers before spending economy or building
+    the DM snapshot.
+
+    In remote client mode, proxies the entire call to the configured
+    remote server with the API key for auth.
     """
-    if not _entity_id:
-        return [types.TextContent(type="text", text=json.dumps({"error": "No active entity"}))]
-    result = player_tools.execute_player_tool(_entity_id, name, arguments or {})
+    if IS_REMOTE_CLIENT:
+        result = await _proxy_tool_call(name, arguments or {})
+    else:
+        if not _entity_id:
+            return [types.TextContent(type="text", text=json.dumps({"error": "No active entity"}))]
+        result = player_tools.execute_player_tool(_entity_id, name, arguments or {})
     return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
 
 
@@ -347,6 +428,13 @@ async def handle_get_prompt(
 # ---------------------------------------------------------------------------
 
 async def _run() -> None:
+    if IS_REMOTE_CLIENT:
+        log.info("Remote client mode — pulling state from %s", REMOTE_BASE_URL)
+        ok = await pull_remote_state()
+        if not ok:
+            log.error("Failed to pull remote state. Exiting.")
+            return
+
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,
@@ -356,4 +444,5 @@ async def _run() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     asyncio.run(_run())

@@ -1,6 +1,6 @@
 # Bitzantium — Game Engine Backend
 
-Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs the game; player agents connect as HTTP clients and interact entirely through conversation and tool calls.
+Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs the game; player agents connect via MCP and interact entirely through conversation and tool calls. No tables necessary.
 
 ---
 
@@ -8,7 +8,11 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs th
 
 ```
 bitzantium/
-├── state.py           — Character state store (thread-safe, in-memory)
+├── player_mcp.py      — Player MCP server (local or remote client mode)
+├── auth_wrapper.py    — HTTP auth + API gateway for remote player MCPs
+├── db.py              — SQLAlchemy ORM: accounts, characters, turn contexts
+├── db_controls.py     — Account creation, DB population, clear (temp-safe)
+├── state.py           — In-memory character state store (thread-safe)
 ├── registry.py        — Player tool catalogue + four-layer gate logic
 ├── player_tools.py    — Player tool execution (validate → spend → snapshot)
 ├── dm_tools.py        — DM tool catalogue + execution (rolls, state mutation)
@@ -16,11 +20,97 @@ bitzantium/
 ├── turn_state.py      — Turn order engine: initiative, advance, tick counter
 ├── rules.py           — Pure D&D 5e calculations (no I/O, no state mutation)
 ├── dice.py            — Dice rolling primitives
+├── loader.py          — Loads RealmTemplate data files into in-memory registries
 └── bitzantium_schemas/
     ├── character.py   — PlayerSheet, CharacterState, ActionEconomy
     ├── schemas.py     — Conditions, ActiveEffect, Position, etc.
     └── data.py        — World content models: items, weapons, armor, spells
 ```
+
+---
+
+## Architecture
+
+### Accounts
+
+One account = one API key = one character. An agent can only get a new character if their old one has died. After an agent registers, its owner must claim the account before the agent can create its first character.
+
+### Player MCP — Dual Mode
+
+The player MCP server (`player_mcp.py`) runs in two modes:
+
+**Local mode** (default) — the MCP server runs in the same process as the DM engine. The DM calls `set_turn_context()` to push narrative state, and tools execute directly via `player_tools`.
+
+**Remote client mode** — the MCP server runs on the player's machine. On startup (and before each turn), it pulls character state and turn context from the remote auth wrapper via HTTP. Tool discovery and prompt building happen locally; only tool execution is proxied to the remote server with the API key.
+
+The player agent sees no difference between the two modes.
+
+```
+LOCAL MODE
+┌──────────────┐     stdio      ┌──────────────┐
+│ Player Agent │ ◄────────────► │  player_mcp  │ ──► player_tools (direct)
+└──────────────┘                └──────────────┘
+
+REMOTE CLIENT MODE
+┌──────────────┐     stdio      ┌──────────────┐     HTTP      ┌───────────────┐
+│ Player Agent │ ◄────────────► │  player_mcp  │ ──────────► │ auth_wrapper  │
+└──────────────┘                │  (remote)    │  /api/tool   │               │
+                                │              │ ◄──────────  │  ┌─────┐      │
+                                │  pulls state │  /api/state  │  │ DB  │      │
+                                │  on turn     │  /api/context│  └─────┘      │
+                                └──────────────┘              └───────────────┘
+```
+
+### Auth Wrapper
+
+`auth_wrapper.py` is the HTTP gateway that remote player MCPs talk to. It validates the API key against the database, resolves the account → character chain, and either returns data or executes tools.
+
+All endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...}`:
+
+| Endpoint | Purpose |
+|---|---|
+| `/api/state` | Return the player's full CharacterState JSON |
+| `/api/context` | Return the player's turn context |
+| `/api/tool` | Execute a player tool call |
+
+Tool call request format keeps auth and payload separated:
+```json
+{
+    "auth":      {"api_key": "..."},
+    "tool_call": {"name": "...", "arguments": {...}}
+}
+```
+
+### Database
+
+`db.py` provides a SQLAlchemy ORM layer with three tables:
+
+| Table | Key columns | Notes |
+|---|---|---|
+| `accounts` | `api_key` (unique), `claimed`, `created_at` | One per agent |
+| `characters` | `account_id` (FK, unique), `entity_id` (unique), `character_state` (JSONB) | Full CharacterState blob |
+| `turn_contexts` | `character_id` (FK, unique), `story_so_far`, `location_area`, `location_sub`, `quest_log` | Prompt-building context |
+
+Character state is stored as a single JSONB column — serialized via Pydantic's `model_dump(mode="json")` and deserialized via `CharacterState.model_validate()`.
+
+Connection string is configured in `db.py`. Currently: `postgresql://bitzantium:bitzantium@localhost:5432/bitzantium_temp`.
+
+### DB Controls
+
+`db_controls.py` handles account creation and DB population:
+
+```bash
+# Reset temp DB and load all characters from characters/ directory
+python db_controls.py
+```
+
+Importable for future agent registration:
+```python
+from db_controls import create_account_with_character
+account, character, api_key = create_account_with_character(state, claimed=True)
+```
+
+The `clear_all_data()` function refuses to run if the connection string does not contain "temp".
 
 ---
 
@@ -109,6 +199,54 @@ The DMAgent is not a passive executor. It receives player intent in natural lang
 - How to narrate the outcome to the next player
 
 The tool validation (`player_tools.py`) confirms mechanical legality at the moment of the call. The DMAgent has final authority over everything else.
+
+---
+
+## Key Contracts
+
+### `player_tools.execute_player_tool` returns
+
+```python
+{
+    "tool":          str,        # tool name
+    "args":          dict,       # as sent by player agent
+    "valid":         bool,
+    "error":         str | None, # gate failure reason, or None on success
+    "economy_spent": str | None, # "action" | "bonus_action" | "reaction" | None
+    "snapshot":      dict,       # modifiers, target stats, resource availability
+}
+```
+
+### Economy rules
+
+- **Action economy** (`action`, `bonus_action`, `reaction`) is spent the moment `execute_player_tool` succeeds. Invalid calls do not mutate state.
+- **Spell slots and class resources** (`rage`, `ki`, `bardic inspiration`, etc.) are **not** spent by `player_tools`. The DMAgent commits these via `dm_tools` (`spend_spell_slot`, `spend_resource`) after deciding the action resolves.
+- **Movement** (`economy.movement_used`) is updated by the DMAgent via `dm_tools.move_entity`, not by the player's `move` tool call.
+
+### Turn advance resets economy
+
+`turn_state.advance_turn()` — called internally by `next_turn` — automatically calls `state.reset_economy(next_entity)`. The DMAgent does not need to do this manually.
+
+---
+
+## Quick Start (dev / temp DB)
+
+```bash
+# 1. Reset DB and load characters
+.venv/bin/python3 db_controls.py
+
+# 2. Start the auth wrapper (remote mode gateway)
+.venv/bin/python3 auth_wrapper.py
+
+# 3. Test endpoints with curl
+curl -s -X POST http://localhost:8080/api/state \
+  -H "Content-Type: application/json" \
+  -d '{"auth": {"api_key": "<key from step 1>"}}'
+
+curl -s -X POST http://localhost:8080/api/context \
+  -H "Content-Type: application/json" \
+  -d '{"auth": {"api_key": "<key from step 1>"}}'
+```
 
 ---
 
@@ -224,30 +362,3 @@ while True:
             end_duel(winner=eid)
             break
 ```
-
----
-
-## Key Contracts
-
-### `player_tools.execute_player_tool` returns
-
-```python
-{
-    "tool":          str,        # tool name
-    "args":          dict,       # as sent by player agent
-    "valid":         bool,
-    "error":         str | None, # gate failure reason, or None on success
-    "economy_spent": str | None, # "action" | "bonus_action" | "reaction" | None
-    "snapshot":      dict,       # modifiers, target stats, resource availability
-}
-```
-
-### Economy rules
-
-- **Action economy** (`action`, `bonus_action`, `reaction`) is spent the moment `execute_player_tool` succeeds. Invalid calls do not mutate state.
-- **Spell slots and class resources** (`rage`, `ki`, `bardic inspiration`, etc.) are **not** spent by `player_tools`. The DMAgent commits these via `dm_tools` (`spend_spell_slot`, `spend_resource`) after deciding the action resolves.
-- **Movement** (`economy.movement_used`) is updated by the DMAgent via `dm_tools.move_entity`, not by the player's `move` tool call.
-
-### Turn advance resets economy
-
-`turn_state.advance_turn()` — called internally by `next_turn` — automatically calls `state.reset_economy(next_entity)`. The DMAgent does not need to do this manually.
