@@ -19,6 +19,7 @@ Run:
     python game_server.py
 """
 
+import contextvars
 import json
 import logging
 import os
@@ -41,9 +42,11 @@ import loader
 import player_mcp
 import player_tools
 import registry
-import state as state_module
 import turn_state as turns
 from pathlib import Path
+
+# contextvars — threaded through from JWT middleware to MCP handlers
+_current_entity_id: contextvars.ContextVar[str] = contextvars.ContextVar("_current_entity_id")
 
 log = logging.getLogger(__name__)
 
@@ -95,43 +98,21 @@ def _validate_bearer(headers: dict) -> tuple[Optional[dict], Optional[str]]:
 # Each player gets their own MCP Server instance. The game server creates
 # one on /join and routes MCP requests to it based on JWT identity.
 #
-# We use a single shared MCP Server for now since the player_mcp module
-# already scopes state via set_turn_context + state_module keyed by
-# entity_id. Per-player Server instances can come later for full isolation.
+# We use a single shared MCP Server. Entity scoping is handled via
+# contextvars set by JWT middleware — all state reads go to DB directly.
+# Per-player Server instances can come later for full isolation.
 # ---------------------------------------------------------------------------
 
 _mcp_server = Server("bitzantium-player")
 
 
-def _load_player_state(entity_id: str) -> bool:
-    """Load character + turn context from DB into in-memory stores.
-    Returns False if character not found."""
-    character = db.get_character_state_by_entity(entity_id)
-    if not character:
-        return False
-    state_module.update_character(entity_id, character)
-
-    context = db.get_turn_context_by_entity(entity_id)
-    if context:
-        player_mcp.set_turn_context(
-            entity_id=entity_id,
-            story_so_far=context.get("story_so_far", ""),
-            location_area=context.get("location_area", ""),
-            location_sub=context.get("location_sub"),
-            quest_log=context.get("quest_log"),
-        )
-    else:
-        player_mcp.set_turn_context(entity_id=entity_id, story_so_far="", location_area="")
-    return True
-
-
 @_mcp_server.list_tools()
 async def handle_list_tools() -> list[types.Tool]:
-    """Gated tool list for the active entity."""
-    entity_id = player_mcp._entity_id
+    """Gated tool list for the active entity (from JWT via contextvars)."""
+    entity_id = _current_entity_id.get(None)
     if not entity_id:
         return []
-    cs = state_module.get_character(entity_id)
+    cs = db.get_character_state_by_entity(entity_id)
     if not cs:
         return []
     return [
@@ -150,7 +131,7 @@ async def handle_call_tool(
     arguments: dict[str, Any] | None,
 ) -> list[types.TextContent]:
     """Execute a player tool, intercepting session lifecycle tools."""
-    entity_id = player_mcp._entity_id
+    entity_id = _current_entity_id.get(None)
     if not entity_id:
         return [types.TextContent(type="text", text=json.dumps({"error": "No active entity"}))]
 
@@ -165,14 +146,8 @@ async def handle_call_tool(
         result = _do_signoff(session, arguments or {})
         return [types.TextContent(type="text", text=json.dumps(result))]
 
-    # --- Regular tool execution ---
+    # --- Regular tool execution (reads/writes DB directly) ---
     result = player_tools.execute_player_tool(entity_id, name, arguments or {})
-
-    # Persist updated state
-    updated_state = state_module.get_character(entity_id)
-    if updated_state:
-        db.save_character_state(entity_id, updated_state)
-
     return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
 
 
@@ -191,14 +166,18 @@ async def handle_get_prompt(
     name: str,
     arguments: dict[str, str] | None,
 ) -> types.GetPromptResult:
-    """Return the current turn system prompt."""
-    prompt = player_mcp.build_player_prompt()
+    """Return the current turn system prompt (pulls from DB via entity_id)."""
+    entity_id = _current_entity_id.get(None)
+    if not entity_id:
+        text = "No active entity."
+    else:
+        text = player_mcp.build_player_prompt(entity_id)
     return types.GetPromptResult(
         description="Player agent system prompt for the current turn",
         messages=[
             types.PromptMessage(
                 role="user",
-                content=types.TextContent(type="text", text=prompt),
+                content=types.TextContent(type="text", text=text),
             )
         ],
     )
@@ -209,15 +188,11 @@ async def handle_get_prompt(
 # ---------------------------------------------------------------------------
 
 def _do_end_turn(session: PlayerSession) -> dict:
-    """End the current player's turn."""
+    """End the current player's turn. Resets economy in DB."""
     session.turns_taken += 1
     at_limit = session.max_turns is not None and session.turns_taken >= session.max_turns
 
-    state_module.reset_economy(session.entity_id)
-
-    updated = state_module.get_character(session.entity_id)
-    if updated:
-        db.save_character_state(session.entity_id, updated)
+    db.reset_economy(session.entity_id)
 
     return {
         "status": "turn_ended",
@@ -234,13 +209,8 @@ def _do_signoff(session: PlayerSession, args: dict) -> dict:
 
     db.save_departure_action(session.entity_id, departure_action)
 
-    final_state = state_module.get_character(session.entity_id)
-    if final_state:
-        db.save_character_state(session.entity_id, final_state)
-
     session.active = False
     turns.remove_from_order(session.entity_id)
-    state_module.remove_character(session.entity_id)
 
     log.info("Player signed off: %s — %s", session.entity_id, departure_action)
 
@@ -321,8 +291,8 @@ class JWTMCPMiddleware:
             await response(scope, receive, send)
             return
 
-        # Load latest player state so MCP handlers see current data
-        _load_player_state(entity_id)
+        # Set entity_id in contextvars so MCP handlers can read it
+        _current_entity_id.set(entity_id)
 
         # Pass through to MCP
         await self.mcp_app(scope, receive, send)
@@ -358,8 +328,6 @@ async def handle_join(request: Request):
     character = db.get_character_state_by_entity(entity_id)
     if not character:
         return JSONResponse({"error": "Character not found in database"}, status_code=404)
-
-    state_module.update_character(entity_id, character)
 
     session = PlayerSession(entity_id, account_id, claims)
     _active_sessions[entity_id] = session

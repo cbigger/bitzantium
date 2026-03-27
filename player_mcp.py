@@ -20,50 +20,12 @@ import mcp.types as types
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 
+import db
 import loader
 import player_tools
 import registry
-import state as state_module
 
 log = logging.getLogger(__name__)
-
-
-# ---------------------------------------------------------------------------
-# Turn context — set by the DM engine once per turn
-# ---------------------------------------------------------------------------
-
-_entity_id: Optional[str] = None
-_story_so_far: str = ""
-_location_area: str = ""
-_location_sub: Optional[str] = None
-_quest_log: Optional[str] = None
-
-
-def set_turn_context(
-    entity_id: str,
-    story_so_far: str,
-    location_area: str,
-    location_sub: Optional[str] = None,
-    quest_log: Optional[str] = None,
-) -> None:
-    """Push narrative context for the current turn.
-
-    Must be called AFTER state.update_character() so that tool gating and the
-    stats block reflect the latest CharacterState.
-
-    Args:
-        entity_id:     The character whose turn it is.
-        story_so_far:  Concatenated level-up narrative summaries.
-        location_area: Name of the current room / area.
-        location_sub:  Sub-room description (indoors only); None when outdoors.
-        quest_log:     Active quest text (TBD feature); None if no quest.
-    """
-    global _entity_id, _story_so_far, _location_area, _location_sub, _quest_log
-    _entity_id = entity_id
-    _story_so_far = story_so_far
-    _location_area = location_area
-    _location_sub = location_sub
-    _quest_log = quest_log
 
 
 # ---------------------------------------------------------------------------
@@ -101,10 +63,10 @@ def _identity_line(cs) -> str:
     return f"You are {sheet.name}, a {race_str}{creature_str} {' / '.join(class_parts)}."
 
 
-def _location_line() -> str:
-    if _location_sub:
-        return f"You find yourself in {_location_sub} in {_location_area}."
-    return f"You find yourself in {_location_area}."
+def _location_line(location_area: str, location_sub: Optional[str] = None) -> str:
+    if location_sub:
+        return f"You find yourself in {location_sub} in {location_area}."
+    return f"You find yourself in {location_area}."
 
 
 def _tools_block(cs) -> str:
@@ -211,8 +173,10 @@ def _stats_block(cs) -> str:
     return "\n".join(lines)
 
 
-def build_player_prompt() -> str:
+def build_player_prompt(entity_id: str) -> str:
     """Assemble the full system prompt for the current turn.
+
+    Pulls all data from the database — no in-memory state required.
 
     Section order matches the player agent prompt schema:
 
@@ -234,20 +198,24 @@ def build_player_prompt() -> str:
         Abilities: …
         Equipped: …
     """
-    if not _entity_id:
-        return "No active entity."
-    cs = state_module.get_character(_entity_id)
+    cs = db.get_character_state_by_entity(entity_id)
     if not cs:
         return "No character state found."
+
+    context = db.get_turn_context_by_entity(entity_id) or {}
+    story_so_far = context.get("story_so_far", "")
+    location_area = context.get("location_area", "")
+    location_sub = context.get("location_sub")
+    quest_log = context.get("quest_log")
 
     parts: list[str] = [_identity_line(cs)]
     if cs.sheet.description:
         parts.append(cs.sheet.description)
-    if _story_so_far:
-        parts.append(_story_so_far)
-    parts.append(_location_line())
-    if _quest_log:
-        parts.append(f"QUEST LOG\n{_quest_log}")
+    if story_so_far:
+        parts.append(story_so_far)
+    parts.append(_location_line(location_area, location_sub))
+    if quest_log:
+        parts.append(f"QUEST LOG\n{quest_log}")
     parts.append(_tools_block(cs))
     parts.append(_stats_block(cs))
 
@@ -263,26 +231,20 @@ server = Server("bitzantium-player")
 
 @server.list_tools()
 async def handle_list_tools() -> list[types.Tool]:
-    """Return the gated tool list for the active entity.
+    """Return the full tool catalogue.
 
-    Tools are rebuilt on every request from registry.get_available_tools so
-    that class, condition, economy, and resource gates always reflect the
-    current CharacterState.
+    In standalone stdio mode we return the full registry since there's no
+    JWT / entity context. The game server's MCP handlers provide the
+    properly gated per-entity list.
     """
-    if not _entity_id:
-        return []
-    cs = state_module.get_character(_entity_id)
-    if not cs:
-        return []
     return [
         types.Tool(
             name=t["name"],
             description=t["description"],
             inputSchema=t["inputSchema"],
         )
-        for t in registry.get_available_tools(cs)
+        for t in registry._TOOLS
     ]
-
 
 
 @server.call_tool()
@@ -290,14 +252,16 @@ async def handle_call_tool(
     name: str,
     arguments: dict[str, Any] | None,
 ) -> list[types.TextContent]:
-    """Execute a player tool.
+    """Execute a player tool (standalone stdio mode).
 
-    Delegates to player_tools.execute_player_tool which re-validates all
-    four gate layers before spending economy or building the DM snapshot.
+    Requires entity_id in the arguments dict so the tool knows which
+    character to act on.
     """
-    if not _entity_id:
-        return [types.TextContent(type="text", text=json.dumps({"error": "No active entity"}))]
-    result = player_tools.execute_player_tool(_entity_id, name, arguments or {})
+    args = arguments or {}
+    entity_id = args.pop("entity_id", None)
+    if not entity_id:
+        return [types.TextContent(type="text", text=json.dumps({"error": "entity_id required in arguments"}))]
+    result = player_tools.execute_player_tool(entity_id, name, args)
     return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
 
 
@@ -307,6 +271,13 @@ async def handle_list_prompts() -> list[types.Prompt]:
         types.Prompt(
             name="player_context",
             description="Current turn system prompt for the player agent",
+            arguments=[
+                types.PromptArgument(
+                    name="entity_id",
+                    description="The character entity ID",
+                    required=True,
+                )
+            ],
         )
     ]
 
@@ -316,18 +287,18 @@ async def handle_get_prompt(
     name: str,
     arguments: dict[str, str] | None,
 ) -> types.GetPromptResult:
-    """Return the current turn system prompt.
-
-    The MCP client fetches this at the start of each turn and injects it as
-    the system message for the player LLM. Call set_turn_context() before
-    each turn so the content is fresh.
-    """
+    """Return the current turn system prompt for a given entity."""
+    entity_id = (arguments or {}).get("entity_id", "")
+    if not entity_id:
+        text = "entity_id argument required"
+    else:
+        text = build_player_prompt(entity_id)
     return types.GetPromptResult(
         description="Player agent system prompt for the current turn",
         messages=[
             types.PromptMessage(
                 role="user",
-                content=types.TextContent(type="text", text=build_player_prompt()),
+                content=types.TextContent(type="text", text=text),
             )
         ],
     )

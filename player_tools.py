@@ -22,10 +22,11 @@ Public API:
 
 import sys
 import os
+from typing import Optional
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "bitzantium_schemas", "src"))
 
-import state as char_state
+import db
 import scene_state as scene
 import rules
 from registry import _TOOLS
@@ -91,7 +92,7 @@ def _weapon_snap(sheet, weapon_slot: str) -> dict:
 
 def _target_snap(target_id: str, actor_id: str) -> dict:
     """Basic defensive stats for a target entity."""
-    cs   = char_state.get_character(target_id)
+    cs   = db.get_character_state_by_entity(target_id)
     dist = scene.distance_between(actor_id, target_id)
     base = {"id": target_id, "distance_ft": dist}
     if cs is None:
@@ -170,18 +171,9 @@ _ECONOMY_FIELD = {
 }
 
 
-def _spend_economy(entity_id: str, cost: str) -> None:
-    """Mark the action economy flag for the given cost type. No-op for 'free'."""
-    field = _ECONOMY_FIELD.get(cost)
-    if field is None:
-        return
-
-    cs = char_state.get_character(entity_id)
-    if cs is None:
-        return
-
-    new_economy = cs.economy.model_copy(update={field: True})
-    char_state.update_character(entity_id, cs.model_copy(update={"economy": new_economy}))
+def _spend_economy(entity_id: str, cost: str) -> Optional[CharacterState]:
+    """Mark the action economy flag in the DB. Returns updated state or None."""
+    return db.spend_economy(entity_id, cost)
 
 
 # ---------------------------------------------------------------------------
@@ -235,7 +227,7 @@ def _snap_shove_grapple(entity_id: str, args: dict, cs: CharacterState) -> dict:
     snap: dict = {"athletics_bonus": _skill_bonus(cs.sheet, "athletics")}
     if target_id:
         ts = _target_snap(target_id, entity_id)
-        target_cs = char_state.get_character(target_id)
+        target_cs = db.get_character_state_by_entity(target_id)
         if target_cs:
             ts["athletics_bonus"]  = _skill_bonus(target_cs.sheet, "athletics")
             ts["acrobatics_bonus"] = _skill_bonus(target_cs.sheet, "acrobatics")
@@ -362,10 +354,10 @@ def execute_player_tool(entity_id: str, tool_name: str, args: dict) -> dict:
         base["error"] = f"Unknown tool: '{tool_name}'."
         return base
 
-    # Load character state
-    cs = char_state.get_character(entity_id)
+    # Load character state from DB
+    cs = db.get_character_state_by_entity(entity_id)
     if cs is None:
-        base["error"] = f"Entity '{entity_id}' not found in state store."
+        base["error"] = f"Entity '{entity_id}' not found in database."
         return base
 
     # Validate against all gates
@@ -374,10 +366,9 @@ def execute_player_tool(entity_id: str, tool_name: str, args: dict) -> dict:
         base["error"] = error
         return base
 
-    # Commit economy spend, then re-read state so snapshot is accurate
+    # Commit economy spend to DB, get back updated state for snapshot
     cost = tool_entry["action_cost"]
-    _spend_economy(entity_id, cost)
-    cs = char_state.get_character(entity_id)
+    cs = _spend_economy(entity_id, cost) or cs
 
     snap_fn  = _SNAPSHOT_DISPATCH.get(tool_name)
     snapshot = snap_fn(entity_id, args, cs) if snap_fn else {}
