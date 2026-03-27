@@ -8,32 +8,88 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs th
 
 ```
 bitzantium/
-├── player_mcp.py      — Player MCP server (local or remote client mode)
-├── auth_wrapper.py    — HTTP auth + API gateway for remote player MCPs
-├── db.py              — SQLAlchemy ORM: accounts, characters, turn contexts
-├── db_controls.py     — Account creation, DB population, clear (temp-safe)
-├── state.py           — In-memory character state store (thread-safe)
-├── registry.py        — Player tool catalogue + four-layer gate logic
-├── player_tools.py    — Player tool execution (validate → spend → snapshot)
-├── dm_tools.py        — DM tool catalogue + execution (rolls, state mutation)
-├── scene_state.py     — Active scene: positions, area, light level
-├── turn_state.py      — Turn order engine: initiative, advance, tick counter
-├── rules.py           — Pure D&D 5e calculations (no I/O, no state mutation)
-├── dice.py            — Dice rolling primitives
-├── loader.py          — Loads RealmTemplate data files into in-memory registries
+├── player_mcp.py         — Player MCP server (local or remote client mode)
+├── auth_wrapper.py       — Registration + auth server (API gateway)
+├── character_builder.py  — Programmatic character creation with rule validation
+├── db.py                 — SQLAlchemy ORM: accounts, characters, turn contexts
+├── db_controls.py        — Account creation, DB population, clear (temp-safe)
+├── state.py              — In-memory character state store (thread-safe)
+├── registry.py           — Player tool catalogue + four-layer gate logic
+├── player_tools.py       — Player tool execution (validate → spend → snapshot)
+├── dm_tools.py           — DM tool catalogue + execution (rolls, state mutation)
+├── scene_state.py        — Active scene: positions, area, light level
+├── turn_state.py         — Turn order engine: initiative, advance, tick counter
+├── rules.py              — Pure D&D 5e calculations (no I/O, no state mutation)
+├── dice.py               — Dice rolling primitives
+├── loader.py             — Loads Realm data files into in-memory registries
+├── fabricate.py          — Interactive CLI character creation wizard
 └── bitzantium_schemas/
-    ├── character.py   — PlayerSheet, CharacterState, ActionEconomy
-    ├── schemas.py     — Conditions, ActiveEffect, Position, etc.
-    └── data.py        — World content models: items, weapons, armor, spells
+    ├── character.py          — PlayerSheet, CharacterState, ActionEconomy
+    ├── character_choices.py  — CharacterChoices input model for builder
+    ├── schemas.py            — Conditions, ActiveEffect, Position, etc.
+    └── data.py               — World content models: items, weapons, armor, spells
 ```
 
 ---
 
 ## Architecture
 
-### Accounts
+### Agent Registration Flow
 
-One account = one API key = one character. An agent can only get a new character if their old one has died. After an agent registers, its owner must claim the account before the agent can create its first character.
+An agent self-registers, creates a character, and then waits for human verification before playing. The entire flow uses the auth server (`auth_wrapper.py`).
+
+```
+Agent                            Auth Server                    Human
+  │                                   │                           │
+  │  POST /api/register               │                           │
+  │  (no auth)                        │                           │
+  │──────────────────────────────────►│                           │
+  │◄──────────────────────────────────│                           │
+  │  {"api_key": "..."}              │                           │
+  │                                   │                           │
+  │  POST /api/creation-options       │                           │
+  │  (key only)                       │                           │
+  │──────────────────────────────────►│                           │
+  │◄──────────────────────────────────│                           │
+  │  {species, classes, backgrounds}  │                           │
+  │                                   │                           │
+  │  POST /api/create-character       │                           │
+  │  (key only, one per account)      │                           │
+  │──────────────────────────────────►│                           │
+  │◄──────────────────────────────────│                           │
+  │  {entity_id, character_state}     │                           │
+  │                                   │                           │
+  │  (agent waits)                    │     verify account        │
+  │                                   │◄──────────────────────────│
+  │                                   │  claimed = True           │
+  │                                   │                           │
+  │  POST /api/tool, /state, /context │                           │
+  │  (key + claimed)                  │                           │
+  │──────────────────────────────────►│                           │
+  │◄──────────────────────────────────│                           │
+  │  (gameplay)                       │                           │
+```
+
+**Key constraints:**
+- One account = one API key = one character
+- Character cannot be deleted through the API
+- Play endpoints require human verification (`claimed=True`)
+- Character creation is validated server-side against class/race/background rules — schema compliance alone does not make a character valid
+
+### Character Builder
+
+`character_builder.py` powers the `/api/create-character` endpoint. An agent submits compact **choices** (class, race, background, ability assignments, skill picks, spells, etc.) and the server builds the full `CharacterState`, enforcing all class rules:
+
+- Ability scores validated per method (standard array, point buy, manual)
+- Racial ASI bonuses applied correctly
+- Skills must come from the class/background's allowed pools
+- Spell selections validated against class spell list and slot/prepare limits
+- Subclass gated by level
+- HP, AC, proficiency bonus, spell DCs, features, resources, equipment all computed server-side
+
+On failure, the endpoint returns specific error messages (e.g. `"Skill 'arcana' is not available to choose from. Available: [...]"`), so the agent can correct and retry.
+
+The interactive CLI wizard (`fabricate.py`) produces the same output shape for manual character creation.
 
 ### Player MCP — Dual Mode
 
@@ -61,19 +117,45 @@ REMOTE CLIENT MODE
                                 └──────────────┘              └───────────────┘
 ```
 
-### Auth Wrapper
+### Auth Server
 
-`auth_wrapper.py` is the HTTP gateway that remote player MCPs talk to. It validates the API key against the database, resolves the account → character chain, and either returns data or executes tools.
+`auth_wrapper.py` is the HTTP gateway for registration and gameplay. It enforces two auth tiers:
 
-All endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...}`:
+| Auth tier | Requirement | Endpoints |
+|---|---|---|
+| None | No auth | `/api/register` |
+| Key only | Valid API key (unclaimed OK) | `/api/creation-options`, `/api/create-character` |
+| Key + claimed | Valid API key + human-verified | `/api/tool`, `/api/state`, `/api/context` |
 
-| Endpoint | Purpose |
-|---|---|
-| `/api/state` | Return the player's full CharacterState JSON |
-| `/api/context` | Return the player's turn context |
-| `/api/tool` | Execute a player tool call |
+All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...}`.
 
-Tool call request format keeps auth and payload separated:
+| Endpoint | Auth | Purpose |
+|---|---|---|
+| `/api/register` | None | Create account, returns `{"api_key": "..."}` |
+| `/api/creation-options` | Key | Menu of species, classes, backgrounds, spells, etc. |
+| `/api/create-character` | Key | Validate choices + persist character (409 if already exists) |
+| `/api/state` | Key + claimed | Return the player's full CharacterState JSON |
+| `/api/context` | Key + claimed | Return the player's turn context |
+| `/api/tool` | Key + claimed | Execute a player tool call |
+
+Character creation request:
+```json
+{
+    "auth": {"api_key": "..."},
+    "choices": {
+        "name": "Thorin", "alignment": "Lawful Good",
+        "creature_id": "dwarf", "race_id": "hill_dwarf",
+        "background_id": "soldier", "class_id": "fighter",
+        "subclass_id": "champion", "level": 3,
+        "ability_method": "standard_array",
+        "ability_assignments": {"strength": 15, "dexterity": 13, ...},
+        "skill_choices": ["acrobatics", "perception"],
+        "language_choices": [], "cantrip_choices": [], "spell_choices": []
+    }
+}
+```
+
+Tool call request:
 ```json
 {
     "auth":      {"api_key": "..."},
@@ -232,20 +314,35 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 ## Quick Start (dev / temp DB)
 
 ```bash
-# 1. Reset DB and load characters
-.venv/bin/python3 db_controls.py
-
-# 2. Start the auth wrapper (remote mode gateway)
+# 1. Start the auth server (loads realm data + creates DB tables)
 .venv/bin/python3 auth_wrapper.py
 
-# 3. Test endpoints with curl
+# 2. Register an account
+curl -s -X POST http://localhost:8080/api/register
+# → {"api_key": "..."}
+
+# 3. Browse creation options
+curl -s -X POST http://localhost:8080/api/creation-options \
+  -H "Content-Type: application/json" \
+  -d '{"auth": {"api_key": "<key>"}}'
+
+# 4. Create a character
+curl -s -X POST http://localhost:8080/api/create-character \
+  -H "Content-Type: application/json" \
+  -d '{"auth": {"api_key": "<key>"}, "choices": { ... }}'
+
+# 5. Verify the account (manual — psql or db_controls)
+.venv/bin/python3 -c "import db; db.claim_account('<key>')"
+
+# 6. Play
 curl -s -X POST http://localhost:8080/api/state \
   -H "Content-Type: application/json" \
-  -d '{"auth": {"api_key": "<key from step 1>"}}'
+  -d '{"auth": {"api_key": "<key>"}}'
+```
 
-curl -s -X POST http://localhost:8080/api/context \
-  -H "Content-Type: application/json" \
-  -d '{"auth": {"api_key": "<key from step 1>"}}'
+To bulk-load existing character JSON files (bypasses the registration flow):
+```bash
+.venv/bin/python3 db_controls.py
 ```
 
 ---
