@@ -7,11 +7,12 @@ Tables:
     accounts        — API key + claim status.
     characters      — 1:1 with account. Full CharacterState as JSON.
     turn_contexts   — 1:1 with character. Prompt-building context per turn.
+    realm_objects   — Realm reference data (classes, races, items, etc.)
 
 All state is serialized/deserialized via Pydantic's model_dump / model_validate,
 so swapping the DB backend later only requires changing the connection string.
 
-Connection: postgresql://bitzantium:bitzantium@localhost:5432/bitzantium_temp
+Connection string is read from bitzantium.toml via config.py.
 """
 
 from datetime import datetime, timezone
@@ -25,6 +26,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
     create_engine,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -35,15 +37,14 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 
+import config
 from bitzantium_schemas.character import CharacterState, ActionEconomy
 
 # ---------------------------------------------------------------------------
 # Engine / session
 # ---------------------------------------------------------------------------
 
-DATABASE_URL = "postgresql://bitzantium:bitzantium@localhost:5432/bitzantium_temp"
-
-engine = create_engine(DATABASE_URL)
+engine = create_engine(config.database_url())
 SessionLocal = sessionmaker(bind=engine)
 
 
@@ -91,6 +92,19 @@ class TurnContext(Base):
     quest_log = Column(Text, nullable=True)
 
     character = relationship("Character", back_populates="turn_context")
+
+
+class RealmObject(Base):
+    __tablename__ = "realm_objects"
+    __table_args__ = (
+        UniqueConstraint("category", "data_id", name="uq_realm_category_data_id"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    category = Column(String, nullable=False, index=True)
+    data_id = Column(String, nullable=False, index=True)
+    data = Column(JSONB, nullable=False)
+    is_sapient = Column(Boolean, default=False, nullable=False)
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +177,7 @@ def get_character_state_by_entity(entity_id: str) -> Optional[CharacterState]:
 
 
 def save_character_state(entity_id: str, state: CharacterState) -> None:
-    """Full state replacement — mirrors state.update_character()."""
+    """Full CharacterState replacement in the DB."""
     with SessionLocal() as session:
         character = session.query(Character).filter(Character.entity_id == entity_id).first()
         if not character:
@@ -275,7 +289,7 @@ def get_turn_context(api_key: str) -> Optional[dict]:
     """Look up API key -> account -> character -> turn context as a dict.
 
     Returns dict with keys: story_so_far, location_area, location_sub, quest_log.
-    Matches the args of player_mcp.set_turn_context().
+    Matches the turn context fields used by player_mcp.build_player_prompt().
     """
     with SessionLocal() as session:
         account = session.query(Account).filter(Account.api_key == api_key).first()
@@ -317,3 +331,64 @@ def save_turn_context(
         session.commit()
         session.refresh(tc)
         return tc
+
+
+# ---------------------------------------------------------------------------
+# Realm objects — reference data (classes, races, items, etc.)
+# ---------------------------------------------------------------------------
+
+def clear_realm_objects() -> int:
+    """Delete all realm objects. Returns count deleted."""
+    with SessionLocal() as session:
+        count = session.query(RealmObject).delete()
+        session.commit()
+        return count
+
+
+def insert_realm_object(
+    category: str,
+    data_id: str,
+    data: dict,
+    is_sapient: bool = False,
+) -> RealmObject:
+    """Insert a single realm object."""
+    with SessionLocal() as session:
+        obj = RealmObject(
+            category=category,
+            data_id=data_id,
+            data=data,
+            is_sapient=is_sapient,
+        )
+        session.add(obj)
+        session.commit()
+        session.refresh(obj)
+        return obj
+
+
+def bulk_insert_realm_objects(rows: list[dict]) -> int:
+    """Bulk insert realm objects. Each dict has: category, data_id, data, is_sapient.
+    Returns count inserted."""
+    with SessionLocal() as session:
+        session.bulk_insert_mappings(RealmObject, rows)
+        session.commit()
+        return len(rows)
+
+
+def get_realm_objects_by_category(category: str) -> list[dict]:
+    """Return all realm objects for a category as (data_id, data, is_sapient) dicts."""
+    with SessionLocal() as session:
+        rows = session.query(RealmObject).filter(RealmObject.category == category).all()
+        return [
+            {"data_id": r.data_id, "data": r.data, "is_sapient": r.is_sapient}
+            for r in rows
+        ]
+
+
+def get_all_realm_objects() -> list[dict]:
+    """Return all realm objects as (category, data_id, data, is_sapient) dicts."""
+    with SessionLocal() as session:
+        rows = session.query(RealmObject).all()
+        return [
+            {"category": r.category, "data_id": r.data_id, "data": r.data, "is_sapient": r.is_sapient}
+            for r in rows
+        ]

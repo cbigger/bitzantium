@@ -75,7 +75,7 @@ def main():
     args = parser.parse_args()
 
     print(f"Loading realm: {args.realm_dir}")
-    summary = loader.load_all(args.realm_dir)
+    summary = loader.load_all_from_directory(args.realm_dir)
     print(f"  Loaded: {summary}\n")
 
     all_issues = []

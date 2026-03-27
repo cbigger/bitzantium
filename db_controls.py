@@ -95,10 +95,12 @@ def load_character_file(path: Path) -> CharacterState:
 
 def clear_all_data() -> None:
     """Drop all rows from every table. Refuses to run against non-temp databases."""
-    if "temp" not in db.DATABASE_URL:
+    import config
+    db_url = config.database_url()
+    if "temp" not in db_url:
         raise RuntimeError(
             f"Refusing to clear data: connection string does not contain 'temp'. "
-            f"URL: {db.DATABASE_URL}"
+            f"URL: {db_url}"
         )
     with db.SessionLocal() as session:
         session.query(db.TurnContext).delete()

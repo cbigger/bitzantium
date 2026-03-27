@@ -6,9 +6,7 @@ Shared JWT creation and validation utilities.
 Auth wrapper uses create_session_token() when an agent joins a session.
 Game server uses validate_session_token() on every request.
 
-Signing: HS256 with a shared secret. In production the secret would come
-from an environment variable or secrets manager; here it's a module-level
-constant that both services import.
+Signing: HS256 with a shared secret from bitzantium.toml.
 """
 
 import time
@@ -16,12 +14,7 @@ from typing import Optional
 
 import jwt
 
-# Shared secret — both auth wrapper and game server import this.
-# Override via environment variable in production.
-import os
-
-JWT_SECRET: str = os.environ.get("BITZANTIUM_JWT_SECRET", "bitzantium-dev-secret-change-me!")
-JWT_ALGORITHM: str = "HS256"
+import config
 
 
 def create_session_token(
@@ -50,7 +43,7 @@ def create_session_token(
         "iat": now,
         "exp": now + session_duration_seconds,
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return jwt.encode(payload, config.jwt_secret(), algorithm=config.jwt_algorithm())
 
 
 def validate_session_token(token: str) -> dict:
@@ -59,4 +52,4 @@ def validate_session_token(token: str) -> dict:
     Returns the decoded payload dict on success.
     Raises jwt.ExpiredSignatureError, jwt.InvalidTokenError on failure.
     """
-    return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    return jwt.decode(token, config.jwt_secret(), algorithms=[config.jwt_algorithm()])

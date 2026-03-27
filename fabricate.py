@@ -30,7 +30,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from loader import (
-    load_all,
+    load_all, load_all_from_directory,
     get_class, get_subclass, get_background,
     get_creature, get_race, get_item, get_ability,
     list_classes, list_subclasses, list_backgrounds,
@@ -906,13 +906,17 @@ def print_summary(sheet: dict, level: int, class_def: ClassDefinition) -> None:
 # Main
 # ═══════════════════════════════════════════════════════════════════════════
 
-def main(realm_path: str, output_dir: str, noob: bool) -> None:
+def main(realm_path: str | None, output_dir: str, noob: bool) -> None:
     console.print(Panel(
         "[bold yellow]Character Fabricator[/bold yellow]\n[dim]RealmTemplate Campaign System[/dim]",
         border_style="yellow", padding=(1, 4),
     ))
-    console.print(f"  Loading realm data from [cyan]{realm_path}[/cyan]…")
-    summary = load_all(realm_path)
+    if realm_path:
+        console.print(f"  Loading realm data from [cyan]{realm_path}[/cyan]…")
+        summary = load_all_from_directory(realm_path)
+    else:
+        console.print("  Loading realm data from [cyan]database[/cyan]…")
+        summary = load_all()
     console.print("  " + "  ".join(f"{k}: [bold]{v}[/bold]" for k, v in summary.items() if v > 0))
     console.print()
 
@@ -1065,8 +1069,8 @@ def main(realm_path: str, output_dir: str, noob: bool) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Character creation wizard for RealmTemplate.")
-    parser.add_argument("--realm",  default="./RealmTemplate",
-                        help="Path to the RealmTemplate directory (default: ./RealmTemplate)")
+    parser.add_argument("--realm",  default=None,
+                        help="Path to a RealmTemplate directory (omit to load from database)")
     parser.add_argument("--output", default="./characters",
                         help="Directory to save character JSON files (default: ./characters)")
     parser.add_argument("--noob",   action="store_true",

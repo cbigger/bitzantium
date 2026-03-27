@@ -1,13 +1,15 @@
 """
 loader.py
 
-Walks a RealmTemplate-structured directory and loads all data definitions
-into in-memory registries keyed by their ID fields.
+Populates in-memory registries from the realm_objects table in the database.
 
 Usage:
     from loader import load_all, get_class, get_ability, get_item, ...
 
-    load_all("/path/to/RealmTemplate")
+    load_all()  # reads from DB, populates registries
+
+For loading realm data from a directory into the DB, see load_realm.py.
+For filesystem-based validation, see validate.py.
 """
 
 import json
@@ -42,7 +44,22 @@ _items:                dict[str, ItemBase]             = {}
 
 
 # ---------------------------------------------------------------------------
-# Internal helpers
+# Category → (registry, model, id_field)
+# ---------------------------------------------------------------------------
+
+_CATEGORY_MAP: dict[str, tuple[dict, type, str]] = {
+    "ability":    (_abilities,    AbilityDefinition,    "ability_id"),
+    "class":      (_classes,      ClassDefinition,      "class_id"),
+    "subclass":   (_subclasses,   SubclassDefinition,   "subclass_id"),
+    "background": (_backgrounds,  BackgroundDefinition, "background_id"),
+    "creature":   (_creatures,    CreatureDefinition,   "creature_id"),
+    "race":       (_races,        RaceDefinition,       "race_id"),
+    "item":       (_items,        ItemBase,             "item_id"),
+}
+
+
+# ---------------------------------------------------------------------------
+# Filesystem helpers — used by load_realm.py and validate.py
 # ---------------------------------------------------------------------------
 
 def _load_file(path: Path, model, registry: dict, id_field: str) -> bool:
@@ -92,15 +109,11 @@ def _load_directory(directory: Path, model, registry: dict, id_field: str) -> tu
     return loaded, errors
 
 
-# ---------------------------------------------------------------------------
-# Public load entry point
-# ---------------------------------------------------------------------------
+def load_all_from_directory(base_path: str | Path) -> dict[str, int]:
+    """Walk a RealmTemplate directory and populate registries from the filesystem.
 
-def load_all(base_path: str | Path) -> dict[str, int]:
-    """
-    Walk a RealmTemplate directory and populate all registries.
-    Returns a summary dict of {category: count_loaded}.
-    Logs warnings for any files that fail to parse or validate.
+    Used by validate.py and fabricate.py for offline/dev use. For normal server
+    operation, use load_all() which reads from the database.
     """
     base = Path(base_path)
     summary: dict[str, int] = {}
@@ -126,7 +139,7 @@ def load_all(base_path: str | Path) -> dict[str, int]:
     summary["backgrounds"] = n
     total_errors += e
 
-    # Items — load from items/ and all subdirectories (e.g., items/mundane/, items/magical/)
+    # Items — recursive
     items_dir = base / "items"
     item_count = item_errors = 0
     if items_dir.exists():
@@ -138,15 +151,14 @@ def load_all(base_path: str | Path) -> dict[str, int]:
     summary["items"] = item_count
     total_errors += item_errors
 
-    # Sapient creatures — one subdirectory per species, creature JSON at root,
-    # races in a races/ subdirectory
+    # Sapient creatures + races
     sapient_dir = base / "creatures" / "sapient"
     creature_count = race_count = creature_errors = race_errors = 0
     if sapient_dir.exists():
         for species_dir in sorted(p for p in sapient_dir.iterdir() if p.is_dir()):
             for path in sorted(species_dir.glob("*.json")):
                 if path.stem == "defaultClass":
-                    continue  # not a schema we load here
+                    continue
                 if _load_file(path, CreatureDefinition, _creatures, "creature_id"):
                     creature_count += 1
                     try:
@@ -163,7 +175,7 @@ def load_all(base_path: str | Path) -> dict[str, int]:
             race_count += n
             race_errors += e
 
-    # Sentient creatures — one subdirectory per creature
+    # Sentient creatures
     sentient_dir = base / "creatures" / "sentient"
     if sentient_dir.exists():
         for creature_dir in sorted(p for p in sentient_dir.iterdir() if p.is_dir()):
@@ -180,7 +192,57 @@ def load_all(base_path: str | Path) -> dict[str, int]:
     if total_errors:
         log.warning("Data load completed with %d error(s). See warnings above.", total_errors)
     else:
-        log.info("Data load complete: %s", summary)
+        log.info("Data load complete (filesystem): %s", summary)
+
+    return summary
+
+
+# ---------------------------------------------------------------------------
+# Public load entry point — reads from database
+# ---------------------------------------------------------------------------
+
+def load_all() -> dict[str, int]:
+    """
+    Populate all registries from the realm_objects table in the database.
+    Returns a summary dict of {category: count_loaded}.
+    """
+    import db
+
+    rows = db.get_all_realm_objects()
+    summary: dict[str, int] = {}
+    errors = 0
+
+    for row in rows:
+        category = row["category"]
+        data_id = row["data_id"]
+        data = row["data"]
+        is_sapient = row["is_sapient"]
+
+        entry = _CATEGORY_MAP.get(category)
+        if entry is None:
+            log.warning("Unknown category %r for %r — skipping", category, data_id)
+            errors += 1
+            continue
+
+        registry, model, id_field = entry
+
+        try:
+            obj = model(**data)
+        except Exception as e:
+            log.warning("Schema validation failed for %s/%s: %s", category, data_id, e)
+            errors += 1
+            continue
+
+        registry[data_id] = obj
+        summary[category] = summary.get(category, 0) + 1
+
+        if category == "creature" and is_sapient:
+            _sapient_creature_ids.add(data_id)
+
+    if errors:
+        log.warning("DB load completed with %d error(s).", errors)
+    else:
+        log.info("Data load complete (database): %s", summary)
 
     return summary
 

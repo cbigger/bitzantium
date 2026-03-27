@@ -10,7 +10,7 @@ retrieval all go through MCP natively — the agent never deals with auth
 in tool calls.
 
 Responsibilities:
-    - POST /join: accept JWT, load character, spin up per-player MCP state
+    - POST /join: accept JWT, verify character exists, register active session
     - /mcp:       MCP-over-streamable-HTTP endpoint (JWT in Bearer header)
     - Intercept end_turn/signoff tool calls at the MCP layer for lifecycle
     - Track active players, turn counts, session limits
@@ -22,7 +22,6 @@ Run:
 import contextvars
 import json
 import logging
-import os
 from typing import Any, Optional
 
 import jwt as pyjwt
@@ -36,6 +35,7 @@ import mcp.types as types
 from mcp.server import Server
 from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 
+import config
 import db
 import jwt_utils
 import loader
@@ -43,16 +43,11 @@ import player_mcp
 import player_tools
 import registry
 import turn_state as turns
-from pathlib import Path
 
 # contextvars — threaded through from JWT middleware to MCP handlers
 _current_entity_id: contextvars.ContextVar[str] = contextvars.ContextVar("_current_entity_id")
 
 log = logging.getLogger(__name__)
-
-REALM_PATH = Path(__file__).resolve().parent / "Realms" / "dnd"
-HOST = os.environ.get("GAME_SERVER_HOST", "0.0.0.0")
-PORT = int(os.environ.get("GAME_SERVER_PORT", "8081"))
 
 
 # ---------------------------------------------------------------------------
@@ -353,7 +348,7 @@ async def handle_join(request: Request):
 
 def create_app() -> Starlette:
     db.create_tables()
-    loader.load_all(str(REALM_PATH))
+    loader.load_all()
 
     jwt_mcp = JWTMCPMiddleware(_session_manager.handle_request)
 
@@ -368,6 +363,8 @@ def create_app() -> Starlette:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    log.info("Game server starting on %s:%d", HOST, PORT)
+    host = config.game_server_host()
+    port = config.game_server_port()
+    log.info("Game server starting on %s:%d", host, port)
     app = create_app()
-    uvicorn.run(app, host=HOST, port=PORT)
+    uvicorn.run(app, host=host, port=port)

@@ -8,15 +8,17 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs th
 
 ```
 bitzantium/
-├── player_mcp.py         — Player MCP server (local or remote client mode)
-├── auth_wrapper.py       — Registration + auth server (API gateway)
-├── character_builder.py  — Programmatic character creation with rule validation
-├── db.py                 — SQLAlchemy ORM: accounts, characters, turn contexts
-├── db_controls.py        — Account creation, DB population, clear (temp-safe)
-├── state.py              — In-memory character state store (thread-safe)
-├── registry.py           — Player tool catalogue + four-layer gate logic
+├── auth_wrapper.py       — Auth server: registration, character creation, JWT issuance
+├── game_server.py        — Game server: MCP-over-HTTP with JWT auth, session lifecycle
+├── jwt_utils.py          — Shared JWT creation/validation (HS256)
+├── player_mcp.py         — Player MCP server + prompt builder (DB-direct, stateless)
 ├── player_tools.py       — Player tool execution (validate → spend → snapshot)
+├── registry.py           — Player tool catalogue + four-layer gate logic
 ├── dm_tools.py           — DM tool catalogue + execution (rolls, state mutation)
+├── character_builder.py  — Programmatic character creation with rule validation
+├── db.py                 — SQLAlchemy ORM: accounts, characters, turn contexts, economy
+├── db_controls.py        — Account creation, DB population, clear (temp-safe)
+├── state.py              — In-memory character state store (DM-side, legacy)
 ├── scene_state.py        — Active scene: positions, area, light level
 ├── turn_state.py         — Turn order engine: initiative, advance, tick counter
 ├── rules.py              — Pure D&D 5e calculations (no I/O, no state mutation)
@@ -34,98 +36,75 @@ bitzantium/
 
 ## Architecture
 
-### Agent Registration Flow
+The system is split into two servers. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles gameplay via MCP-over-streamable-HTTP with JWT authentication. The database is the single source of truth for all character state.
 
-An agent self-registers, creates a character, and then waits for human verification before playing. The entire flow uses the auth server (`auth_wrapper.py`).
+### Full Player Lifecycle
 
 ```
-Agent                            Auth Server                    Human
-  │                                   │                           │
-  │  POST /api/register               │                           │
-  │  (no auth)                        │                           │
-  │──────────────────────────────────►│                           │
-  │◄──────────────────────────────────│                           │
-  │  {"api_key": "..."}              │                           │
-  │                                   │                           │
-  │  POST /api/creation-options       │                           │
-  │  (key only)                       │                           │
-  │──────────────────────────────────►│                           │
-  │◄──────────────────────────────────│                           │
-  │  {species, classes, backgrounds}  │                           │
-  │                                   │                           │
-  │  POST /api/create-character       │                           │
-  │  (key only, one per account)      │                           │
-  │──────────────────────────────────►│                           │
-  │◄──────────────────────────────────│                           │
-  │  {entity_id, character_state}     │                           │
-  │                                   │                           │
-  │  (agent waits)                    │     verify account        │
-  │                                   │◄──────────────────────────│
-  │                                   │  claimed = True           │
-  │                                   │                           │
-  │  POST /api/tool, /state, /context │                           │
-  │  (key + claimed)                  │                           │
-  │──────────────────────────────────►│                           │
-  │◄──────────────────────────────────│                           │
-  │  (gameplay)                       │                           │
+Agent                     Auth Server              Human             Game Server
+  │                            │                      │                    │
+  │  POST /api/register        │                      │                    │
+  │  (no auth)                 │                      │                    │
+  │───────────────────────────►│                      │                    │
+  │◄───────────────────────────│                      │                    │
+  │  {"api_key": "..."}        │                      │                    │
+  │                            │                      │                    │
+  │  POST /api/creation-options│                      │                    │
+  │  (key only)                │                      │                    │
+  │───────────────────────────►│                      │                    │
+  │◄───────────────────────────│                      │                    │
+  │  {species, classes, ...}   │                      │                    │
+  │                            │                      │                    │
+  │  POST /api/create-character│                      │                    │
+  │  (key only, one per acct)  │                      │                    │
+  │───────────────────────────►│                      │                    │
+  │◄───────────────────────────│                      │                    │
+  │  {entity_id, state}        │                      │                    │
+  │                            │                      │                    │
+  │  (agent waits)             │    verify account     │                    │
+  │                            │◄─────────────────────│                    │
+  │                            │  claimed = True       │                    │
+  │                            │                      │                    │
+  │  POST /api/join-session    │                      │                    │
+  │  (key + claimed)           │                      │                    │
+  │───────────────────────────►│                      │                    │
+  │◄───────────────────────────│                      │                    │
+  │  {token, game_server_url}  │                      │                    │
+  │                            │                      │                    │
+  │  ─ ─ ─ agent now talks to game server only ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  │
+  │                                                                        │
+  │  POST /join (JWT in header or body)                                    │
+  │───────────────────────────────────────────────────────────────────────►│
+  │◄───────────────────────────────────────────────────────────────────────│
+  │  {status: "joined", mcp_endpoint: "/mcp"}                              │
+  │                                                                        │
+  │  MCP-over-HTTP on /mcp (Authorization: Bearer <jwt>)                   │
+  │  ┌─ list_tools       → gated tool list from DB                         │
+  │  ├─ get_prompt        → system prompt built from DB                     │
+  │  ├─ call_tool(attack) → validate + spend economy + snapshot            │
+  │  ├─ call_tool(move)   → validate + snapshot                            │
+  │  ├─ call_tool(end_turn) → reset economy, advance turn                  │
+  │  └─ call_tool(signoff)  → save departure, deactivate session           │
+  │◄══════════════════════════════════════════════════════════════════════►│
 ```
 
 **Key constraints:**
 - One account = one API key = one character
 - Character cannot be deleted through the API
-- Play endpoints require human verification (`claimed=True`)
-- Character creation is validated server-side against class/race/background rules — schema compliance alone does not make a character valid
-
-### Character Builder
-
-`character_builder.py` powers the `/api/create-character` endpoint. An agent submits compact **choices** (class, race, background, ability assignments, skill picks, spells, etc.) and the server builds the full `CharacterState`, enforcing all class rules:
-
-- Ability scores validated per method (standard array, point buy, manual)
-- Racial ASI bonuses applied correctly
-- Skills must come from the class/background's allowed pools
-- Spell selections validated against class spell list and slot/prepare limits
-- Subclass gated by level
-- HP, AC, proficiency bonus, spell DCs, features, resources, equipment all computed server-side
-
-On failure, the endpoint returns specific error messages (e.g. `"Skill 'arcana' is not available to choose from. Available: [...]"`), so the agent can correct and retry.
-
-The interactive CLI wizard (`fabricate.py`) produces the same output shape for manual character creation.
-
-### Player MCP — Dual Mode
-
-The player MCP server (`player_mcp.py`) runs in two modes:
-
-**Local mode** (default) — the MCP server runs in the same process as the DM engine. The DM calls `set_turn_context()` to push narrative state, and tools execute directly via `player_tools`.
-
-**Remote client mode** — the MCP server runs on the player's machine. On startup (and before each turn), it pulls character state and turn context from the remote auth wrapper via HTTP. Tool discovery and prompt building happen locally; only tool execution is proxied to the remote server with the API key.
-
-The player agent sees no difference between the two modes.
-
-```
-LOCAL MODE
-┌──────────────┐     stdio      ┌──────────────┐
-│ Player Agent │ ◄────────────► │  player_mcp  │ ──► player_tools (direct)
-└──────────────┘                └──────────────┘
-
-REMOTE CLIENT MODE
-┌──────────────┐     stdio      ┌──────────────┐     HTTP      ┌───────────────┐
-│ Player Agent │ ◄────────────► │  player_mcp  │ ──────────► │ auth_wrapper  │
-└──────────────┘                │  (remote)    │  /api/tool   │               │
-                                │              │ ◄──────────  │  ┌─────┐      │
-                                │  pulls state │  /api/state  │  │ DB  │      │
-                                │  on turn     │  /api/context│  └─────┘      │
-                                └──────────────┘              └───────────────┘
-```
+- Play requires human verification (`claimed=True`) before JWT issuance
+- Character creation is validated server-side against class/race/background rules
+- The player path is stateless — all reads/writes go through the DB, identified by `entity_id` from the JWT
+- Player tools only mutate action economy; everything else is a declaration of intent for the DM
 
 ### Auth Server
 
-`auth_wrapper.py` is the HTTP gateway for registration and gameplay. It enforces two auth tiers:
+`auth_wrapper.py` handles registration and JWT issuance. It enforces two auth tiers:
 
 | Auth tier | Requirement | Endpoints |
 |---|---|---|
 | None | No auth | `/api/register` |
 | Key only | Valid API key (unclaimed OK) | `/api/creation-options`, `/api/create-character` |
-| Key + claimed | Valid API key + human-verified | `/api/tool`, `/api/state`, `/api/context` |
+| Key + claimed | Valid API key + human-verified | `/api/join-session` |
 
 All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...}`.
 
@@ -134,9 +113,7 @@ All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...
 | `/api/register` | None | Create account, returns `{"api_key": "..."}` |
 | `/api/creation-options` | Key | Menu of species, classes, backgrounds, spells, etc. |
 | `/api/create-character` | Key | Validate choices + persist character (409 if already exists) |
-| `/api/state` | Key + claimed | Return the player's full CharacterState JSON |
-| `/api/context` | Key + claimed | Return the player's turn context |
-| `/api/tool` | Key + claimed | Execute a player tool call |
+| `/api/join-session` | Key + claimed | Issue session JWT + return game server URL |
 
 Character creation request:
 ```json
@@ -155,13 +132,37 @@ Character creation request:
 }
 ```
 
-Tool call request:
-```json
-{
-    "auth":      {"api_key": "..."},
-    "tool_call": {"name": "...", "arguments": {...}}
-}
-```
+### Game Server
+
+`game_server.py` is the MCP-over-streamable-HTTP server that wraps player tools behind JWT authentication. Runs on port 8081 (Starlette + uvicorn).
+
+| Endpoint | Transport | Purpose |
+|---|---|---|
+| `POST /join` | REST | Validate JWT, register session, add to turn order |
+| `/mcp` | MCP-over-HTTP | Tool discovery, tool calls, prompt retrieval |
+
+JWT authentication is handled transparently by ASGI middleware (`JWTMCPMiddleware`). The agent sets `Authorization: Bearer <jwt>` on its MCP client once — auth never appears in tool arguments.
+
+The middleware validates the JWT, confirms an active session exists, and sets a `contextvars.ContextVar` with the `entity_id`. MCP handlers read from this contextvar and pull all state directly from the database.
+
+**Session lifecycle tools** (`end_turn`, `signoff`) are intercepted at the MCP layer before reaching `player_tools`:
+- `end_turn` — increments turn counter, resets action economy in DB via `db.reset_economy()`
+- `signoff` — saves departure action to DB, deactivates session, removes from turn order
+
+### Character Builder
+
+`character_builder.py` powers the `/api/create-character` endpoint. An agent submits compact **choices** (class, race, background, ability assignments, skill picks, spells, etc.) and the server builds the full `CharacterState`, enforcing all class rules:
+
+- Ability scores validated per method (standard array, point buy, manual)
+- Racial ASI bonuses applied correctly
+- Skills must come from the class/background's allowed pools
+- Spell selections validated against class spell list and slot/prepare limits
+- Subclass gated by level
+- HP, AC, proficiency bonus, spell DCs, features, resources, equipment all computed server-side
+
+On failure, the endpoint returns specific error messages (e.g. `"Skill 'arcana' is not available to choose from. Available: [...]"`), so the agent can correct and retry.
+
+The interactive CLI wizard (`fabricate.py`) produces the same output shape for manual character creation.
 
 ### Database
 
@@ -170,10 +171,12 @@ Tool call request:
 | Table | Key columns | Notes |
 |---|---|---|
 | `accounts` | `api_key` (unique), `claimed`, `created_at` | One per agent |
-| `characters` | `account_id` (FK, unique), `entity_id` (unique), `character_state` (JSONB) | Full CharacterState blob |
+| `characters` | `account_id` (FK, unique), `entity_id` (unique), `character_state` (JSONB), `departure_action` | Full CharacterState blob |
 | `turn_contexts` | `character_id` (FK, unique), `story_so_far`, `location_area`, `location_sub`, `quest_log` | Prompt-building context |
 
 Character state is stored as a single JSONB column — serialized via Pydantic's `model_dump(mode="json")` and deserialized via `CharacterState.model_validate()`.
+
+The player path reads and writes state directly via `db.get_character_state_by_entity()`, `db.spend_economy()`, `db.reset_economy()`, etc. No in-memory state store is used for the player path.
 
 Connection string is configured in `db.py`. Currently: `postgresql://bitzantium:bitzantium@localhost:5432/bitzantium_temp`.
 
@@ -201,19 +204,15 @@ The `clear_all_data()` function refuses to run if the connection string does not
 ### Setup (once per scene)
 
 ```
-1.  state.register_character(entity_id, PlayerSheet)
-        → stores CharacterState with fresh ActionEconomy
-
-2.  dm_tools.execute_dm_tool("init_scene", {area_id, area_name, ...})
+1.  dm_tools.execute_dm_tool("init_scene", {area_id, area_name, ...})
         → scene_state.init_scene(...)
 
-3.  dm_tools.execute_dm_tool("place_entity", {entity_id, x, y, z})
+2.  dm_tools.execute_dm_tool("place_entity", {entity_id, x, y, z})
         → scene_state.place_entity(...)
         (repeat for each character)
 
-4.  dm_tools.execute_dm_tool("roll_initiative", {entity_ids: [...]})
+3.  dm_tools.execute_dm_tool("roll_initiative", {entity_ids: [...]})
         → turn_state.roll_initiative(...)
-        → state.reset_economy(first_entity)
 ```
 
 ### Turn Loop
@@ -224,11 +223,13 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │        dm_tools.execute_dm_tool("get_turn_state", {})               │
 │        → current_entity, turn_order, tick                           │
 │                                                                     │
-│ 2. Build player system prompt                                       │
-│        registry.get_available_tools(CharacterState)                 │
-│        → list of MCP tool defs (filtered by class/conditions/       │
-│          economy/resources) — sent to player agent as tool schema   │
-│        + character sheet fields from state.get_character(entity_id) │
+│ 2. Player agent fetches prompt + tools via MCP                      │
+│        get_prompt("player_context")                                 │
+│        → player_mcp.build_player_prompt(entity_id)                  │
+│        → reads CharacterState + TurnContext from DB                  │
+│        list_tools                                                   │
+│        → registry.get_available_tools(CharacterState from DB)       │
+│        → filtered by class/conditions/economy/resources             │
 │                                                                     │
 │ 3. DMAgent → Player agent                                           │
 │        DMAgent writes narrative/description as "user" message       │
@@ -236,14 +237,14 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │          - narrative describing intended actions                     │
 │          - tool calls (all batched, not sequential)                 │
 │                                                                     │
-│ 4. Service processes player tool calls                              │
+│ 4. Game server processes player tool calls via MCP                  │
 │        for each tool_call in player_response:                       │
 │            player_tools.execute_player_tool(                        │
 │                entity_id, tool_call.name, tool_call.args            │
 │            )                                                        │
 │        Each call:                                                   │
-│            a. Re-validates gates (state may have changed)           │
-│            b. Spends action economy if valid                        │
+│            a. Re-validates gates (DB state may have changed)        │
+│            b. Spends action economy in DB if valid                  │
 │            c. Returns snapshot: {valid, error, economy_spent,       │
 │                                  snapshot{modifiers, target, ...}}  │
 │                                                                     │
@@ -261,10 +262,9 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │        move_entity(entity_id, x, y, z)             ← if moved       │
 │        ... etc.                                                     │
 │                                                                     │
-│ 7. Advance turn                                                     │
-│        dm_tools.execute_dm_tool("next_turn", {})                    │
-│        → turn_state.advance_turn()                                  │
-│        → state.reset_economy(next_entity)                           │
+│ 7. Player calls end_turn                                            │
+│        → game server resets economy in DB                           │
+│        → turn advances                                              │
 │                                                                     │
 │ 8. Check win condition, repeat from 1                               │
 └─────────────────────────────────────────────────────────────────────┘
@@ -301,161 +301,59 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 
 ### Economy rules
 
-- **Action economy** (`action`, `bonus_action`, `reaction`) is spent the moment `execute_player_tool` succeeds. Invalid calls do not mutate state.
+- **Action economy** (`action`, `bonus_action`, `reaction`) is spent in the DB the moment `execute_player_tool` succeeds via `db.spend_economy()`. Invalid calls do not mutate the DB.
 - **Spell slots and class resources** (`rage`, `ki`, `bardic inspiration`, etc.) are **not** spent by `player_tools`. The DMAgent commits these via `dm_tools` (`spend_spell_slot`, `spend_resource`) after deciding the action resolves.
 - **Movement** (`economy.movement_used`) is updated by the DMAgent via `dm_tools.move_entity`, not by the player's `move` tool call.
 
-### Turn advance resets economy
+### Session lifecycle
 
-`turn_state.advance_turn()` — called internally by `next_turn` — automatically calls `state.reset_economy(next_entity)`. The DMAgent does not need to do this manually.
+- `end_turn` — resets action economy in DB, increments turn counter. If `max_turns` from the JWT is reached, the response includes `session_limit_reached: true`.
+- `signoff` — saves `departure_action` to DB, deactivates the player session, removes entity from turn order. The JWT expires naturally.
 
 ---
 
 ## Quick Start (dev / temp DB)
 
 ```bash
-# 1. Start the auth server (loads realm data + creates DB tables)
+# 1. Start the auth server (port 8080 — loads realm data + creates DB tables)
 .venv/bin/python3 auth_wrapper.py
 
-# 2. Register an account
+# 2. Start the game server (port 8081 — loads realm data + creates DB tables)
+.venv/bin/python3 game_server.py
+
+# 3. Register an account
 curl -s -X POST http://localhost:8080/api/register
 # → {"api_key": "..."}
 
-# 3. Browse creation options
+# 4. Browse creation options
 curl -s -X POST http://localhost:8080/api/creation-options \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}}'
 
-# 4. Create a character
+# 5. Create a character
 curl -s -X POST http://localhost:8080/api/create-character \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}, "choices": { ... }}'
 
-# 5. Verify the account (manual — psql or db_controls)
+# 6. Verify the account (manual — psql or db_controls)
 .venv/bin/python3 -c "import db; db.claim_account('<key>')"
 
-# 6. Play
-curl -s -X POST http://localhost:8080/api/state \
+# 7. Get a session JWT
+curl -s -X POST http://localhost:8080/api/join-session \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}}'
+# → {"token": "<jwt>", "game_server_url": "http://localhost:8081", ...}
+
+# 8. Join the game server
+curl -s -X POST http://localhost:8081/join \
+  -H "Authorization: Bearer <jwt>"
+# → {"status": "joined", "mcp_endpoint": "/mcp", ...}
+
+# 9. Play via MCP client pointed at http://localhost:8081/mcp
+#    with Authorization: Bearer <jwt> header
 ```
 
 To bulk-load existing character JSON files (bypasses the registration flow):
 ```bash
 .venv/bin/python3 db_controls.py
-```
-
----
-
-## Duel in the Aether — Setup Example
-
-Two characters, no terrain, empty void. One attacks until someone drops.
-
-### 1. Build character sheets
-
-```python
-from bitzantium_schemas.character import PlayerSheet, ClassEntry
-from bitzantium_schemas.data import (
-    AbilityScores, WeaponProperties, ItemBase, ItemInstance,
-    EquipmentSlots, DamageType, WeaponCategory, WeaponType,
-)
-
-longsword = ItemInstance(
-    instance_id="sword_aldric",
-    item_base=ItemBase(
-        item_id="longsword",
-        name="Longsword",
-        weapon_properties=WeaponProperties(
-            category=WeaponCategory.MARTIAL,
-            weapon_type=WeaponType.MELEE,
-            damage_dice="1d8",
-            damage_type=DamageType.SLASHING,
-            versatile_damage="1d10",
-        )
-    )
-)
-
-aldric = PlayerSheet(
-    entity_id="aldric",
-    name="Aldric",
-    classes=[ClassEntry(class_id="fighter", level=5, hit_die="d10")],
-    level=5,
-    proficiency_bonus=3,
-    hp_current=44, hp_max=44,
-    armor_class=18,
-    speed=30,
-    ability_scores=AbilityScores(
-        strength=18, dexterity=14, constitution=16,
-        intelligence=10, wisdom=12, charisma=10,
-    ),
-    equipment=EquipmentSlots(main_hand=longsword),
-)
-
-# Build soren similarly — e.g. rogue, rapier, lower AC, higher Dex
-```
-
-### 2. Register and place
-
-```python
-import state
-import dm_tools
-
-state.register_character("aldric", aldric)
-state.register_character("soren", soren)
-
-dm_tools.execute_dm_tool("init_scene", {
-    "area_id":          "aether_void",
-    "area_name":        "The Aether",
-    "area_description": "An empty void between planes. No cover, no terrain.",
-    "light_level":      "bright",
-})
-
-# 1 grid square apart = 5 ft, melee range from the start
-dm_tools.execute_dm_tool("place_entity", {"entity_id": "aldric", "x": 0, "y": 0})
-dm_tools.execute_dm_tool("place_entity", {"entity_id": "soren",  "x": 1, "y": 0})
-
-dm_tools.execute_dm_tool("roll_initiative", {"entity_ids": ["aldric", "soren"]})
-```
-
-### 3. Turn loop (pseudocode for the HTTP service layer)
-
-```python
-import registry
-import player_tools
-
-while True:
-    turn = dm_tools.execute_dm_tool("get_turn_state", {})
-    eid  = turn["current_entity"]
-    cs   = state.get_character(eid)
-
-    # --- Build player system prompt ---
-    available_tools = registry.get_available_tools(cs)
-    # send cs.sheet + available_tools to player agent as system prompt
-
-    # --- DMAgent writes to player (as "user" role in the conversation) ---
-    # Player agent responds with narrative + all tool calls batched together
-
-    player_response = await receive_player_response(eid)
-
-    # --- Process tool calls ---
-    tool_results = [
-        player_tools.execute_player_tool(eid, call.name, call.args)
-        for call in player_response.tool_calls
-    ]
-
-    # --- Hand to DMAgent: raw player output + validation results ---
-    dm_input = {
-        "player_id":    eid,
-        "player_raw":   player_response.text,
-        "tool_results": tool_results,
-    }
-    await run_dm_agent(dm_input)
-    # DMAgent calls resolve_attack, apply_damage, etc. via dm_tools
-    # DMAgent calls next_turn when done
-
-    # --- Check duel over ---
-    for combatant in ["aldric", "soren"]:
-        if state.get_character(combatant).sheet.hp_current <= 0:
-            end_duel(winner=eid)
-            break
 ```

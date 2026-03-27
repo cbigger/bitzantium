@@ -26,14 +26,13 @@ Endpoints:
 
 import json
 import logging
-import os
 import secrets
-from pathlib import Path
 from typing import Optional
 
 from aiohttp import web
 from pydantic import ValidationError
 
+import config
 import db
 import character_builder
 import jwt_utils
@@ -42,12 +41,6 @@ from bitzantium_schemas.character_choices import CharacterChoices
 from loader import load_all
 
 log = logging.getLogger(__name__)
-
-REALM_PATH = Path(__file__).resolve().parent / "Realms" / "dnd"
-
-# Default game server URL — the single DM server agents are assigned to.
-# Override via environment variable for multi-server setups.
-GAME_SERVER_URL: str = os.environ.get("BITZANTIUM_GAME_SERVER_URL", "http://localhost:8081")
 
 
 # ---------------------------------------------------------------------------
@@ -70,7 +63,7 @@ def _authenticate_key(body: dict) -> tuple[Optional[db.Account], Optional[web.Re
 
 def _authenticate(body: dict) -> tuple[Optional[db.Account], Optional[web.Response]]:
     """Validate API key AND require claimed=True.
-    Used by play-phase endpoints (tool, state, context)."""
+    Used by join-session (play requires human verification)."""
     account, err = _authenticate_key(body)
     if err:
         return None, err
@@ -119,15 +112,15 @@ async def handle_join_session(request: web.Request) -> web.Response:
     token = jwt_utils.create_session_token(
         entity_id=entity_id,
         account_id=account.id,
-        game_server_url=GAME_SERVER_URL,
+        game_server_url=config.game_server_url(),
         max_turns=max_turns,
         session_duration_seconds=session_duration,
     )
 
     return web.json_response({
         "token": token,
-        "game_server_url": GAME_SERVER_URL,
-        "join_url": f"{GAME_SERVER_URL}/join",
+        "game_server_url": config.game_server_url(),
+        "join_url": f"{config.game_server_url()}/join",
         "entity_id": entity_id,
     })
 
@@ -205,7 +198,7 @@ async def handle_create_character(request: web.Request) -> web.Response:
 
 def create_app() -> web.Application:
     db.create_tables()
-    load_all(str(REALM_PATH))
+    load_all()
     app = web.Application()
     # Registration (no auth → key-only)
     app.router.add_post("/api/register", handle_register)
@@ -218,4 +211,4 @@ def create_app() -> web.Application:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    web.run_app(create_app(), host="0.0.0.0", port=8080)
+    web.run_app(create_app(), host=config.auth_server_host(), port=config.auth_server_port())

@@ -8,13 +8,14 @@ Each call goes through three phases:
   1. Validate  — re-runs the same four-layer gate logic as registry.get_available_tools()
                  (conditions/economy may have changed since the system prompt was sent)
 
-  2. Spend     — commits action economy cost (action / bonus_action / reaction only).
-                 Spell slots and class resources are intentionally NOT spent here —
-                 those are committed by the DM via dm_tools after narrative resolution.
+  2. Spend     — commits action economy cost to the DB (action / bonus_action /
+                 reaction only). Spell slots and class resources are intentionally
+                 NOT spent here — those are committed by the DM via dm_tools after
+                 narrative resolution.
 
-  3. Snapshot  — reads current state to produce the mechanical context the DMAgent
-                 needs to resolve the action: attacker modifiers, target defences,
-                 resource availability, etc.
+  3. Snapshot  — reads character state from the DB to produce the mechanical context
+                 the DMAgent needs to resolve the action: attacker modifiers, target
+                 defences, resource availability, etc.
 
 Public API:
     execute_player_tool(entity_id, tool_name, args) → result dict
@@ -335,9 +336,9 @@ def execute_player_tool(entity_id: str, tool_name: str, args: dict) -> dict:
         "snapshot":      dict,       # mechanical context for DMAgent resolution
       }
 
-    On failure, state is not mutated.
-    On success, action economy is spent immediately; spell slots and class
-    resources remain for the DM to commit via dm_tools after resolution.
+    On failure, the DB is not mutated.
+    On success, action economy is spent immediately in the DB; spell slots
+    and class resources remain for the DM to commit via dm_tools after resolution.
     """
     base: dict = {
         "tool":          tool_name,
