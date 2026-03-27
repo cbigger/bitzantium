@@ -708,6 +708,39 @@ _TOOLS: list[dict] = [
         "blocked_by": {Condition.INCAPACITATED, Condition.UNCONSCIOUS},
         "requires_resource": "ki points"
     },
+
+    # -----------------------------------------------------------------------
+    # SESSION — turn and session lifecycle
+    # -----------------------------------------------------------------------
+    {
+        "name": "end_turn",
+        "description": "End your turn. You must call this when you are done acting for this turn.",
+        "inputSchema": {"type": "object", "properties": {}, "required": []},
+        "action_cost": "free",
+        "classes": None,
+        "blocked_by": set()
+    },
+    {
+        "name": "signoff",
+        "description": (
+            "Sign off and leave the session. Describe what your character is doing "
+            "as they depart (e.g. 'sits by the campfire to rest', 'wanders into the forest'). "
+            "This ends your session."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "departure_action": {
+                    "type": "string",
+                    "description": "What your character is doing as they leave."
+                }
+            },
+            "required": ["departure_action"]
+        },
+        "action_cost": "free",
+        "classes": None,
+        "blocked_by": set()
+    },
 ]
 
 

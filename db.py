@@ -35,7 +35,7 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 
-from bitzantium_schemas.character import CharacterState
+from bitzantium_schemas.character import CharacterState, ActionEconomy
 
 # ---------------------------------------------------------------------------
 # Engine / session
@@ -74,6 +74,7 @@ class Character(Base):
     entity_id = Column(String, unique=True, nullable=False, index=True)
     character_state = Column(JSONB, nullable=False)
     alive = Column(Boolean, default=True, nullable=False)
+    departure_action = Column(Text, nullable=True)  # what the character was doing when they signed off
 
     account = relationship("Account", back_populates="character")
     turn_context = relationship("TurnContext", back_populates="character", uselist=False)
@@ -152,6 +153,15 @@ def get_entity_id(api_key: str) -> Optional[str]:
         return account.character.entity_id
 
 
+def get_character_state_by_entity(entity_id: str) -> Optional[CharacterState]:
+    """Look up character state directly by entity_id."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return None
+        return CharacterState.model_validate(character.character_state)
+
+
 def save_character_state(entity_id: str, state: CharacterState) -> None:
     """Full state replacement — mirrors state.update_character()."""
     with SessionLocal() as session:
@@ -176,8 +186,90 @@ def create_character(account_id: int, entity_id: str, state: CharacterState) -> 
 
 
 # ---------------------------------------------------------------------------
+# Economy — read/modify/write the economy inside CharacterState JSONB
+# ---------------------------------------------------------------------------
+
+def spend_economy(entity_id: str, cost: str) -> Optional[CharacterState]:
+    """Mark an action economy flag in the DB. Returns updated state or None.
+
+    cost: 'action' | 'bonus_action' | 'reaction' | 'free'
+    No-op for 'free'.
+    """
+    field_map = {
+        "action":       "action_spent",
+        "bonus_action": "bonus_action_spent",
+        "reaction":     "reaction_spent",
+    }
+    field = field_map.get(cost)
+    if field is None:
+        return get_character_state_by_entity(entity_id)
+
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return None
+        cs = CharacterState.model_validate(character.character_state)
+        new_economy = cs.economy.model_copy(update={field: True})
+        cs = cs.model_copy(update={"economy": new_economy})
+        character.character_state = cs.model_dump(mode="json")
+        session.commit()
+        return cs
+
+
+def reset_economy(entity_id: str) -> Optional[CharacterState]:
+    """Reset action economy to fresh turn state in the DB."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return None
+        cs = CharacterState.model_validate(character.character_state)
+        cs = cs.model_copy(update={"economy": ActionEconomy()})
+        character.character_state = cs.model_dump(mode="json")
+        session.commit()
+        return cs
+
+
+# ---------------------------------------------------------------------------
+# Signoff
+# ---------------------------------------------------------------------------
+
+def save_departure_action(entity_id: str, departure_action: str) -> None:
+    """Record what the character was doing when the player signed off."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return
+        character.departure_action = departure_action
+        session.commit()
+
+
+def get_departure_action(entity_id: str) -> Optional[str]:
+    """Get the last departure action for a character."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return None
+        return character.departure_action
+
+
+# ---------------------------------------------------------------------------
 # Turn context CRUD
 # ---------------------------------------------------------------------------
+
+def get_turn_context_by_entity(entity_id: str) -> Optional[dict]:
+    """Look up turn context directly by entity_id."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character or not character.turn_context:
+            return None
+        tc = character.turn_context
+        return {
+            "story_so_far": tc.story_so_far or "",
+            "location_area": tc.location_area or "",
+            "location_sub": tc.location_sub,
+            "quest_log": tc.quest_log,
+        }
+
 
 def get_turn_context(api_key: str) -> Optional[dict]:
     """Look up API key -> account -> character -> turn context as a dict.

@@ -3,12 +3,15 @@ auth_wrapper.py
 ===============
 Auth wrapper and registration server for Bitzantium.
 
+Handles account lifecycle and character creation, then hands off to a
+game server for actual play.
+
 Registration flow (agent-facing):
     1. POST /api/register              — no auth; returns a new API key
     2. POST /api/creation-options      — API key required; returns menu of choices
     3. POST /api/create-character      — API key required; validates + persists character
     4. (human verifies account out-of-band — sets claimed=True in DB)
-    5. POST /api/tool, /state, /context — API key required AND account must be claimed
+    5. POST /api/join-session          — API key + claimed; issues JWT + game server URL
 
 All authenticated endpoints accept POST with:
 
@@ -18,24 +21,22 @@ Endpoints:
     /api/register          — create account, get API key          (no auth)
     /api/creation-options  — available character creation choices  (key only)
     /api/create-character  — validate choices, create character    (key only)
-    /api/tool              — execute a player tool call            (key + claimed)
-    /api/state             — return the player's full state        (key + claimed)
-    /api/context           — return the player's turn context      (key + claimed)
+    /api/join-session      — issue session JWT, return game server (key + claimed)
 """
 
 import json
 import logging
+import os
 import secrets
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 from aiohttp import web
 from pydantic import ValidationError
 
 import db
-import player_tools
-import state as state_module
 import character_builder
+import jwt_utils
 from bitzantium_schemas.character import CharacterState
 from bitzantium_schemas.character_choices import CharacterChoices
 from loader import load_all
@@ -43,6 +44,10 @@ from loader import load_all
 log = logging.getLogger(__name__)
 
 REALM_PATH = Path(__file__).resolve().parent / "Realms" / "dnd"
+
+# Default game server URL — the single DM server agents are assigned to.
+# Override via environment variable for multi-server setups.
+GAME_SERVER_URL: str = os.environ.get("BITZANTIUM_GAME_SERVER_URL", "http://localhost:8081")
 
 
 # ---------------------------------------------------------------------------
@@ -90,10 +95,10 @@ async def handle_register(request: web.Request) -> web.Response:
 
 
 # ---------------------------------------------------------------------------
-# /api/tool — execute a player tool call
+# /api/join-session — issue a session JWT and redirect to a game server
 # ---------------------------------------------------------------------------
 
-async def handle_tool_call(request: web.Request) -> web.Response:
+async def handle_join_session(request: web.Request) -> web.Response:
     try:
         body = await request.json()
     except json.JSONDecodeError:
@@ -103,76 +108,28 @@ async def handle_tool_call(request: web.Request) -> web.Response:
     if err:
         return err
 
-    api_key = account.api_key
-
-    # --- Resolve entity ---
-    entity_id = db.get_entity_id(api_key)
+    entity_id = db.get_entity_id(account.api_key)
     if not entity_id:
         return web.json_response({"error": "No character for this account"}, status=400)
 
-    character_state = db.get_character_state(api_key)
-    if not character_state:
-        return web.json_response({"error": "Character state not found"}, status=400)
-    state_module.update_character(entity_id, character_state)
+    # Session parameters from request (all optional, sensible defaults)
+    max_turns = body.get("max_turns")  # None = unlimited
+    session_duration = body.get("session_duration_seconds", 3600)
 
-    # --- Tool call ---
-    tool_call = body.get("tool_call")
-    if not tool_call or "name" not in tool_call:
-        return web.json_response({"error": "Missing tool_call.name"}, status=400)
+    token = jwt_utils.create_session_token(
+        entity_id=entity_id,
+        account_id=account.id,
+        game_server_url=GAME_SERVER_URL,
+        max_turns=max_turns,
+        session_duration_seconds=session_duration,
+    )
 
-    name: str = tool_call["name"]
-    arguments: dict[str, Any] = tool_call.get("arguments", {})
-
-    result = player_tools.execute_player_tool(entity_id, name, arguments)
-
-    # Persist updated state back to DB
-    updated_state = state_module.get_character(entity_id)
-    if updated_state:
-        db.save_character_state(entity_id, updated_state)
-
-    return web.json_response(result)
-
-
-# ---------------------------------------------------------------------------
-# /api/state — return the player's full CharacterState
-# ---------------------------------------------------------------------------
-
-async def handle_get_state(request: web.Request) -> web.Response:
-    try:
-        body = await request.json()
-    except json.JSONDecodeError:
-        return web.json_response({"error": "Invalid JSON"}, status=400)
-
-    account, err = _authenticate(body)
-    if err:
-        return err
-
-    character_state = db.get_character_state(account.api_key)
-    if not character_state:
-        return web.json_response({"error": "No character for this account"}, status=400)
-
-    return web.json_response(character_state.model_dump(mode="json"))
-
-
-# ---------------------------------------------------------------------------
-# /api/context — return the player's turn context
-# ---------------------------------------------------------------------------
-
-async def handle_get_context(request: web.Request) -> web.Response:
-    try:
-        body = await request.json()
-    except json.JSONDecodeError:
-        return web.json_response({"error": "Invalid JSON"}, status=400)
-
-    account, err = _authenticate(body)
-    if err:
-        return err
-
-    context = db.get_turn_context(account.api_key)
-    if not context:
-        return web.json_response({"error": "No turn context found"}, status=400)
-
-    return web.json_response(context)
+    return web.json_response({
+        "token": token,
+        "game_server_url": GAME_SERVER_URL,
+        "join_url": f"{GAME_SERVER_URL}/join",
+        "entity_id": entity_id,
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -254,10 +211,8 @@ def create_app() -> web.Application:
     app.router.add_post("/api/register", handle_register)
     app.router.add_post("/api/creation-options", handle_creation_options)
     app.router.add_post("/api/create-character", handle_create_character)
-    # Play (key + claimed)
-    app.router.add_post("/api/tool", handle_tool_call)
-    app.router.add_post("/api/state", handle_get_state)
-    app.router.add_post("/api/context", handle_get_context)
+    # Session (key + claimed)
+    app.router.add_post("/api/join-session", handle_join_session)
     return app
 
 

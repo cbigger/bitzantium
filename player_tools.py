@@ -294,6 +294,17 @@ def _snap_move(entity_id: str, args: dict, cs: CharacterState) -> dict:
     }
 
 
+def _snap_end_turn(entity_id: str, args: dict, cs: CharacterState) -> dict:
+    return {"entity_id": entity_id}
+
+
+def _snap_signoff(entity_id: str, args: dict, cs: CharacterState) -> dict:
+    return {
+        "entity_id": entity_id,
+        "departure_action": args.get("departure_action", ""),
+    }
+
+
 _SNAPSHOT_DISPATCH: dict[str, object] = {
     "attack":       _snap_attack,
     "cast_spell":   _snap_cast_spell,
@@ -304,6 +315,8 @@ _SNAPSHOT_DISPATCH: dict[str, object] = {
     "lay_on_hands": _snap_lay_on_hands,
     "hide":         _snap_hide,
     "move":         _snap_move,
+    "end_turn":     _snap_end_turn,
+    "signoff":      _snap_signoff,
 }
 
 
