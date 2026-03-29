@@ -69,3 +69,6 @@ def jwt_secret() -> str:
 
 def jwt_algorithm() -> str:
     return get()["jwt"]["algorithm"]
+
+def dm_api_key() -> str:
+    return get()["dm"]["api_key"]

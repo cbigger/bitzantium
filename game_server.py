@@ -1,18 +1,18 @@
 """
 game_server.py
 ==============
-Game server (the "bitzantium server") — wraps player MCP behind
-streamable HTTP with JWT authentication.
+Game server (the "bitzantium server") — wraps player and DM MCP behind
+streamable HTTP with authentication.
 
-The agent connects to /mcp as a standard MCP client with its JWT in the
-Authorization: Bearer header. Tool discovery, tool calls, and prompt
-retrieval all go through MCP natively — the agent never deals with auth
-in tool calls.
+Player agents connect to /mcp with a JWT in the Authorization: Bearer header.
+The DM agent connects to /dm-mcp with the pre-configured DM API key as Bearer.
 
 Responsibilities:
-    - POST /join: accept JWT, verify character exists, register active session
-    - /mcp:       MCP-over-streamable-HTTP endpoint (JWT in Bearer header)
+    - POST /join:  accept JWT, verify character exists, register active session
+    - /mcp:        Player MCP endpoint (JWT auth)
+    - /dm-mcp:     DM MCP endpoint (API key auth)
     - Intercept end_turn/signoff tool calls at the MCP layer for lifecycle
+    - On player end_turn: append raw turn output to DM chat history, set dm_turn_pending
     - Track active players, turn counts, session limits
 
 Run:
@@ -37,12 +37,12 @@ from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 
 import config
 import db
+import dm_tools
 import jwt_utils
 import loader
 import player_mcp
 import player_tools
 import registry
-import turn_state as turns
 
 # contextvars — threaded through from JWT middleware to MCP handlers
 _current_entity_id: contextvars.ContextVar[str] = contextvars.ContextVar("_current_entity_id")
@@ -62,6 +62,7 @@ class PlayerSession:
         self.max_turns: Optional[int] = token_claims.get("max_turns")
         self.turns_taken: int = 0
         self.active: bool = True
+        self.turn_log: list[dict] = []  # raw tool calls + responses for the current turn
 
 
 # entity_id -> PlayerSession
@@ -143,6 +144,15 @@ async def handle_call_tool(
 
     # --- Regular tool execution (reads/writes DB directly) ---
     result = player_tools.execute_player_tool(entity_id, name, arguments or {})
+
+    # Log raw tool call + response for DM context
+    if session:
+        session.turn_log.append({
+            "tool": name,
+            "arguments": arguments or {},
+            "result": result,
+        })
+
     return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
 
 
@@ -183,11 +193,25 @@ async def handle_get_prompt(
 # ---------------------------------------------------------------------------
 
 def _do_end_turn(session: PlayerSession) -> dict:
-    """End the current player's turn. Resets economy in DB."""
+    """End the current player's turn. Resets economy, appends raw turn
+    output to DM chat history, sets dm_turn_pending."""
     session.turns_taken += 1
     at_limit = session.max_turns is not None and session.turns_taken >= session.max_turns
 
     db.reset_economy(session.entity_id)
+
+    # Append raw player turn output to DM chat history
+    if session.turn_log:
+        db.append_dm_message("user", {
+            "type": "player_turn",
+            "entity_id": session.entity_id,
+            "turn_number": session.turns_taken,
+            "actions": session.turn_log,
+        })
+        session.turn_log = []
+
+    # Signal DM that it has work to do
+    db.set_dm_turn_pending(True)
 
     return {
         "status": "turn_ended",
@@ -205,7 +229,7 @@ def _do_signoff(session: PlayerSession, args: dict) -> dict:
     db.save_departure_action(session.entity_id, departure_action)
 
     session.active = False
-    turns.remove_from_order(session.entity_id)
+    db.remove_from_order(session.entity_id)
 
     log.info("Player signed off: %s — %s", session.entity_id, departure_action)
 
@@ -327,9 +351,9 @@ async def handle_join(request: Request):
     session = PlayerSession(entity_id, account_id, claims)
     _active_sessions[entity_id] = session
 
-    turn = turns.get_turn()
-    if entity_id not in turn.turn_order:
-        turns.add_to_order(entity_id)
+    turn = db.get_turn()
+    if entity_id not in turn["turn_order"]:
+        db.add_to_order(entity_id)
 
     log.info("Player joined: %s (entity: %s)", character.sheet.name, entity_id)
 
@@ -343,6 +367,153 @@ async def handle_join(request: Request):
 
 
 # ---------------------------------------------------------------------------
+# DM MCP server — tools, prompt, status/context, turn completion
+# ---------------------------------------------------------------------------
+
+_dm_mcp_server = Server("bitzantium-dm")
+
+
+@_dm_mcp_server.list_tools()
+async def dm_handle_list_tools() -> list[types.Tool]:
+    """Return the full DM tool catalogue plus dm_turn_complete."""
+    tools = [
+        types.Tool(
+            name=t["name"],
+            description=t["description"],
+            inputSchema=t["inputSchema"],
+        )
+        for t in dm_tools.get_dm_tools()
+    ]
+    # Add the dm_turn_complete lifecycle tool
+    tools.append(types.Tool(
+        name="dm_turn_complete",
+        description="Signal that the DM has finished resolving the current turn.",
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ))
+    # Add the dm_poll tool (check pending + pull context)
+    tools.append(types.Tool(
+        name="dm_poll",
+        description=(
+            "Check if the DM has a pending turn. If pending, returns the full "
+            "DM chat history for context. If not pending, returns pending=false."
+        ),
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ))
+    return tools
+
+
+@_dm_mcp_server.call_tool()
+async def dm_handle_call_tool(
+    name: str,
+    arguments: dict[str, Any] | None,
+) -> list[types.TextContent]:
+    """Execute a DM tool call."""
+    if name == "dm_turn_complete":
+        db.set_dm_turn_pending(False)
+        return [types.TextContent(type="text", text=json.dumps({"status": "dm_turn_complete"}))]
+
+    if name == "dm_poll":
+        pending = db.is_dm_turn_pending()
+        if not pending:
+            return [types.TextContent(type="text", text=json.dumps({"pending": False}))]
+        history = db.get_dm_chat_history()
+        return [types.TextContent(type="text", text=json.dumps({
+            "pending": True,
+            "messages": history,
+        }))]
+
+    if name == "dm_append_history":
+        args = arguments or {}
+        role = args.get("role", "assistant")
+        content = args.get("content", "")
+        db.append_dm_message(role, content)
+        return [types.TextContent(type="text", text=json.dumps({"status": "appended"}))]
+
+    result = dm_tools.execute_dm_tool(name, arguments or {})
+    return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
+
+
+@_dm_mcp_server.list_prompts()
+async def dm_handle_list_prompts() -> list[types.Prompt]:
+    return [
+        types.Prompt(
+            name="dm_context",
+            description="Current scene, turn state, and DM chat history",
+        )
+    ]
+
+
+@_dm_mcp_server.get_prompt()
+async def dm_handle_get_prompt(
+    name: str,
+    arguments: dict[str, str] | None,
+) -> types.GetPromptResult:
+    """Return full DM context: scene state, turn state, chat history."""
+    scene = db.get_scene()
+    turn = db.get_turn()
+    history = db.get_dm_chat_history()
+    context = {
+        "scene": scene,
+        "turn": turn,
+        "chat_history": history,
+    }
+    return types.GetPromptResult(
+        description="DM agent context for the current turn",
+        messages=[
+            types.PromptMessage(
+                role="user",
+                content=types.TextContent(type="text", text=json.dumps(context, indent=2)),
+            )
+        ],
+    )
+
+
+# ---------------------------------------------------------------------------
+# DM MCP streamable HTTP with API key middleware
+# ---------------------------------------------------------------------------
+
+_dm_session_manager = StreamableHTTPSessionManager(
+    app=_dm_mcp_server,
+    json_response=True,
+    stateless=True,
+)
+
+
+class DmAPIKeyMiddleware:
+    """ASGI middleware that validates the DM API key from the Bearer header."""
+
+    def __init__(self, mcp_app):
+        self.mcp_app = mcp_app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] not in ("http", "https"):
+            await self.mcp_app(scope, receive, send)
+            return
+
+        auth_value = ""
+        for key, val in scope.get("headers", []):
+            if key == b"authorization":
+                auth_value = val.decode("utf-8")
+                break
+
+        if not auth_value.startswith("Bearer "):
+            response = JSONResponse(
+                {"error": "Missing Authorization: Bearer <dm-api-key> header"},
+                status_code=401,
+            )
+            await response(scope, receive, send)
+            return
+
+        provided_key = auth_value[7:]
+        if provided_key != config.dm_api_key():
+            response = JSONResponse({"error": "Invalid DM API key"}, status_code=403)
+            await response(scope, receive, send)
+            return
+
+        await self.mcp_app(scope, receive, send)
+
+
+# ---------------------------------------------------------------------------
 # App setup
 # ---------------------------------------------------------------------------
 
@@ -351,11 +522,13 @@ def create_app() -> Starlette:
     loader.load_all()
 
     jwt_mcp = JWTMCPMiddleware(_session_manager.handle_request)
+    dm_mcp = DmAPIKeyMiddleware(_dm_session_manager.handle_request)
 
     app = Starlette(
         routes=[
             Route("/join", handle_join, methods=["POST"]),
             Mount("/mcp", app=jwt_mcp),
+            Mount("/dm-mcp", app=dm_mcp),
         ],
     )
     return app

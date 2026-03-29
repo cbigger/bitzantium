@@ -1,6 +1,6 @@
 # Bitzantium — Game Engine Backend
 
-Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs the game; player agents connect via MCP and interact entirely through conversation and tool calls. No tables necessary.
+Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs the game; player agents connect via MCP and interact entirely through conversation and tool calls. No tables necessary.
 
 ---
 
@@ -9,22 +9,20 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DMAgent runs th
 ```
 bitzantium/
 ├── auth_wrapper.py       — Auth server: registration, character creation, JWT issuance
-├── game_server.py        — Game server: MCP-over-HTTP with JWT auth, session lifecycle
+├── game_server.py        — Game server: player + DM MCP endpoints, session lifecycle
 ├── jwt_utils.py          — Shared JWT creation/validation (HS256)
+├── config.py             — Loads bitzantium.toml, typed accessors for all config values
 ├── player_mcp.py         — Player MCP server + prompt builder (DB-direct, stateless)
 ├── player_tools.py       — Player tool execution (validate → spend → snapshot)
 ├── registry.py           — Player tool catalogue + four-layer gate logic
-├── dm_tools.py           — DM tool catalogue + execution (rolls, state mutation)
+├── dm_tools.py           — DM tool catalogue + execution (rolls, state mutation, all DB-backed)
 ├── character_builder.py  — Programmatic character creation with rule validation
-├── db.py                 — SQLAlchemy ORM: accounts, characters, turn contexts, economy
+├── db.py                 — SQLAlchemy ORM: accounts, characters, scene, turns, DM chat history
 ├── db_controls.py        — Account creation, DB population, clear (temp-safe)
-├── state.py              — In-memory character state store (DM-side, legacy)
-├── scene_state.py        — Active scene: positions, area, light level
-├── turn_state.py         — Turn order engine: initiative, advance, tick counter
 ├── rules.py              — Pure D&D 5e calculations (no I/O, no state mutation)
 ├── dice.py               — Dice rolling primitives
-├── loader.py             — Loads Realm data files into in-memory registries
-├── fabricate.py          — Interactive CLI character creation wizard
+├── loader.py             — Populates in-memory registries from realm_objects DB table
+├── load_realm.py         — CLI script: ingest a Realm directory into the database
 └── bitzantium_schemas/
     ├── character.py          — PlayerSheet, CharacterState, ActionEconomy
     ├── character_choices.py  — CharacterChoices input model for builder
@@ -36,7 +34,13 @@ bitzantium/
 
 ## Architecture
 
-The system is split into two servers. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles gameplay via MCP-over-streamable-HTTP with JWT authentication. The database is the single source of truth for all character state.
+The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via MCP-over-streamable-HTTP. The database is the single source of truth for all state — character data, scene, turn order, and DM conversation history.
+
+### Agents
+
+**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They connect to the game server's `/mcp` endpoint with a JWT. Player agents sign on and off per session.
+
+**The DM agent** is a remote, always-running service. It authenticates with a pre-configured API key (no registration, no JWT, no character). It connects to the game server's `/dm-mcp` endpoint. The DM has no local memory — its entire context is a persistent LLM conversation history stored in the database. The DM is a singleton: one per game server instance.
 
 ### Full Player Lifecycle
 
@@ -83,9 +87,45 @@ Agent                     Auth Server              Human             Game Server
   │  ├─ get_prompt        → system prompt built from DB                     │
   │  ├─ call_tool(attack) → validate + spend economy + snapshot            │
   │  ├─ call_tool(move)   → validate + snapshot                            │
-  │  ├─ call_tool(end_turn) → reset economy, advance turn                  │
+  │  ├─ call_tool(end_turn) → reset economy, log to DM history, flag DM   │
   │  └─ call_tool(signoff)  → save departure, deactivate session           │
   │◄══════════════════════════════════════════════════════════════════════►│
+```
+
+### DM Lifecycle
+
+```
+DM Agent                                    Game Server
+  │                                               │
+  │  MCP-over-HTTP on /dm-mcp                     │
+  │  (Authorization: Bearer <dm-api-key>)         │
+  │                                               │
+  │  call_tool(dm_poll)                            │
+  │──────────────────────────────────────────────►│
+  │◄──────────────────────────────────────────────│
+  │  {"pending": false}                            │
+  │  ... (DM keeps polling) ...                    │
+  │                                               │
+  │  (player calls end_turn)                       │
+  │  → game server appends raw turn output         │
+  │    to dm_chat_history, sets dm_turn_pending    │
+  │                                               │
+  │  call_tool(dm_poll)                            │
+  │──────────────────────────────────────────────►│
+  │◄──────────────────────────────────────────────│
+  │  {"pending": true, "messages": [...]}          │
+  │                                               │
+  │  DM processes turn: calls dm_tools             │
+  │  (resolve_attack, apply_damage, etc.)          │
+  │──────────────────────────────────────────────►│
+  │◄──────────────────────────────────────────────│
+  │                                               │
+  │  call_tool(dm_turn_complete)                   │
+  │──────────────────────────────────────────────►│
+  │◄──────────────────────────────────────────────│
+  │  → clears dm_turn_pending                      │
+  │                                               │
+  │  (DM resumes polling)                          │
 ```
 
 **Key constraints:**
@@ -95,6 +135,8 @@ Agent                     Auth Server              Human             Game Server
 - Character creation is validated server-side against class/race/background rules
 - The player path is stateless — all reads/writes go through the DB, identified by `entity_id` from the JWT
 - Player tools only mutate action economy; everything else is a declaration of intent for the DM
+- The DM is stateless — its "memory" is the persistent chat history in the DB
+- All scene, turn order, and character state lives in the DB — no in-memory state stores
 
 ### Auth Server
 
@@ -134,20 +176,25 @@ Character creation request:
 
 ### Game Server
 
-`game_server.py` is the MCP-over-streamable-HTTP server that wraps player tools behind JWT authentication. Runs on port 8081 (Starlette + uvicorn).
+`game_server.py` is the MCP-over-streamable-HTTP server that hosts both player and DM endpoints. Runs on the port configured in `bitzantium.toml` (Starlette + uvicorn).
 
-| Endpoint | Transport | Purpose |
-|---|---|---|
-| `POST /join` | REST | Validate JWT, register session, add to turn order |
-| `/mcp` | MCP-over-HTTP | Tool discovery, tool calls, prompt retrieval |
+| Endpoint | Transport | Auth | Purpose |
+|---|---|---|---|
+| `POST /join` | REST | JWT | Validate JWT, register session, add to turn order |
+| `/mcp` | MCP-over-HTTP | JWT | Player tool discovery, tool calls, prompt retrieval |
+| `/dm-mcp` | MCP-over-HTTP | DM API key | DM tool discovery, tool calls, polling, prompt retrieval |
 
-JWT authentication is handled transparently by ASGI middleware (`JWTMCPMiddleware`). The agent sets `Authorization: Bearer <jwt>` on its MCP client once — auth never appears in tool arguments.
+**Player auth** is handled by `JWTMCPMiddleware` (ASGI). The agent sets `Authorization: Bearer <jwt>` on its MCP client — auth never appears in tool arguments. The middleware validates the JWT, confirms an active session, and sets a `contextvars.ContextVar` with the `entity_id`.
 
-The middleware validates the JWT, confirms an active session exists, and sets a `contextvars.ContextVar` with the `entity_id`. MCP handlers read from this contextvar and pull all state directly from the database.
+**DM auth** is handled by `DmAPIKeyMiddleware` (ASGI). The DM sets `Authorization: Bearer <dm-api-key>`. The middleware compares against the key in `bitzantium.toml`.
 
-**Session lifecycle tools** (`end_turn`, `signoff`) are intercepted at the MCP layer before reaching `player_tools`:
-- `end_turn` — increments turn counter, resets action economy in DB via `db.reset_economy()`
+**Player session lifecycle tools** (`end_turn`, `signoff`) are intercepted at the MCP layer:
+- `end_turn` — resets action economy, appends raw turn log (tool calls + responses) to DM chat history, sets `dm_turn_pending = True`
 - `signoff` — saves departure action to DB, deactivates session, removes from turn order
+
+**DM lifecycle tools:**
+- `dm_poll` — if `dm_turn_pending` is false, returns `{"pending": false}`. If true, returns `{"pending": true, "messages": [...]}` with the full DM chat history.
+- `dm_turn_complete` — clears `dm_turn_pending`. Called by the DM client when generation is finished.
 
 ### Character Builder
 
@@ -162,23 +209,50 @@ The middleware validates the JWT, confirms an active session exists, and sets a 
 
 On failure, the endpoint returns specific error messages (e.g. `"Skill 'arcana' is not available to choose from. Available: [...]"`), so the agent can correct and retry.
 
-The interactive CLI wizard (`fabricate.py`) produces the same output shape for manual character creation.
-
 ### Database
 
-`db.py` provides a SQLAlchemy ORM layer with three tables:
+`db.py` provides a SQLAlchemy ORM layer. Connection string is configured in `bitzantium.toml`.
 
 | Table | Key columns | Notes |
 |---|---|---|
 | `accounts` | `api_key` (unique), `claimed`, `created_at` | One per agent |
-| `characters` | `account_id` (FK, unique), `entity_id` (unique), `character_state` (JSONB), `departure_action` | Full CharacterState blob |
-| `turn_contexts` | `character_id` (FK, unique), `story_so_far`, `location_area`, `location_sub`, `quest_log` | Prompt-building context |
+| `characters` | `account_id` (FK), `entity_id` (unique), `character_state` (JSONB) | Full CharacterState blob |
+| `turn_contexts` | `character_id` (FK), `story_so_far`, `location_area`, `quest_log` | Prompt-building context |
+| `realm_objects` | `category`, `data_id` (unique together), `data` (JSONB), `is_sapient` | Realm reference data |
+| `scene_states` | `area_id`, `area_name`, `light_level`, `entity_positions` (JSONB) | Single row — active scene |
+| `turn_states` | `tick`, `turn_order` (JSONB), `turn_index`, `initiative_rolls` (JSONB), `dm_turn_pending` | Single row — turn engine |
+| `dm_chat_history` | `role`, `content` (JSONB), `created_at` | One row per message — DM's persistent LLM conversation |
 
 Character state is stored as a single JSONB column — serialized via Pydantic's `model_dump(mode="json")` and deserialized via `CharacterState.model_validate()`.
 
-The player path reads and writes state directly via `db.get_character_state_by_entity()`, `db.spend_economy()`, `db.reset_economy()`, etc. No in-memory state store is used for the player path.
+The player path reads and writes state directly via `db.get_character_state_by_entity()`, `db.spend_economy()`, `db.reset_economy()`, etc. The DM path uses the same DB functions for character state, plus scene/turn/chat history functions. No in-memory state stores are used.
 
-Connection string is configured in `db.py`. Currently: `postgresql://bitzantium:bitzantium@localhost:5432/bitzantium_temp`.
+### Configuration
+
+All configuration lives in `bitzantium.toml`, loaded by `config.py`:
+
+```toml
+[database]
+url = "postgresql://..."
+
+[auth_server]
+host = "0.0.0.0"
+port = 8080
+
+[game_server]
+host = "0.0.0.0"
+port = 8081
+url = "http://localhost:8081"
+
+[jwt]
+secret = "..."
+algorithm = "HS256"
+
+[dm]
+api_key = "..."
+```
+
+Config file search order: `BITZANTIUM_CONFIG` env var, then `./bitzantium.toml`, then next to `config.py`.
 
 ### DB Controls
 
@@ -205,25 +279,21 @@ The `clear_all_data()` function refuses to run if the connection string does not
 
 ```
 1.  dm_tools.execute_dm_tool("init_scene", {area_id, area_name, ...})
-        → scene_state.init_scene(...)
+        → db.init_scene(...)
 
 2.  dm_tools.execute_dm_tool("place_entity", {entity_id, x, y, z})
-        → scene_state.place_entity(...)
+        → db.place_entity(...)
         (repeat for each character)
 
 3.  dm_tools.execute_dm_tool("roll_initiative", {entity_ids: [...]})
-        → turn_state.roll_initiative(...)
+        → db.roll_initiative(...)
 ```
 
 ### Turn Loop
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│ 1. Get turn state                                                   │
-│        dm_tools.execute_dm_tool("get_turn_state", {})               │
-│        → current_entity, turn_order, tick                           │
-│                                                                     │
-│ 2. Player agent fetches prompt + tools via MCP                      │
+│ 1. Player agent fetches prompt + tools via MCP (/mcp)               │
 │        get_prompt("player_context")                                 │
 │        → player_mcp.build_player_prompt(entity_id)                  │
 │        → reads CharacterState + TurnContext from DB                  │
@@ -231,48 +301,46 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │        → registry.get_available_tools(CharacterState from DB)       │
 │        → filtered by class/conditions/economy/resources             │
 │                                                                     │
-│ 3. DMAgent → Player agent                                           │
-│        DMAgent writes narrative/description as "user" message       │
-│        Player agent responds as "assistant":                        │
-│          - narrative describing intended actions                     │
-│          - tool calls (all batched, not sequential)                 │
-│                                                                     │
-│ 4. Game server processes player tool calls via MCP                  │
-│        for each tool_call in player_response:                       │
+│ 2. Player agent responds with narrative + tool calls                │
+│        Game server processes each tool call:                        │
 │            player_tools.execute_player_tool(                        │
 │                entity_id, tool_call.name, tool_call.args            │
 │            )                                                        │
 │        Each call:                                                   │
 │            a. Re-validates gates (DB state may have changed)        │
 │            b. Spends action economy in DB if valid                  │
-│            c. Returns snapshot: {valid, error, economy_spent,       │
-│                                  snapshot{modifiers, target, ...}}  │
+│            c. Returns snapshot for DM resolution                    │
+│        Raw tool calls + responses are logged in the player session  │
 │                                                                     │
-│ 5. DMAgent receives                                                 │
-│        - player raw output (narrative + tool call text)             │
-│        - list of tool result dicts from step 4                      │
-│        DMAgent interprets intent, decides what actually happens     │
+│ 3. Player calls end_turn                                            │
+│        → resets action economy in DB                                │
+│        → appends raw turn log to dm_chat_history                    │
+│        → sets dm_turn_pending = True                                │
 │                                                                     │
-│ 6. DMAgent resolves mechanics via dm_tools                          │
+│ 4. DM agent polls via dm_poll, gets pending=true + chat history     │
+│        DM has full context: all prior turns + this turn's raw data  │
+│        DM decides what actually happened                            │
+│                                                                     │
+│ 5. DM resolves mechanics via dm_tools (/dm-mcp)                    │
 │        resolve_attack(entity_id, target_id, weapon_slot, ...)       │
 │        apply_damage(entity_id, amount, damage_type)                 │
 │        apply_condition(entity_id, condition)                        │
 │        spend_spell_slot(entity_id, slot_level)     ← if spell cast  │
 │        spend_resource(entity_id, resource_id)      ← if ability used│
 │        move_entity(entity_id, x, y, z)             ← if moved       │
-│        ... etc.                                                     │
+│        tick_turn_end(entity_id)                    ← effect cleanup  │
 │                                                                     │
-│ 7. Player calls end_turn                                            │
-│        → game server resets economy in DB                           │
-│        → turn advances                                              │
+│ 6. DM calls dm_turn_complete                                        │
+│        → clears dm_turn_pending                                     │
+│        → DM response appended to chat history by DM client          │
 │                                                                     │
-│ 8. Check win condition, repeat from 1                               │
+│ 7. Next player's turn begins, repeat from 1                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### What the DMAgent controls
+### What the DM controls
 
-The DMAgent is not a passive executor. It receives player intent in natural language and structured snapshots, and decides:
+The DM is not a passive executor. It receives player intent as raw tool calls/responses and decides:
 
 - Whether the declared action is narratively appropriate
 - Whether to apply advantage/disadvantage beyond what the snapshot shows
@@ -280,7 +348,7 @@ The DMAgent is not a passive executor. It receives player intent in natural lang
 - Whether to trigger reactions or opportunity attacks
 - How to narrate the outcome to the next player
 
-The tool validation (`player_tools.py`) confirms mechanical legality at the moment of the call. The DMAgent has final authority over everything else.
+The tool validation (`player_tools.py`) confirms mechanical legality at the moment of the call. The DM has final authority over everything else.
 
 ---
 
@@ -302,12 +370,12 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 ### Economy rules
 
 - **Action economy** (`action`, `bonus_action`, `reaction`) is spent in the DB the moment `execute_player_tool` succeeds via `db.spend_economy()`. Invalid calls do not mutate the DB.
-- **Spell slots and class resources** (`rage`, `ki`, `bardic inspiration`, etc.) are **not** spent by `player_tools`. The DMAgent commits these via `dm_tools` (`spend_spell_slot`, `spend_resource`) after deciding the action resolves.
-- **Movement** (`economy.movement_used`) is updated by the DMAgent via `dm_tools.move_entity`, not by the player's `move` tool call.
+- **Spell slots and class resources** (`rage`, `ki`, `bardic inspiration`, etc.) are **not** spent by `player_tools`. The DM commits these via `dm_tools` (`spend_spell_slot`, `spend_resource`) after deciding the action resolves.
+- **Movement** (`economy.movement_used`) is updated by the DM via `dm_tools.move_entity`, not by the player's `move` tool call.
 
 ### Session lifecycle
 
-- `end_turn` — resets action economy in DB, increments turn counter. If `max_turns` from the JWT is reached, the response includes `session_limit_reached: true`.
+- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`. If `max_turns` from the JWT is reached, the response includes `session_limit_reached: true`.
 - `signoff` — saves `departure_action` to DB, deactivates the player session, removes entity from turn order. The JWT expires naturally.
 
 ---
@@ -315,42 +383,49 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 ## Quick Start (dev / temp DB)
 
 ```bash
-# 1. Start the auth server (port 8080 — loads realm data + creates DB tables)
+# 1. Load realm data into the database
+.venv/bin/python3 load_realm.py Realms/dnd/
+
+# 2. Start the auth server (loads realm data from DB, creates tables)
 .venv/bin/python3 auth_wrapper.py
 
-# 2. Start the game server (port 8081 — loads realm data + creates DB tables)
+# 3. Start the game server (loads realm data from DB, creates tables)
 .venv/bin/python3 game_server.py
 
-# 3. Register an account
+# 4. Register an account
 curl -s -X POST http://localhost:8080/api/register
 # → {"api_key": "..."}
 
-# 4. Browse creation options
+# 5. Browse creation options
 curl -s -X POST http://localhost:8080/api/creation-options \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}}'
 
-# 5. Create a character
+# 6. Create a character
 curl -s -X POST http://localhost:8080/api/create-character \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}, "choices": { ... }}'
 
-# 6. Verify the account (manual — psql or db_controls)
+# 7. Verify the account (manual — psql or db_controls)
 .venv/bin/python3 -c "import db; db.claim_account('<key>')"
 
-# 7. Get a session JWT
+# 8. Get a session JWT
 curl -s -X POST http://localhost:8080/api/join-session \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}}'
 # → {"token": "<jwt>", "game_server_url": "http://localhost:8081", ...}
 
-# 8. Join the game server
+# 9. Join the game server
 curl -s -X POST http://localhost:8081/join \
   -H "Authorization: Bearer <jwt>"
 # → {"status": "joined", "mcp_endpoint": "/mcp", ...}
 
-# 9. Play via MCP client pointed at http://localhost:8081/mcp
-#    with Authorization: Bearer <jwt> header
+# 10. Play via MCP client pointed at http://localhost:8081/mcp
+#     with Authorization: Bearer <jwt> header
+
+# DM connects to http://localhost:8081/dm-mcp
+#   with Authorization: Bearer <dm-api-key> header
+#   (dm-api-key is configured in bitzantium.toml)
 ```
 
 To bulk-load existing character JSON files (bypasses the registration flow):

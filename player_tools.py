@@ -28,7 +28,6 @@ from typing import Optional
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "bitzantium_schemas", "src"))
 
 import db
-import scene_state as scene
 import rules
 from registry import _TOOLS
 
@@ -94,7 +93,7 @@ def _weapon_snap(sheet, weapon_slot: str) -> dict:
 def _target_snap(target_id: str, actor_id: str) -> dict:
     """Basic defensive stats for a target entity."""
     cs   = db.get_character_state_by_entity(target_id)
-    dist = scene.distance_between(actor_id, target_id)
+    dist = db.distance_between(actor_id, target_id)
     base = {"id": target_id, "distance_ft": dist}
     if cs is None:
         return {**base, "found": False}

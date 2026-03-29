@@ -23,15 +23,9 @@ Public API:
     execute_dm_tool(name, args) → result dict
 """
 
-import sys
-import os
 import uuid
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "bitzantium_schemas", "src"))
-
-import state as char_state
-import turn_state as turns
-import scene_state as scene
+import db
 import rules
 
 from bitzantium_schemas.schemas import Condition, ActiveEffect, LightLevel
@@ -43,9 +37,9 @@ from bitzantium_schemas.character import CharacterState
 # ---------------------------------------------------------------------------
 
 def _get_cs(entity_id: str) -> CharacterState:
-    cs = char_state.get_character(entity_id)
+    cs = db.get_character_state_by_entity(entity_id)
     if cs is None:
-        raise KeyError(f"Entity {entity_id!r} not registered in state store.")
+        raise KeyError(f"Entity {entity_id!r} not found in database.")
     return cs
 
 
@@ -77,12 +71,12 @@ def _handle_init_scene(args: dict) -> dict:
     light_raw  = args.get("light_level", "bright")
     light      = LightLevel(light_raw)
 
-    s = scene.init_scene(area_id, area_name, area_desc, light)
+    s = db.init_scene(area_id, area_name, area_desc, light.value)
     return {
-        "area_id":          s.area_id,
-        "area_name":        s.area_name,
-        "area_description": s.area_description,
-        "light_level":      s.light_level.value,
+        "area_id":          s["area_id"],
+        "area_name":        s["area_name"],
+        "area_description": s["area_description"],
+        "light_level":      s["light_level"],
     }
 
 
@@ -94,11 +88,11 @@ def _handle_place_entity(args: dict) -> dict:
     z         = int(args.get("z", 0))
 
     cs = _get_cs(entity_id)
-    s  = scene.place_entity(entity_id, x, y, z)
+    s  = db.place_entity(entity_id, x, y, z)
     return {
         "entity_id": entity_id,
         "name":      cs.sheet.name,
-        "position":  {"x": x, "y": y, "z": z, "area_id": s.area_id},
+        "position":  {"x": x, "y": y, "z": z, "area_id": s["area_id"]},
     }
 
 
@@ -107,13 +101,13 @@ def _handle_place_entity(args: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 def _handle_get_scene_state(args: dict) -> dict:
-    s        = scene.get_scene()
+    s        = db.get_scene()
     entities = []
-    for eid, pos in s.entity_positions.items():
-        cs = char_state.get_character(eid)
+    for eid, pos in s["entity_positions"].items():
+        cs = db.get_character_state_by_entity(eid)
         entry = {
             "entity_id":  eid,
-            "position":   pos.model_dump(),
+            "position":   pos,
         }
         if cs:
             entry["name"]       = cs.sheet.name
@@ -124,10 +118,10 @@ def _handle_get_scene_state(args: dict) -> dict:
         entities.append(entry)
 
     return {
-        "area_id":          s.area_id,
-        "area_name":        s.area_name,
-        "area_description": s.area_description,
-        "light_level":      s.light_level.value,
+        "area_id":          s["area_id"],
+        "area_name":        s["area_name"],
+        "area_description": s["area_description"],
+        "light_level":      s["light_level"],
         "entities":         entities,
     }
 
@@ -182,12 +176,12 @@ def _handle_get_character_state(args: dict) -> dict:
 
 
 def _handle_get_turn_state(args: dict) -> dict:
-    t = turns.get_turn()
+    t = db.get_turn()
     return {
-        "tick":             t.tick,
-        "current_entity":   t.current_entity,
-        "turn_order":       t.turn_order,
-        "initiative_rolls": t.initiative_rolls,
+        "tick":             t["tick"],
+        "current_entity":   t["current_entity"],
+        "turn_order":       t["turn_order"],
+        "initiative_rolls": t["initiative_rolls"],
     }
 
 
@@ -197,52 +191,52 @@ def _handle_get_turn_state(args: dict) -> dict:
 
 def _handle_roll_initiative(args: dict) -> dict:
     entity_ids = args["entity_ids"]
-    t          = turns.roll_initiative(entity_ids)
+    t          = db.roll_initiative(entity_ids)
 
     return {
-        "tick":             t.tick,
-        "current_entity":   t.current_entity,
-        "turn_order":       t.turn_order,
-        "initiative_rolls": t.initiative_rolls,
+        "tick":             t["tick"],
+        "current_entity":   t["current_entity"],
+        "turn_order":       t["turn_order"],
+        "initiative_rolls": t["initiative_rolls"],
     }
 
 
 def _handle_set_turn_order(args: dict) -> dict:
     entity_ids = args["entity_ids"]
-    t          = turns.set_turn_order(entity_ids)
+    t          = db.set_turn_order(entity_ids)
 
     return {
-        "tick":       t.tick,
-        "turn_order": t.turn_order,
-        "current_entity": t.current_entity,
+        "tick":             t["tick"],
+        "turn_order":       t["turn_order"],
+        "current_entity":   t["current_entity"],
     }
 
 
 def _handle_next_turn(args: dict) -> dict:
-    next_id, t = turns.advance_turn()
-    cs         = char_state.get_character(next_id)
+    next_id, t = db.advance_turn()
+    cs         = db.get_character_state_by_entity(next_id)
 
     return {
-        "tick":           t.tick,
+        "tick":           t["tick"],
         "current_entity": next_id,
         "name":           cs.sheet.name if cs else next_id,
-        "turn_order":     t.turn_order,
+        "turn_order":     t["turn_order"],
     }
 
 
 def _handle_add_to_turn_order(args: dict) -> dict:
     entity_id   = args["entity_id"]
     after_index = args.get("after_index")
-    t           = turns.add_to_order(entity_id, after_index)
+    t           = db.add_to_order(entity_id, after_index)
 
-    return {"turn_order": t.turn_order, "current_entity": t.current_entity}
+    return {"turn_order": t["turn_order"], "current_entity": t["current_entity"]}
 
 
 def _handle_remove_from_turn_order(args: dict) -> dict:
     entity_id = args["entity_id"]
-    t         = turns.remove_from_order(entity_id)
+    t         = db.remove_from_order(entity_id)
 
-    return {"turn_order": t.turn_order, "current_entity": t.current_entity}
+    return {"turn_order": t["turn_order"], "current_entity": t["current_entity"]}
 
 
 # ---------------------------------------------------------------------------
@@ -377,7 +371,7 @@ def _handle_apply_damage(args: dict) -> dict:
             })
         newly_downed = True
 
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {
         "entity_id":               entity_id,
@@ -411,7 +405,7 @@ def _handle_apply_healing(args: dict) -> dict:
         "hp_current": new_hp,
         "conditions": conditions,
     })
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {
         "entity_id": entity_id,
@@ -437,7 +431,7 @@ def _handle_apply_condition(args: dict) -> dict:
     updated_sheet = sheet.model_copy(update={
         "conditions": sheet.conditions + [condition]
     })
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {
         "entity_id":      entity_id,
@@ -460,7 +454,7 @@ def _handle_remove_condition(args: dict) -> dict:
 
     updated_conditions = [c for c in sheet.conditions if c != condition]
     updated_sheet      = sheet.model_copy(update={"conditions": updated_conditions})
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {"entity_id": entity_id, "condition": condition_raw, "removed": True}
 
@@ -498,7 +492,7 @@ def _handle_apply_effect(args: dict) -> dict:
         updates["concentration_effect_id"] = eff_id
 
     updated_sheet = sheet.model_copy(update=updates)
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {"entity_id": entity_id, "effect_id": eff_id, "name": name, "applied": True}
 
@@ -517,7 +511,7 @@ def _handle_end_effect(args: dict) -> dict:
         updates["concentration_effect_id"] = None
 
     updated_sheet = sheet.model_copy(update=updates)
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {"entity_id": entity_id, "effect_id": effect_id, "ended": True}
 
@@ -528,10 +522,10 @@ def _handle_move_entity(args: dict) -> dict:
     y         = int(args["y"])
     z         = int(args.get("z", 0))
 
-    s = scene.place_entity(entity_id, x, y, z)
+    s = db.place_entity(entity_id, x, y, z)
     return {
         "entity_id": entity_id,
-        "position":  {"x": x, "y": y, "z": z, "area_id": s.area_id},
+        "position":  {"x": x, "y": y, "z": z, "area_id": s["area_id"]},
     }
 
 
@@ -552,7 +546,7 @@ def _handle_spend_spell_slot(args: dict) -> dict:
         level: entry.model_copy(update={"remaining": entry.remaining - 1}),
     }
     updated_sheet = sheet.model_copy(update={"spell_slots": updated_slots})
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {
         "entity_id":   entity_id,
@@ -581,7 +575,7 @@ def _handle_restore_spell_slot(args: dict) -> dict:
         level: entry.model_copy(update={"remaining": new_remaining}),
     }
     updated_sheet = sheet.model_copy(update={"spell_slots": updated_slots})
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {
         "entity_id": entity_id,
@@ -608,7 +602,7 @@ def _handle_spend_resource(args: dict) -> dict:
                         "success": False, "reason": "Insufficient resource."}
             resources[i] = r.model_copy(update={"current": r.current - amount})
             updated_sheet = sheet.model_copy(update={"class_resources": resources})
-            char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+            db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
             return {
                 "entity_id": entity_id,
                 "resource":  resource_name,
@@ -635,7 +629,7 @@ def _handle_restore_resource(args: dict) -> dict:
             new_current   = min(r.max, r.current + amount)
             resources[i]  = r.model_copy(update={"current": new_current})
             updated_sheet = sheet.model_copy(update={"class_resources": resources})
-            char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+            db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
             return {
                 "entity_id": entity_id,
                 "resource":  resource_name,
@@ -683,7 +677,7 @@ def _handle_tick_turn_end(args: dict) -> dict:
         "active_effects":          remaining,
         "concentration_effect_id": conc_id,
     })
-    char_state.update_character(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
+    db.save_character_state(entity_id, cs.model_copy(update={"sheet": updated_sheet}))
 
     return {
         "entity_id":        entity_id,
