@@ -514,6 +514,103 @@ class DmAPIKeyMiddleware:
 
 
 # ---------------------------------------------------------------------------
+# REST play endpoints — JWT auth, requires active session
+# ---------------------------------------------------------------------------
+
+def _get_session_from_request(request: Request) -> tuple[Optional[PlayerSession], Optional[JSONResponse]]:
+    """Validate JWT from Authorization header and look up active session."""
+    claims, error = _validate_bearer(dict(request.headers))
+    if error:
+        return None, JSONResponse({"error": error}, status_code=401)
+
+    entity_id = claims["entity_id"]
+    session = _active_sessions.get(entity_id)
+    if not session or not session.active:
+        return None, JSONResponse(
+            {"error": "No active session. POST /join with your token first."},
+            status_code=403,
+        )
+
+    return session, None
+
+
+async def handle_play_prompt(request: Request):
+    """Return the current turn system prompt."""
+    session, err = _get_session_from_request(request)
+    if err:
+        return err
+
+    prompt = player_mcp.build_player_prompt(session.entity_id)
+    return JSONResponse({"prompt": prompt})
+
+
+async def handle_play_tools(request: Request):
+    """Return the list of currently available tools."""
+    session, err = _get_session_from_request(request)
+    if err:
+        return err
+
+    cs = db.get_character_state_by_entity(session.entity_id)
+    if not cs:
+        return JSONResponse({"error": "Character not found"}, status_code=404)
+
+    tools = registry.get_available_tools(cs)
+    return JSONResponse({"tools": tools})
+
+
+async def handle_play_tool(request: Request):
+    """Execute a single player tool call."""
+    session, err = _get_session_from_request(request)
+    if err:
+        return err
+
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "Invalid JSON"}, status_code=400)
+
+    tool_name = body.get("tool")
+    arguments = body.get("arguments", {})
+    if not tool_name:
+        return JSONResponse({"error": "Missing 'tool' field"}, status_code=400)
+
+    result = player_tools.execute_player_tool(session.entity_id, tool_name, arguments)
+
+    session.turn_log.append({
+        "tool": tool_name,
+        "arguments": arguments,
+        "result": result,
+    })
+
+    return JSONResponse(result)
+
+
+async def handle_play_end_turn(request: Request):
+    """End the current turn."""
+    session, err = _get_session_from_request(request)
+    if err:
+        return err
+
+    result = _do_end_turn(session)
+    return JSONResponse(result)
+
+
+async def handle_play_signoff(request: Request):
+    """Sign off from the session."""
+    session, err = _get_session_from_request(request)
+    if err:
+        return err
+
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+
+    result = _do_signoff(session, body)
+    return JSONResponse(result)
+
+
+# ---------------------------------------------------------------------------
 # App setup
 # ---------------------------------------------------------------------------
 
@@ -527,6 +624,11 @@ def create_app() -> Starlette:
     app = Starlette(
         routes=[
             Route("/join", handle_join, methods=["POST"]),
+            Route("/api/play/prompt", handle_play_prompt, methods=["GET"]),
+            Route("/api/play/tools", handle_play_tools, methods=["GET"]),
+            Route("/api/play/tool", handle_play_tool, methods=["POST"]),
+            Route("/api/play/end_turn", handle_play_end_turn, methods=["POST"]),
+            Route("/api/play/signoff", handle_play_signoff, methods=["POST"]),
             Mount("/mcp", app=jwt_mcp),
             Mount("/dm-mcp", app=dm_mcp),
         ],

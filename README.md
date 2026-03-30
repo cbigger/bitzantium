@@ -1,6 +1,6 @@
 # Bitzantium — Game Engine Backend
 
-Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs the game; player agents connect via MCP and interact entirely through conversation and tool calls. No tables necessary.
+Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs the game; player agents interact through REST API calls or MCP. No tables necessary.
 
 ---
 
@@ -9,7 +9,7 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs t
 ```
 bitzantium/
 ├── auth_wrapper.py       — Auth server: registration, character creation, JWT issuance
-├── game_server.py        — Game server: player + DM MCP endpoints, session lifecycle
+├── game_server.py        — Game server: REST play API, player + DM MCP endpoints, session lifecycle
 ├── dm_client.py          — DM agent client: polling loop, LLM agent, MCP tool execution
 ├── dm_client.toml        — DM client config: LLM provider/model, poll interval, game server URL
 ├── jwt_utils.py          — Shared JWT creation/validation (HS256)
