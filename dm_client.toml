@@ -2,7 +2,7 @@
 url = "http://localhost:8081"
 
 [dm]
-api_key = "dm-secret-key-change-me"
+api_key = "dm-dev-key-change-me"
 
 [llm]
 base_url = "https://api.openai.com/v1"

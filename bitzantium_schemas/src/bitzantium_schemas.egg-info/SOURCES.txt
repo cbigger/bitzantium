@@ -1,6 +1,7 @@
 pyproject.toml
 src/bitzantium_schemas/__init__.py
 src/bitzantium_schemas/character.py
+src/bitzantium_schemas/character_choices.py
 src/bitzantium_schemas/data.py
 src/bitzantium_schemas/schemas.py
 src/bitzantium_schemas.egg-info/PKG-INFO
