@@ -1,28 +1,17 @@
 """
 player_mcp.py
 =============
-Player Agent MCP Server for Bitzantium.
+Player prompt builder for Bitzantium.
 
-Core module that builds the player agent's system prompt and provides
-gated tool access. Used by the game server (game_server.py) which wraps
-it in HTTP+JWT for remote access.
-
-Can also run standalone in stdio mode for local testing:
-    python player_mcp.py
+Builds the player agent's system prompt from database state.
+Used by game_server.py for the /api/play/prompt endpoint.
 """
 
-import asyncio
-import json
 import logging
-from typing import Any, Optional
-
-import mcp.types as types
-from mcp.server import Server
-from mcp.server.stdio import stdio_server
+from typing import Optional
 
 import db
 import loader
-import player_tools
 import registry
 
 log = logging.getLogger(__name__)
@@ -220,104 +209,3 @@ def build_player_prompt(entity_id: str) -> str:
     parts.append(_stats_block(cs))
 
     return "\n".join(parts)
-
-
-# ---------------------------------------------------------------------------
-# MCP Server
-# ---------------------------------------------------------------------------
-
-server = Server("bitzantium-player")
-
-
-@server.list_tools()
-async def handle_list_tools() -> list[types.Tool]:
-    """Return the full tool catalogue.
-
-    In standalone stdio mode we return the full registry since there's no
-    JWT / entity context. The game server's MCP handlers provide the
-    properly gated per-entity list.
-    """
-    return [
-        types.Tool(
-            name=t["name"],
-            description=t["description"],
-            inputSchema=t["inputSchema"],
-        )
-        for t in registry._TOOLS
-    ]
-
-
-@server.call_tool()
-async def handle_call_tool(
-    name: str,
-    arguments: dict[str, Any] | None,
-) -> list[types.TextContent]:
-    """Execute a player tool (standalone stdio mode).
-
-    Requires entity_id in the arguments dict so the tool knows which
-    character to act on.
-    """
-    args = arguments or {}
-    entity_id = args.pop("entity_id", None)
-    if not entity_id:
-        return [types.TextContent(type="text", text=json.dumps({"error": "entity_id required in arguments"}))]
-    result = player_tools.execute_player_tool(entity_id, name, args)
-    return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
-
-
-@server.list_prompts()
-async def handle_list_prompts() -> list[types.Prompt]:
-    return [
-        types.Prompt(
-            name="player_context",
-            description="Current turn system prompt for the player agent",
-            arguments=[
-                types.PromptArgument(
-                    name="entity_id",
-                    description="The character entity ID",
-                    required=True,
-                )
-            ],
-        )
-    ]
-
-
-@server.get_prompt()
-async def handle_get_prompt(
-    name: str,
-    arguments: dict[str, str] | None,
-) -> types.GetPromptResult:
-    """Return the current turn system prompt for a given entity."""
-    entity_id = (arguments or {}).get("entity_id", "")
-    if not entity_id:
-        text = "entity_id argument required"
-    else:
-        text = build_player_prompt(entity_id)
-    return types.GetPromptResult(
-        description="Player agent system prompt for the current turn",
-        messages=[
-            types.PromptMessage(
-                role="user",
-                content=types.TextContent(type="text", text=text),
-            )
-        ],
-    )
-
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
-async def _run() -> None:
-    """Run as a standalone stdio MCP server (local testing)."""
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            server.create_initialization_options(),
-        )
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    asyncio.run(_run())

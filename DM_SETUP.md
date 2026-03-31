@@ -29,12 +29,12 @@ model = "gpt-4"
 api_key = ""  # prefer BITZ_DM_LLM_API_KEY env var
 
 [agent]
-poll_interval = 10     # seconds between dm_poll calls when idle
+poll_interval = 10     # seconds between poll calls when idle
 max_iterations = 10    # max tool-call round-trips per turn
 temperature = 0.7
 ```
 
-**`[game_server]`** — The URL of the running game server. Must match the host/port in `bitzantium.toml`. The client appends `/dm-mcp` automatically.
+**`[game_server]`** — The URL of the running game server. Must match the host/port in `bitzantium.toml`.
 
 **`[dm]`** — The DM API key. Must match the `[dm].api_key` in `bitzantium.toml` exactly — this is how the game server authenticates the DM client.
 
@@ -84,10 +84,10 @@ BITZ_DM_DEBUG=1 .venv/bin/python3 dm_client.py
 
 ## 4. Verify it works
 
-On startup the client logs its poll interval and MCP URL:
+On startup the client logs its poll interval and server URL:
 
 ```
-12:00:00 [dm_client] INFO starting poll loop — interval=10s, mcp_url=http://localhost:8081/dm-mcp
+12:00:00 [dm_client] INFO starting poll loop — interval=10s, server=http://localhost:8081
 ```
 
 While idle (no players have ended a turn), you'll see periodic debug-level messages:
@@ -112,26 +112,40 @@ When a player ends their turn, the client detects the pending turn and begins re
 
 ## How it works
 
-The DM client is a micro-agent with no framework — just the OpenAI Python library for LLM inference and the MCP SDK for game server communication.
+The DM client is a micro-agent with no framework — just the OpenAI Python library for LLM inference and httpx for game server communication.
 
-**Poll cycle:** The client opens an MCP connection to `/dm-mcp`, calls `dm_poll`, and checks if `dm_turn_pending` is set. If not, it sleeps for `poll_interval` seconds and tries again.
+**Poll cycle:** The client POSTs to `/api/dm/poll` and checks if `dm_turn_pending` is set. If not, it sleeps for `poll_interval` seconds and tries again. The HTTP client is kept alive across poll cycles (persistent connection).
 
 **Agent loop:** When a pending turn is detected, the client:
 
-1. Builds a message array: hardcoded system prompt + full DM chat history from `dm_poll`.
+1. Builds a message array: hardcoded system prompt + full DM chat history from the poll response.
 2. Calls the LLM.
 3. Parses the response for `<tool_call>` XML blocks.
-4. Executes each tool call against the game server via MCP.
+4. Executes each tool call against the game server via `POST /api/dm/tool`.
 5. Injects `<tool_response>` blocks back into the conversation.
 6. Calls the LLM again. Repeats until no tool calls remain (pure narrative) or `max_iterations` is reached.
 
 **After resolution:** The client mechanically (not via the LLM):
 1. Strips tool call/response blocks from the final output to extract the narrative.
-2. Stores the narrative via `dm_append_history`.
-3. Signals `dm_turn_complete` to clear `dm_turn_pending`.
+2. Stores the narrative via `POST /api/dm/append-history`.
+3. Signals `POST /api/dm/turn-complete` to clear `dm_turn_pending`.
 4. Resumes polling.
 
 The DM has no local memory. Its entire context is the persistent chat history stored in the database, rebuilt from scratch on every turn.
+
+---
+
+## DM API Endpoints
+
+All DM endpoints require `Authorization: Bearer <dm-api-key>`.
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/dm/poll` | Check for pending turns; returns chat history if pending |
+| `GET` | `/api/dm/tools` | List available DM tools |
+| `POST` | `/api/dm/tool` | Execute a DM tool: `{"tool": "name", "arguments": {...}}` |
+| `POST` | `/api/dm/turn-complete` | Signal DM turn completion |
+| `POST` | `/api/dm/append-history` | Append to chat history: `{"role": "...", "content": "..."}` |
 
 ---
 
@@ -157,7 +171,7 @@ The client uses non-streaming completions, so the provider must support the `/ch
 
 ## Remote deployment
 
-The DM client can run on a different machine than the game server. Set `[game_server].url` to the remote game server's address and ensure the DM API key matches. The only network requirement is HTTP access to the game server's `/dm-mcp` endpoint.
+The DM client can run on a different machine than the game server. Set `[game_server].url` to the remote game server's address and ensure the DM API key matches. The only network requirement is HTTP access to the game server's `/api/dm/*` endpoints.
 
 ```toml
 [game_server]

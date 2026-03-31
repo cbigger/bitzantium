@@ -1,8 +1,8 @@
 """
 dm_client.py — Bitzantium DM agent client.
 
-Self-contained polling agent that connects to the game server's /dm-mcp
-endpoint, waits for player turns, resolves them via LLM + DM tools, and
+Self-contained polling agent that connects to the game server's /api/dm/*
+endpoints, waits for player turns, resolves them via LLM + DM tools, and
 signals completion.
 
     .venv/bin/python3 dm_client.py [--config dm_client.toml]
@@ -23,10 +23,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+import httpx
 from openai import OpenAI
-
-from mcp import ClientSession
-from mcp.client.streamable_http import streamablehttp_client
 
 log = logging.getLogger("dm_client")
 
@@ -182,18 +180,17 @@ def strip_tool_blocks(text: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# MCP tool execution
+# Game server HTTP client
 # ---------------------------------------------------------------------------
 
-async def call_dm_tool(session: ClientSession, name: str, arguments: dict) -> dict:
-    """Call a single DM tool on the game server via MCP."""
-    result = await session.call_tool(name, arguments=arguments)
-    if result.content and result.content[0].type == "text":
-        try:
-            return json.loads(result.content[0].text)
-        except json.JSONDecodeError:
-            return {"raw": result.content[0].text}
-    return {}
+async def call_dm_tool(client: httpx.AsyncClient, base_url: str, name: str, arguments: dict) -> dict:
+    """Call a single DM tool on the game server via REST."""
+    resp = await client.post(
+        f"{base_url}/api/dm/tool",
+        json={"tool": name, "arguments": arguments},
+    )
+    resp.raise_for_status()
+    return resp.json()
 
 
 # ---------------------------------------------------------------------------
@@ -229,7 +226,8 @@ def llm_complete(client: OpenAI, messages: list[dict], cfg: dict) -> str:
 # ---------------------------------------------------------------------------
 
 async def run_dm_turn(
-    session: ClientSession,
+    client: httpx.AsyncClient,
+    base_url: str,
     llm: OpenAI,
     poll_data: dict,
     cfg: dict,
@@ -238,7 +236,7 @@ async def run_dm_turn(
     Resolve a single DM turn.
 
     Builds a conversation from the system prompt + chat history, then loops:
-    LLM → parse tool calls → execute via MCP → inject results → repeat
+    LLM → parse tool calls → execute via REST → inject results → repeat
     until the LLM produces a response with no tool calls (pure narrative).
 
     Returns the DM's final narrative text for history storage.
@@ -291,7 +289,7 @@ async def run_dm_turn(
             args = tc["arguments"]
             log.info("executing: %s(%s)", name, json.dumps(args))
 
-            result = await call_dm_tool(session, name, args)
+            result = await call_dm_tool(client, base_url, name, args)
 
             log.info("result: %s", json.dumps(result)[:200])
             continuation += f"\n<tool_response>\n{json.dumps(result, indent=2)}\n</tool_response>\n"
@@ -315,50 +313,48 @@ async def poll_loop(cfg: dict):
     llm = create_llm(cfg)
     poll_interval = int(cfg.get("agent", {}).get("poll_interval", 10))
     dm_api_key = cfg["dm"]["api_key"]
-    mcp_url = cfg["game_server"]["url"].rstrip("/") + "/dm-mcp"
+    base_url = cfg["game_server"]["url"].rstrip("/")
     headers = {"Authorization": f"Bearer {dm_api_key}"}
 
-    log.info("starting poll loop — interval=%ds, mcp_url=%s", poll_interval, mcp_url)
+    log.info("starting poll loop — interval=%ds, server=%s", poll_interval, base_url)
 
-    while True:
-        try:
-            async with streamablehttp_client(url=mcp_url, headers=headers) as (
-                read_stream, write_stream, _,
-            ):
-                async with ClientSession(read_stream, write_stream) as session:
-                    await session.initialize()
+    async with httpx.AsyncClient(headers=headers, timeout=30.0) as client:
+        while True:
+            try:
+                # Poll for pending turns
+                resp = await client.post(f"{base_url}/api/dm/poll")
+                resp.raise_for_status()
+                poll_result = resp.json()
 
-                    # Poll
-                    poll_result = await call_dm_tool(session, "dm_poll", {})
-                    pending = poll_result.get("pending", False)
+                pending = poll_result.get("pending", False)
 
-                    if not pending:
-                        log.debug("no pending turn.")
-                    else:
-                        log.info("pending turn detected — resolving.")
+                if not pending:
+                    log.debug("no pending turn.")
+                else:
+                    log.info("pending turn detected — resolving.")
 
-                        # Run the DM agent turn
-                        dm_response = await run_dm_turn(
-                            session, llm, poll_result, cfg,
-                        )
+                    # Run the DM agent turn
+                    dm_response = await run_dm_turn(
+                        client, base_url, llm, poll_result, cfg,
+                    )
 
-                        # Extract narrative (strip tool blocks) for chat history
-                        narrative = strip_tool_blocks(dm_response)
+                    # Extract narrative (strip tool blocks) for chat history
+                    narrative = strip_tool_blocks(dm_response)
 
-                        # Store the DM's response in chat history
-                        await call_dm_tool(session, "dm_append_history", {
-                            "role": "assistant",
-                            "content": narrative,
-                        })
+                    # Store the DM's response in chat history
+                    await client.post(
+                        f"{base_url}/api/dm/append-history",
+                        json={"role": "assistant", "content": narrative},
+                    )
 
-                        # Signal turn completion
-                        await call_dm_tool(session, "dm_turn_complete", {})
-                        log.info("turn complete — narrative stored (%d chars).", len(narrative))
+                    # Signal turn completion
+                    await client.post(f"{base_url}/api/dm/turn-complete")
+                    log.info("turn complete — narrative stored (%d chars).", len(narrative))
 
-        except Exception as e:
-            log.error("poll cycle error: %s", e)
+            except Exception as e:
+                log.error("poll cycle error: %s", e)
 
-        await asyncio.sleep(poll_interval)
+            await asyncio.sleep(poll_interval)
 
 
 # ---------------------------------------------------------------------------
@@ -368,7 +364,7 @@ async def poll_loop(cfg: dict):
 async def main(config_path: str):
     cfg = load_config(config_path)
 
-    level = logging.DEBUG if os.environ.get("BITZ_DM_DEBUG") else logging.INFO
+    level = logging.DEBUG #if os.environ.get("BITZ_DM_DEBUG") else logging.INFO
     logging.basicConfig(
         level=level,
         format="%(asctime)s [%(name)s] %(levelname)s %(message)s",

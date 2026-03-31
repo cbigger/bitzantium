@@ -198,7 +198,7 @@ curl -s -X POST http://localhost:8081/join \
 Response:
 
 ```json
-{"status": "joined", "entity_id": "...", "name": "Your Character", "mcp_endpoint": "/mcp"}
+{"status": "joined", "entity_id": "...", "name": "Your Character"}
 ```
 
 You're now in a session.

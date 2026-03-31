@@ -19,7 +19,7 @@ no class/condition/economy filtering. Organisation is by domain:
   Turn bookkeeping — tick_turn_end
 
 Public API:
-    get_dm_tools()              → list of MCP tool definition dicts
+    get_dm_tools()              → list of tool definition dicts
     execute_dm_tool(name, args) → result dict
 """
 
