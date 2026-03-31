@@ -1,0 +1,2186 @@
+
+============================================================
+  REGISTER
+  POST http://localhost:8080/api/register
+  Status: 201
+============================================================
+{
+  "api_key": "AaIuJVh5jPFY_gPsW5-05rFyAZW5biEVe57ujStCuVM"
+}
+
+  >> API key: AaIuJVh5jPFY_gPsW5-05rFyAZW5biEVe57ujStCuVM
+
+============================================================
+  CREATION OPTIONS
+  POST http://localhost:8080/api/creation-options
+  Status: 200
+============================================================
+{
+  "species": [
+    {
+      "creature_id": "dragonborn",
+      "name": "Dragonborn",
+      "description": "Your draconic heritage manifests in a variety of traits you share with other dragonborn.",
+      "races": []
+    },
+    {
+      "creature_id": "dwarf",
+      "name": "Dwarf",
+      "description": "Your dwarf character has an assortment of inborn abilities, part and parcel of dwarven nature.",
+      "races": [
+        {
+          "race_id": "hill_dwarf",
+          "name": "Hill Dwarf",
+          "description": "As a hill dwarf, you have keen senses, deep intuition, and remarkable resilience."
+        }
+      ]
+    },
+    {
+      "creature_id": "elf",
+      "name": "Elf",
+      "description": "Your elf character has a variety of natural abilities, the result of thousands of years of elven refinement.",
+      "races": [
+        {
+          "race_id": "high_elf",
+          "name": "High Elf",
+          "description": "As a high elf, you have a keen mind and a mastery of at least the basics of magic. In many fantasy gaming worlds, there are two kinds of high elves. One type is haughty and reclusive, believing themselves to be superior to non-elves and even other elves. The other type is more common and more friendly, and often encountered among humans and other races."
+        }
+      ]
+    },
+    {
+      "creature_id": "gnome",
+      "name": "Gnome",
+      "description": "Your gnome character has certain characteristics in common with all other gnomes.",
+      "races": [
+        {
+          "race_id": "rock_gnome",
+          "name": "Rock Gnome",
+          "description": "As a rock gnome, you have a natural inventiveness and hardiness beyond that of other gnomes."
+        }
+      ]
+    },
+    {
+      "creature_id": "half_elf",
+      "name": "Half-Elf",
+      "description": "Your half-elf character has some qualities in common with elves and some that are unique to half-elves.",
+      "races": []
+    },
+    {
+      "creature_id": "half_orc",
+      "name": "Half-Orc",
+      "description": "Your half-orc character has certain traits deriving from your orc ancestry.",
+      "races": []
+    },
+    {
+      "creature_id": "halfling",
+      "name": "Halfling",
+      "description": "Your halfling character has a number of traits in common with all other halflings.",
+      "races": [
+        {
+          "race_id": "lightfoot",
+          "name": "Lightfoot",
+          "description": "As a lightfoot halfling, you can easily hide from notice, even using other people as cover. You're inclined to be affable and get along well with others.\nLightfoots are more prone to wanderlust than other halflings, and often dwell alongside other races or take up a nomadic life."
+        }
+      ]
+    },
+    {
+      "creature_id": "human",
+      "name": "Human",
+      "description": "It's hard to make generalizations about humans, but your human character has these traits.",
+      "races": [
+        {
+          "race_id": "variant_human",
+          "name": "Variant Human",
+          "description": "The variant human trades the standard human's +1 to all ability scores for greater specialisation: two custom ability score increases of your choice, an extra skill proficiency, and a bonus feat at 1st level. This variant is for campaigns that use the optional feats rule."
+        }
+      ]
+    },
+    {
+      "creature_id": "tiefling",
+      "name": "Tiefling",
+      "description": "Tieflings share certain racial traits as a result of their infernal descent.",
+      "races": []
+    }
+  ],
+  "backgrounds": [
+    {
+      "background_id": "acolyte",
+      "name": "Acolyte",
+      "description": "You have spent your life in the service of a temple to a specific god or pantheon of gods. You act as an intermediary between the realm of the holy and the mortal world, performing sacred rites and offering sacrifices in order to conduct worshipers into the presence of the divine. You are not necessarily a cleric-performing sacred rites is not the same thing as channeling divine power.\n\nChoose a god, a pantheon of gods, or some other quasi-divine being from among those listed in \"Fantasy-Historical Pantheons\" or those specified by your GM, and work with your GM to detail the nature of your religious service. Were you a lesser functionary in a temple, raised from childhood to assist the priests in the sacred rites? Or were you a high priest who suddenly experienced a call to serve your god in a different way? Perhaps you were the leader of a small cult outside of any established temple structure, or even an occult group that served a fiendish master that you now deny."
+    },
+    {
+      "background_id": "artisan",
+      "name": "Artisan",
+      "description": "You are skilled enough in a trade to make a comfortable living and to aspire to mastery of your art. Yet here you are, ready to slog through mud and blood and danger.\n\nWhy did you become an adventurer? Did you flee a cruel master? Were you bored? Or are you a member in good standing, looking for new materials and new markets?"
+    },
+    {
+      "background_id": "charlatan",
+      "name": "Charlatan",
+      "description": "People call you a con artist, but you're really an entertainer. You make people happy\u2014the separation of fools and villains from their money is purely a pleasant side effect.\n\nWhat is your most common con? Selling fake magic items? Speaking to ghosts? Posing as a long-lost relative? Or do you let dishonest people think they're cheating you?"
+    },
+    {
+      "background_id": "criminal",
+      "name": "Criminal",
+      "description": "As a career criminal you were acquainted with murderers, thieves, and those who hunt them. Your new career as an adventurer is, relatively speaking, an honest trade.\n\nWere you a pickpocket? An assassin? A back-alley mugger? Are you still?"
+    },
+    {
+      "background_id": "entertainer",
+      "name": "Entertainer",
+      "description": "You're a performer who knows how to dazzle a crowd, an artist but also a professional: you never forget to pass the hat after a show.\n\nAre you a lute-strumming singer? An actor? A poet or author? A tumbler or juggler? Are you a rising talent, or a star with an established following?"
+    },
+    {
+      "background_id": "exile",
+      "name": "Exile",
+      "description": "Your homeland is barred to you and you wander strange lands. You will never be mistaken for a local but you find ready acceptance among other adventurers, many of which are as rootless as you are.\n\nAre you a banished noble? A refugee from war or from an undead uprising? A dissident or a criminal on the run? Or a stranded traveler from an unreachable distant land?"
+    },
+    {
+      "background_id": "farmer",
+      "name": "Farmer",
+      "description": "You were raised a farmer, an occupation where the money is short and the work days are long. You've become an adventurer, a career where the money is plentiful but your days\u2014if you're not careful\u2014may be all too short.\n\nWhy did you beat your plowshare into a sword? Do you seek adventure, excitement, or revenge? Do you leave behind a thriving farmstead or a smoking ruin?"
+    },
+    {
+      "background_id": "folk_hero",
+      "name": "Folk Hero",
+      "description": "You were born to a commoner family, but some event earned you fame. You're admired locally, and tales of your deeds have reached the far corners of the world.\n\nDid you win your fame by battling an oppressive tyrant? Saving your village from a monster? Or by something more prosaic like winning a wrestling bout or a pie-eating contest?"
+    },
+    {
+      "background_id": "gambler",
+      "name": "Gambler",
+      "description": "You haven't met your match at dice or cards. A career of high stakes and daring escapades has taught you when to play close to the chest and when to risk it all\u2014but you haven't yet learned when to walk away.\n\nAre you a brilliant student of the game, a charming master of the bluff and counterbluff, or a cheater with fast hands? What turned you to a life of adventure: a string of bad luck, or an insatiable thirst for risk?"
+    },
+    {
+      "background_id": "guildmember",
+      "name": "Guildmember",
+      "description": "It never hurts to be part of a team, and when you're part of a guild opportunities knock at your door.\n\nAre you a member of a trade or artisan's guild? Or an order of mages or monster hunters? Or have you found entry into a secretive guild of thieves or assassins?"
+    },
+    {
+      "background_id": "hermit",
+      "name": "Hermit",
+      "description": "You lived for years alone in a remote shrine, cave, monastery, or elsewhere away from the world. Among your daily tasks you had lots of time for introspection.\n\nWhy were you alone? Were you performing penance? In exile or hiding? Tending a shrine or holy spot? Grieving?"
+    },
+    {
+      "background_id": "marauder",
+      "name": "Marauder",
+      "description": "You were a member of an outlaw band. You might have been part of a troop of cutthroat bandits, or a resistance movement battling a tyrant, or a pirate fleet. You lived outside of settled lands, and your name was a terror to rich travelers.\n\nHow did you join your outlaw band? Why did you leave it\u2014or did you?"
+    },
+    {
+      "background_id": "outlander",
+      "name": "Outlander",
+      "description": "You lived far from the farms and fields of civilization. You know the beauties and the dangers of the wilderness.\n\nWere you part of a nomadic tribe? A hunter or guide? A lone wanderer or explorer? A guardian of civilization against monsters, or of the old ways against civilization?"
+    },
+    {
+      "background_id": "sage",
+      "name": "Sage",
+      "description": "You are a seeker of the world's truths and an expert in your chosen field, with esoteric knowledge at your fingertips, or at the farthest, in a book you vaguely remember.\n\nWhy have you left the confines of the library to explore the wider world? Do you seek ancient wisdom? Power? The answer to a specific question? Reinstatement in your former institution?"
+    },
+    {
+      "background_id": "sailor",
+      "name": "Sailor",
+      "description": "You're an experienced mariner with a keen weather eye and a favorite tavern in every port. Hard voyages have toughened you and the sea's power has made you humble.\n\nWere you a deckhand, an officer, or the captain of your vessel? Did you crew a naval cutter, a fishing boat, a merchant's barge, a privateering vessel, or a pirate ship?"
+    },
+    {
+      "background_id": "soldier",
+      "name": "Soldier",
+      "description": "War has been your life for as long as you care to remember. You trained as a youth, studied the use of weapons and armor, and learned basic survival techniques, including how to stay alive on the battlefield."
+    },
+    {
+      "background_id": "trader",
+      "name": "Trader",
+      "description": "You served your apprenticeship among merchants and traders. You've traveled dusty miles and haggled under distant skies.\n\nWhy are you living a life of adventure? Are you working off your debt to the company store? Are you escorting a caravan through dangerous wilds?\n\nAre you raising capital to start your own business, or trying to restore the fortunes of a ruined trading family? Or are you a smuggler, following secret trade routes unknown to the authorities?"
+    },
+    {
+      "background_id": "urchin",
+      "name": "Urchin",
+      "description": "You grew up on the streets. You know where to hide and when your puppy dog eyes will earn you a hot meal.\n\nWhy were you on the streets? Were you a runaway? An orphan? Or just an adventurous kid who stayed out late?"
+    }
+  ],
+  "classes": [
+    {
+      "class_id": "barbarian",
+      "name": "Barbarian",
+      "description": "The Barbarian class.",
+      "hit_die": 12,
+      "spellcasting_ability": null
+    },
+    {
+      "class_id": "bard",
+      "name": "Bard",
+      "description": "The Bard class.",
+      "hit_die": 8,
+      "spellcasting_ability": "charisma"
+    },
+    {
+      "class_id": "cleric",
+      "name": "Cleric",
+      "description": "The Cleric class.",
+      "hit_die": 8,
+      "spellcasting_ability": "wisdom"
+    },
+    {
+      "class_id": "druid",
+      "name": "Druid",
+      "description": "The Druid class.",
+      "hit_die": 8,
+      "spellcasting_ability": "wisdom"
+    },
+    {
+      "class_id": "fighter",
+      "name": "Fighter",
+      "description": "The Fighter class.",
+      "hit_die": 10,
+      "spellcasting_ability": null
+    },
+    {
+      "class_id": "monk",
+      "name": "Monk",
+      "description": "The Monk class.",
+      "hit_die": 8,
+      "spellcasting_ability": null
+    },
+    {
+      "class_id": "paladin",
+      "name": "Paladin",
+      "description": "The Paladin class.",
+      "hit_die": 10,
+      "spellcasting_ability": "charisma"
+    },
+    {
+      "class_id": "ranger",
+      "name": "Ranger",
+      "description": "The Ranger class.",
+      "hit_die": 10,
+      "spellcasting_ability": "wisdom"
+    },
+    {
+      "class_id": "rogue",
+      "name": "Rogue",
+      "description": "The Rogue class.",
+      "hit_die": 8,
+      "spellcasting_ability": null
+    },
+    {
+      "class_id": "sorcerer",
+      "name": "Sorcerer",
+      "description": "The Sorcerer class.",
+      "hit_die": 6,
+      "spellcasting_ability": "charisma"
+    },
+    {
+      "class_id": "warlock",
+      "name": "Warlock",
+      "description": "The Warlock class.",
+      "hit_die": 8,
+      "spellcasting_ability": "charisma"
+    },
+    {
+      "class_id": "wizard",
+      "name": "Wizard",
+      "description": "The Wizard class.",
+      "hit_die": 6,
+      "spellcasting_ability": "intelligence"
+    }
+  ],
+  "instructions": "Pick a creature_id (and optionally a race_id), a background_id, and a class_id, then call /api/creation-details with those IDs to get the full set of options for building your character."
+}
+
+  >> Picking: creature=dragonborn, background=acolyte, class=barbarian, race=
+
+============================================================
+  CREATION DETAILS
+  POST http://localhost:8080/api/creation-details
+  Status: 200
+============================================================
+{
+  "species": {
+    "creature_id": "dragonborn",
+    "name": "Dragonborn",
+    "description": "Your draconic heritage manifests in a variety of traits you share with other dragonborn.",
+    "speed": 30,
+    "darkvision_ft": 0,
+    "languages": [
+      "common",
+      "draconic"
+    ],
+    "bonus_languages": 0,
+    "traits": [
+      {
+        "name": "Draconic Ancestry",
+        "description": "| Dragon       | Damage Type       | Breath Weapon                |\n|--------------|-------------------|------------------------------|\n| Black        | Acid              | 5 by 30 ft. line (Dex. save) |\n| Blue         | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Brass        | Fire              | 5 by 30 ft. line (Dex. save) |\n| Bronze       | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Copper       | Acid              | 5 by 30 ft. line (Dex. save) |\n| Gold         | Fire              | 15 ft. cone (Dex. save)      |\n| Green        | Poison            | 15 ft. cone (Con. save)      |\n| Red          | Fire              | 15 ft. cone (Dex. save)      |\n| Silver       | Cold              | 15 ft. cone (Con. save)      |\n| White        | Cold              | 15 ft. cone (Con. save)      |\nYou have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type, as shown in the table."
+      },
+      {
+        "name": "Breath Weapon",
+        "description": "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type of the exhalation.\nWhen you use your breath weapon, each creature in the area of the exhalation must make a saving throw, the type of which is determined by your draconic ancestry. The DC for this saving throw equals 8 + your Constitution modifier + your proficiency bonus. A creature takes 2d6 damage on a failed save, and half as much damage on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level.\nAfter you use your breath weapon, you can't use it again until you complete a short or long rest."
+      },
+      {
+        "name": "Damage Resistance",
+        "description": "You have resistance to the damage type associated with your draconic ancestry."
+      }
+    ]
+  },
+  "background": {
+    "background_id": "acolyte",
+    "name": "Acolyte",
+    "description": "You have spent your life in the service of a temple to a specific god or pantheon of gods. You act as an intermediary between the realm of the holy and the mortal world, performing sacred rites and offering sacrifices in order to conduct worshipers into the presence of the divine. You are not necessarily a cleric-performing sacred rites is not the same thing as channeling divine power.\n\nChoose a god, a pantheon of gods, or some other quasi-divine being from among those listed in \"Fantasy-Historical Pantheons\" or those specified by your GM, and work with your GM to detail the nature of your religious service. Were you a lesser functionary in a temple, raised from childhood to assist the priests in the sacred rites? Or were you a high priest who suddenly experienced a call to serve your god in a different way? Perhaps you were the leader of a small cult outside of any established temple structure, or even an occult group that served a fiendish master that you now deny.",
+    "skill_proficiencies_auto": [
+      "insight",
+      "religion"
+    ],
+    "skill_proficiencies_choose": [],
+    "tool_proficiencies_auto": [],
+    "bonus_languages": 2,
+    "features": [
+      {
+        "name": "Shelter of the Faithful",
+        "description": "As an acolyte, you command the respect of those who share your faith, and you can perform the religious ceremonies of your deity. You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith, though you must provide any material components needed for spells. Those who share your religion will support you (but only you) at a modest lifestyle.\n\nYou might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple."
+      }
+    ]
+  },
+  "class": {
+    "class_id": "barbarian",
+    "name": "Barbarian",
+    "description": "The Barbarian class.",
+    "hit_die": 12,
+    "spellcasting_ability": null,
+    "spell_prepare_style": null,
+    "subclass_level": 3,
+    "saving_throws": [
+      "strength",
+      "constitution"
+    ],
+    "skill_proficiencies_auto": [],
+    "skill_proficiencies_choose": [
+      {
+        "count": 2,
+        "from": [
+          "animal_handling",
+          "athletics",
+          "intimidation",
+          "nature",
+          "perception",
+          "survival"
+        ]
+      }
+    ],
+    "armor_proficiencies": [
+      "armor:light",
+      "armor:medium",
+      "armor:shields"
+    ],
+    "weapon_proficiencies": [],
+    "subclasses": [
+      {
+        "subclass_id": "path_of_the_berserker",
+        "name": "Path of the Berserker",
+        "description": "For some barbarians, rage is a means to an end- that end being violence. The Path of the Berserker is a path of untrammeled fury, slick with blood. As you enter the berserker's rage, you thrill in the chaos of battle, heedless of your own health or well-being.",
+        "granted_at_level": 3
+      }
+    ],
+    "level_1": {
+      "cantrips_knowable": 0,
+      "spells_knowable": null,
+      "spell_slots": {},
+      "features": [
+        {
+          "name": "Rage",
+          "description": "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action. \n \nWhile raging, you gain the following benefits if you aren't wearing heavy armor: \n \n You have advantage on Strength checks and Strength saving throws. \n When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table. \n You have resistance to bludgeoning, piercing, and slashing damage. \n \nIf you are able to cast spells, you can't cast them or concentrate on them while raging. \n \nYour rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven't attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action. \n \nOnce you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again."
+        },
+        {
+          "name": "Unarmored Defense",
+          "description": "While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit."
+        }
+      ]
+    },
+    "cantrips": [],
+    "level_1_spells": []
+  },
+  "ability_methods": {
+    "standard_array": {
+      "description": "Assign [15, 14, 13, 12, 10, 8] to six abilities. Each value used exactly once.",
+      "values": [
+        15,
+        14,
+        13,
+        12,
+        10,
+        8
+      ]
+    },
+    "point_buy": {
+      "description": "Budget of 27 points. Scores range 8-15 before racial bonuses.",
+      "cost_table": {
+        "8": 0,
+        "9": 1,
+        "10": 2,
+        "11": 3,
+        "12": 4,
+        "13": 5,
+        "14": 7,
+        "15": 9
+      },
+      "budget": 27
+    },
+    "manual": {
+      "description": "Set each score directly (1-30). Use when the DM has you roll dice."
+    }
+  },
+  "abilities": [
+    "strength",
+    "dexterity",
+    "constitution",
+    "intelligence",
+    "wisdom",
+    "charisma"
+  ],
+  "alignments": [
+    "Lawful Good",
+    "Neutral Good",
+    "Chaotic Good",
+    "Lawful Neutral",
+    "True Neutral",
+    "Chaotic Neutral",
+    "Lawful Evil",
+    "Neutral Evil",
+    "Chaotic Evil"
+  ],
+  "all_skills": [
+    "acrobatics",
+    "animal_handling",
+    "arcana",
+    "athletics",
+    "deception",
+    "history",
+    "insight",
+    "intimidation",
+    "investigation",
+    "medicine",
+    "nature",
+    "perception",
+    "performance",
+    "persuasion",
+    "religion",
+    "sleight_of_hand",
+    "stealth",
+    "survival"
+  ],
+  "common_languages": [
+    "common",
+    "elvish",
+    "dwarvish",
+    "halfling",
+    "gnomish",
+    "orcish",
+    "goblin",
+    "draconic",
+    "infernal",
+    "celestial",
+    "sylvan",
+    "undercommon",
+    "abyssal",
+    "deep_speech",
+    "primordial",
+    "giant"
+  ]
+}
+
+  >> Built choices:
+{
+  "name": "Test Character",
+  "description": "A test character created by the test client.",
+  "alignment": "True Neutral",
+  "creature_id": "dragonborn",
+  "race_id": "",
+  "background_id": "acolyte",
+  "class_id": "barbarian",
+  "subclass_id": "",
+  "level": 1,
+  "ability_method": "standard_array",
+  "ability_assignments": {
+    "strength": 15,
+    "dexterity": 14,
+    "constitution": 13,
+    "intelligence": 12,
+    "wisdom": 10,
+    "charisma": 8
+  },
+  "racial_asi_choices": [],
+  "skill_choices": [
+    "animal_handling",
+    "athletics"
+  ],
+  "language_choices": [
+    "elvish",
+    "dwarvish"
+  ],
+  "cantrip_choices": [],
+  "spell_choices": []
+}
+
+============================================================
+  PREVIEW CHARACTER
+  POST http://localhost:8080/api/preview-character
+  Status: 200
+============================================================
+{
+  "preview": true,
+  "character_state": {
+    "sheet": {
+      "entity_id": "char_304e7c510b8e",
+      "name": "Test Character",
+      "creature_id": "dragonborn",
+      "race_id": "",
+      "description": "A test character created by the test client.",
+      "background_id": "acolyte",
+      "alignment": "True Neutral",
+      "inspiration": false,
+      "classes": [
+        {
+          "class_id": "barbarian",
+          "subclass_id": "",
+          "level": 1,
+          "hit_die": "d12"
+        }
+      ],
+      "level": 1,
+      "experience": 0,
+      "proficiency_bonus": 2,
+      "hp_current": 13,
+      "hp_max": 13,
+      "hp_temp": 0,
+      "hit_dice": [
+        {
+          "die": "d12",
+          "total": 1,
+          "remaining": 1
+        }
+      ],
+      "armor_class": 12,
+      "speed": 30,
+      "initiative_bonus": 2,
+      "death_saves": {
+        "successes": 0,
+        "failures": 0,
+        "stable": false
+      },
+      "ability_scores": {
+        "strength": 15,
+        "dexterity": 14,
+        "constitution": 13,
+        "intelligence": 12,
+        "wisdom": 10,
+        "charisma": 8
+      },
+      "saving_throw_proficiencies": [
+        "constitution",
+        "strength"
+      ],
+      "skill_proficiencies": [
+        {
+          "skill": "acrobatics",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "animal_handling",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "arcana",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "athletics",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "deception",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "history",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "insight",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "intimidation",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "investigation",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "medicine",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "nature",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "perception",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "performance",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "persuasion",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "religion",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "sleight_of_hand",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "stealth",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "survival",
+          "proficiency_level": "none"
+        }
+      ],
+      "tool_proficiencies": [],
+      "languages": [
+        "common",
+        "draconic",
+        "elvish",
+        "dwarvish"
+      ],
+      "senses": {
+        "passive_perception": 10,
+        "darkvision_ft": 0,
+        "blindsight_ft": 0,
+        "tremorsense_ft": 0,
+        "truesight_ft": 0
+      },
+      "conditions": [],
+      "active_effects": [],
+      "concentration_effect_id": null,
+      "exhaustion_level": 0,
+      "features": [
+        {
+          "feature_id": "barbarian_rage",
+          "name": "Rage",
+          "source": "barbarian_1",
+          "description": "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action. \n \nWhile raging, you gain the following benefits if you aren't wearing heavy armor: \n \n You have advantage on Strength checks and Strength saving throws. \n When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table. \n You have resistance to bludgeoning, piercing, and slashing damage. \n \nIf you are able to cast spells, you can't cast them or concentrate on them while raging. \n \nYour rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven't attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action. \n \nOnce you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again."
+        },
+        {
+          "feature_id": "barbarian_unarmored_defense",
+          "name": "Unarmored Defense",
+          "source": "barbarian_1",
+          "description": "While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit."
+        },
+        {
+          "feature_id": "dragonborn_draconic_ancestry",
+          "name": "Draconic Ancestry",
+          "source": "dragonborn",
+          "description": "| Dragon       | Damage Type       | Breath Weapon                |\n|--------------|-------------------|------------------------------|\n| Black        | Acid              | 5 by 30 ft. line (Dex. save) |\n| Blue         | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Brass        | Fire              | 5 by 30 ft. line (Dex. save) |\n| Bronze       | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Copper       | Acid              | 5 by 30 ft. line (Dex. save) |\n| Gold         | Fire              | 15 ft. cone (Dex. save)      |\n| Green        | Poison            | 15 ft. cone (Con. save)      |\n| Red          | Fire              | 15 ft. cone (Dex. save)      |\n| Silver       | Cold              | 15 ft. cone (Con. save)      |\n| White        | Cold              | 15 ft. cone (Con. save)      |\nYou have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type, as shown in the table."
+        },
+        {
+          "feature_id": "dragonborn_breath_weapon",
+          "name": "Breath Weapon",
+          "source": "dragonborn",
+          "description": "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type of the exhalation.\nWhen you use your breath weapon, each creature in the area of the exhalation must make a saving throw, the type of which is determined by your draconic ancestry. The DC for this saving throw equals 8 + your Constitution modifier + your proficiency bonus. A creature takes 2d6 damage on a failed save, and half as much damage on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level.\nAfter you use your breath weapon, you can't use it again until you complete a short or long rest."
+        },
+        {
+          "feature_id": "dragonborn_damage_resistance",
+          "name": "Damage Resistance",
+          "source": "dragonborn",
+          "description": "You have resistance to the damage type associated with your draconic ancestry."
+        }
+      ],
+      "feats": [],
+      "class_resources": [],
+      "equipment": {
+        "main_hand": null,
+        "off_hand": null,
+        "armor": null,
+        "helmet": null,
+        "boots": null,
+        "gloves": null,
+        "ring_1": null,
+        "ring_2": null,
+        "amulet": null,
+        "back": null
+      },
+      "inventory": [
+        {
+          "instance_id": "inst_vestments_1317b9",
+          "item_base": {
+            "item_id": "vestments",
+            "name": "Vestments",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 4.0,
+            "value_gp": 1.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_holy_symbol_309de3",
+          "item_base": {
+            "item_id": "holy_symbol",
+            "name": "Holy Symbol",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 0.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_greataxe_a93c4d",
+          "item_base": {
+            "item_id": "greataxe",
+            "name": "Greataxe",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 7.0,
+            "value_gp": 30.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [
+              "heavy",
+              "two-handed"
+            ],
+            "weapon_properties": {
+              "category": "martial",
+              "weapon_type": "melee",
+              "damage_dice": "1d12",
+              "damage_type": "slashing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": null,
+              "range_max": null,
+              "properties": [
+                "heavy",
+                "two-handed"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_explorer_s_pack_00196d",
+          "item_base": {
+            "item_id": "explorer_s_pack",
+            "name": "Explorer's Pack",
+            "item_type": "container",
+            "description": "",
+            "weight": 10.0,
+            "value_gp": 10.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_common_clothes_dc3f0a",
+          "item_base": {
+            "item_id": "common_clothes",
+            "name": "Common Clothes",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 3.0,
+            "value_gp": 0.5,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_incense_5fabe9",
+          "item_base": {
+            "item_id": "incense",
+            "name": "Incense",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 0.0,
+            "value_gp": 0.01,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_four_javelins_62c81d",
+          "item_base": {
+            "item_id": "four_javelins",
+            "name": "Javelin",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 2.0,
+            "value_gp": 0.5,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": {
+              "category": "simple",
+              "weapon_type": "melee",
+              "damage_dice": "1d6",
+              "damage_type": "piercing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": 30,
+              "range_max": 120,
+              "properties": [
+                "thrown"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_prayer_book_or_prayer_wheel_ea1ab0",
+          "item_base": {
+            "item_id": "prayer_book_or_prayer_wheel",
+            "name": "Prayer Book or Prayer Wheel",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 3.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_two_handaxes_26eaf9",
+          "item_base": {
+            "item_id": "two_handaxes",
+            "name": "Handaxe",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 2.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": {
+              "category": "simple",
+              "weapon_type": "melee",
+              "damage_dice": "1d6",
+              "damage_type": "slashing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": 20,
+              "range_max": 60,
+              "properties": [
+                "light",
+                "thrown"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        }
+      ],
+      "currency": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 15,
+        "pp": 0
+      },
+      "carrying_capacity": 225,
+      "resistances": [
+        "lightning",
+        "poison",
+        "cold",
+        "fire",
+        "acid"
+      ],
+      "immunities": [],
+      "vulnerabilities": [],
+      "spellcasting_ability": "",
+      "spell_save_dc": 0,
+      "spell_attack_bonus": 0,
+      "spell_slots": {},
+      "spells": []
+    },
+    "economy": {
+      "action_spent": false,
+      "bonus_action_spent": false,
+      "reaction_spent": false,
+      "movement_used": 0
+    }
+  },
+  "instructions": "Review the sheet. If it looks correct, POST /api/confirm-character with the same choices to persist."
+}
+
+============================================================
+  CONFIRM CHARACTER
+  POST http://localhost:8080/api/confirm-character
+  Status: 201
+============================================================
+{
+  "entity_id": "char_6bb2804a420b",
+  "character_state": {
+    "sheet": {
+      "entity_id": "char_6bb2804a420b",
+      "name": "Test Character",
+      "creature_id": "dragonborn",
+      "race_id": "",
+      "description": "A test character created by the test client.",
+      "background_id": "acolyte",
+      "alignment": "True Neutral",
+      "inspiration": false,
+      "classes": [
+        {
+          "class_id": "barbarian",
+          "subclass_id": "",
+          "level": 1,
+          "hit_die": "d12"
+        }
+      ],
+      "level": 1,
+      "experience": 0,
+      "proficiency_bonus": 2,
+      "hp_current": 13,
+      "hp_max": 13,
+      "hp_temp": 0,
+      "hit_dice": [
+        {
+          "die": "d12",
+          "total": 1,
+          "remaining": 1
+        }
+      ],
+      "armor_class": 12,
+      "speed": 30,
+      "initiative_bonus": 2,
+      "death_saves": {
+        "successes": 0,
+        "failures": 0,
+        "stable": false
+      },
+      "ability_scores": {
+        "strength": 15,
+        "dexterity": 14,
+        "constitution": 13,
+        "intelligence": 12,
+        "wisdom": 10,
+        "charisma": 8
+      },
+      "saving_throw_proficiencies": [
+        "constitution",
+        "strength"
+      ],
+      "skill_proficiencies": [
+        {
+          "skill": "acrobatics",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "animal_handling",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "arcana",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "athletics",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "deception",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "history",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "insight",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "intimidation",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "investigation",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "medicine",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "nature",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "perception",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "performance",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "persuasion",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "religion",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "sleight_of_hand",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "stealth",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "survival",
+          "proficiency_level": "none"
+        }
+      ],
+      "tool_proficiencies": [],
+      "languages": [
+        "common",
+        "draconic",
+        "elvish",
+        "dwarvish"
+      ],
+      "senses": {
+        "passive_perception": 10,
+        "darkvision_ft": 0,
+        "blindsight_ft": 0,
+        "tremorsense_ft": 0,
+        "truesight_ft": 0
+      },
+      "conditions": [],
+      "active_effects": [],
+      "concentration_effect_id": null,
+      "exhaustion_level": 0,
+      "features": [
+        {
+          "feature_id": "barbarian_rage",
+          "name": "Rage",
+          "source": "barbarian_1",
+          "description": "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action. \n \nWhile raging, you gain the following benefits if you aren't wearing heavy armor: \n \n You have advantage on Strength checks and Strength saving throws. \n When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table. \n You have resistance to bludgeoning, piercing, and slashing damage. \n \nIf you are able to cast spells, you can't cast them or concentrate on them while raging. \n \nYour rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven't attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action. \n \nOnce you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again."
+        },
+        {
+          "feature_id": "barbarian_unarmored_defense",
+          "name": "Unarmored Defense",
+          "source": "barbarian_1",
+          "description": "While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit."
+        },
+        {
+          "feature_id": "dragonborn_draconic_ancestry",
+          "name": "Draconic Ancestry",
+          "source": "dragonborn",
+          "description": "| Dragon       | Damage Type       | Breath Weapon                |\n|--------------|-------------------|------------------------------|\n| Black        | Acid              | 5 by 30 ft. line (Dex. save) |\n| Blue         | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Brass        | Fire              | 5 by 30 ft. line (Dex. save) |\n| Bronze       | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Copper       | Acid              | 5 by 30 ft. line (Dex. save) |\n| Gold         | Fire              | 15 ft. cone (Dex. save)      |\n| Green        | Poison            | 15 ft. cone (Con. save)      |\n| Red          | Fire              | 15 ft. cone (Dex. save)      |\n| Silver       | Cold              | 15 ft. cone (Con. save)      |\n| White        | Cold              | 15 ft. cone (Con. save)      |\nYou have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type, as shown in the table."
+        },
+        {
+          "feature_id": "dragonborn_breath_weapon",
+          "name": "Breath Weapon",
+          "source": "dragonborn",
+          "description": "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type of the exhalation.\nWhen you use your breath weapon, each creature in the area of the exhalation must make a saving throw, the type of which is determined by your draconic ancestry. The DC for this saving throw equals 8 + your Constitution modifier + your proficiency bonus. A creature takes 2d6 damage on a failed save, and half as much damage on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level.\nAfter you use your breath weapon, you can't use it again until you complete a short or long rest."
+        },
+        {
+          "feature_id": "dragonborn_damage_resistance",
+          "name": "Damage Resistance",
+          "source": "dragonborn",
+          "description": "You have resistance to the damage type associated with your draconic ancestry."
+        }
+      ],
+      "feats": [],
+      "class_resources": [],
+      "equipment": {
+        "main_hand": null,
+        "off_hand": null,
+        "armor": null,
+        "helmet": null,
+        "boots": null,
+        "gloves": null,
+        "ring_1": null,
+        "ring_2": null,
+        "amulet": null,
+        "back": null
+      },
+      "inventory": [
+        {
+          "instance_id": "inst_vestments_63a0ff",
+          "item_base": {
+            "item_id": "vestments",
+            "name": "Vestments",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 4.0,
+            "value_gp": 1.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_holy_symbol_268fa9",
+          "item_base": {
+            "item_id": "holy_symbol",
+            "name": "Holy Symbol",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 0.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_greataxe_6ba605",
+          "item_base": {
+            "item_id": "greataxe",
+            "name": "Greataxe",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 7.0,
+            "value_gp": 30.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [
+              "heavy",
+              "two-handed"
+            ],
+            "weapon_properties": {
+              "category": "martial",
+              "weapon_type": "melee",
+              "damage_dice": "1d12",
+              "damage_type": "slashing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": null,
+              "range_max": null,
+              "properties": [
+                "heavy",
+                "two-handed"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_explorer_s_pack_cace5a",
+          "item_base": {
+            "item_id": "explorer_s_pack",
+            "name": "Explorer's Pack",
+            "item_type": "container",
+            "description": "",
+            "weight": 10.0,
+            "value_gp": 10.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_common_clothes_7115df",
+          "item_base": {
+            "item_id": "common_clothes",
+            "name": "Common Clothes",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 3.0,
+            "value_gp": 0.5,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_incense_18b54a",
+          "item_base": {
+            "item_id": "incense",
+            "name": "Incense",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 0.0,
+            "value_gp": 0.01,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_four_javelins_172a45",
+          "item_base": {
+            "item_id": "four_javelins",
+            "name": "Javelin",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 2.0,
+            "value_gp": 0.5,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": {
+              "category": "simple",
+              "weapon_type": "melee",
+              "damage_dice": "1d6",
+              "damage_type": "piercing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": 30,
+              "range_max": 120,
+              "properties": [
+                "thrown"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_prayer_book_or_prayer_wheel_f0daad",
+          "item_base": {
+            "item_id": "prayer_book_or_prayer_wheel",
+            "name": "Prayer Book or Prayer Wheel",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 3.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_two_handaxes_94cd4e",
+          "item_base": {
+            "item_id": "two_handaxes",
+            "name": "Handaxe",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 2.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": {
+              "category": "simple",
+              "weapon_type": "melee",
+              "damage_dice": "1d6",
+              "damage_type": "slashing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": 20,
+              "range_max": 60,
+              "properties": [
+                "light",
+                "thrown"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        }
+      ],
+      "currency": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 15,
+        "pp": 0
+      },
+      "carrying_capacity": 225,
+      "resistances": [
+        "lightning",
+        "poison",
+        "cold",
+        "fire",
+        "acid"
+      ],
+      "immunities": [],
+      "vulnerabilities": [],
+      "spellcasting_ability": "",
+      "spell_save_dc": 0,
+      "spell_attack_bonus": 0,
+      "spell_slots": {},
+      "spells": []
+    },
+    "economy": {
+      "action_spent": false,
+      "bonus_action_spent": false,
+      "reaction_spent": false,
+      "movement_used": 0
+    }
+  }
+}
+
+  >> Character created! entity_id: char_6bb2804a420b
+
+
+--- Testing legacy /api/create-character ---
+
+============================================================
+  REGISTER (legacy account)
+  POST http://localhost:8080/api/register
+  Status: 201
+============================================================
+{
+  "api_key": "t2qerii4xkohfeOFQVIK3VMcPIhWtF5pGTxm8CeiAoM"
+}
+
+============================================================
+  CREATE CHARACTER (legacy)
+  POST http://localhost:8080/api/create-character
+  Status: 201
+============================================================
+{
+  "entity_id": "char_01d997d8f99d",
+  "character_state": {
+    "sheet": {
+      "entity_id": "char_01d997d8f99d",
+      "name": "Legacy Test Character",
+      "creature_id": "dragonborn",
+      "race_id": "",
+      "description": "A test character created by the test client.",
+      "background_id": "acolyte",
+      "alignment": "True Neutral",
+      "inspiration": false,
+      "classes": [
+        {
+          "class_id": "barbarian",
+          "subclass_id": "",
+          "level": 1,
+          "hit_die": "d12"
+        }
+      ],
+      "level": 1,
+      "experience": 0,
+      "proficiency_bonus": 2,
+      "hp_current": 13,
+      "hp_max": 13,
+      "hp_temp": 0,
+      "hit_dice": [
+        {
+          "die": "d12",
+          "total": 1,
+          "remaining": 1
+        }
+      ],
+      "armor_class": 12,
+      "speed": 30,
+      "initiative_bonus": 2,
+      "death_saves": {
+        "successes": 0,
+        "failures": 0,
+        "stable": false
+      },
+      "ability_scores": {
+        "strength": 15,
+        "dexterity": 14,
+        "constitution": 13,
+        "intelligence": 12,
+        "wisdom": 10,
+        "charisma": 8
+      },
+      "saving_throw_proficiencies": [
+        "constitution",
+        "strength"
+      ],
+      "skill_proficiencies": [
+        {
+          "skill": "acrobatics",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "animal_handling",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "arcana",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "athletics",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "deception",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "history",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "insight",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "intimidation",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "investigation",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "medicine",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "nature",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "perception",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "performance",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "persuasion",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "religion",
+          "proficiency_level": "proficient"
+        },
+        {
+          "skill": "sleight_of_hand",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "stealth",
+          "proficiency_level": "none"
+        },
+        {
+          "skill": "survival",
+          "proficiency_level": "none"
+        }
+      ],
+      "tool_proficiencies": [],
+      "languages": [
+        "common",
+        "draconic",
+        "elvish",
+        "dwarvish"
+      ],
+      "senses": {
+        "passive_perception": 10,
+        "darkvision_ft": 0,
+        "blindsight_ft": 0,
+        "tremorsense_ft": 0,
+        "truesight_ft": 0
+      },
+      "conditions": [],
+      "active_effects": [],
+      "concentration_effect_id": null,
+      "exhaustion_level": 0,
+      "features": [
+        {
+          "feature_id": "barbarian_rage",
+          "name": "Rage",
+          "source": "barbarian_1",
+          "description": "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action. \n \nWhile raging, you gain the following benefits if you aren't wearing heavy armor: \n \n You have advantage on Strength checks and Strength saving throws. \n When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table. \n You have resistance to bludgeoning, piercing, and slashing damage. \n \nIf you are able to cast spells, you can't cast them or concentrate on them while raging. \n \nYour rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven't attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action. \n \nOnce you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again."
+        },
+        {
+          "feature_id": "barbarian_unarmored_defense",
+          "name": "Unarmored Defense",
+          "source": "barbarian_1",
+          "description": "While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit."
+        },
+        {
+          "feature_id": "dragonborn_draconic_ancestry",
+          "name": "Draconic Ancestry",
+          "source": "dragonborn",
+          "description": "| Dragon       | Damage Type       | Breath Weapon                |\n|--------------|-------------------|------------------------------|\n| Black        | Acid              | 5 by 30 ft. line (Dex. save) |\n| Blue         | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Brass        | Fire              | 5 by 30 ft. line (Dex. save) |\n| Bronze       | Lightning         | 5 by 30 ft. line (Dex. save) |\n| Copper       | Acid              | 5 by 30 ft. line (Dex. save) |\n| Gold         | Fire              | 15 ft. cone (Dex. save)      |\n| Green        | Poison            | 15 ft. cone (Con. save)      |\n| Red          | Fire              | 15 ft. cone (Dex. save)      |\n| Silver       | Cold              | 15 ft. cone (Con. save)      |\n| White        | Cold              | 15 ft. cone (Con. save)      |\nYou have draconic ancestry. Choose one type of dragon from the Draconic Ancestry table. Your breath weapon and damage resistance are determined by the dragon type, as shown in the table."
+        },
+        {
+          "feature_id": "dragonborn_breath_weapon",
+          "name": "Breath Weapon",
+          "source": "dragonborn",
+          "description": "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type of the exhalation.\nWhen you use your breath weapon, each creature in the area of the exhalation must make a saving throw, the type of which is determined by your draconic ancestry. The DC for this saving throw equals 8 + your Constitution modifier + your proficiency bonus. A creature takes 2d6 damage on a failed save, and half as much damage on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level.\nAfter you use your breath weapon, you can't use it again until you complete a short or long rest."
+        },
+        {
+          "feature_id": "dragonborn_damage_resistance",
+          "name": "Damage Resistance",
+          "source": "dragonborn",
+          "description": "You have resistance to the damage type associated with your draconic ancestry."
+        }
+      ],
+      "feats": [],
+      "class_resources": [],
+      "equipment": {
+        "main_hand": null,
+        "off_hand": null,
+        "armor": null,
+        "helmet": null,
+        "boots": null,
+        "gloves": null,
+        "ring_1": null,
+        "ring_2": null,
+        "amulet": null,
+        "back": null
+      },
+      "inventory": [
+        {
+          "instance_id": "inst_vestments_770b7d",
+          "item_base": {
+            "item_id": "vestments",
+            "name": "Vestments",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 4.0,
+            "value_gp": 1.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_holy_symbol_91c6c4",
+          "item_base": {
+            "item_id": "holy_symbol",
+            "name": "Holy Symbol",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 0.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_greataxe_cbd687",
+          "item_base": {
+            "item_id": "greataxe",
+            "name": "Greataxe",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 7.0,
+            "value_gp": 30.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [
+              "heavy",
+              "two-handed"
+            ],
+            "weapon_properties": {
+              "category": "martial",
+              "weapon_type": "melee",
+              "damage_dice": "1d12",
+              "damage_type": "slashing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": null,
+              "range_max": null,
+              "properties": [
+                "heavy",
+                "two-handed"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_explorer_s_pack_348f48",
+          "item_base": {
+            "item_id": "explorer_s_pack",
+            "name": "Explorer's Pack",
+            "item_type": "container",
+            "description": "",
+            "weight": 10.0,
+            "value_gp": 10.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_common_clothes_d897ac",
+          "item_base": {
+            "item_id": "common_clothes",
+            "name": "Common Clothes",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 3.0,
+            "value_gp": 0.5,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_incense_ed1b94",
+          "item_base": {
+            "item_id": "incense",
+            "name": "Incense",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 0.0,
+            "value_gp": 0.01,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_four_javelins_2e94d3",
+          "item_base": {
+            "item_id": "four_javelins",
+            "name": "Javelin",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 2.0,
+            "value_gp": 0.5,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": {
+              "category": "simple",
+              "weapon_type": "melee",
+              "damage_dice": "1d6",
+              "damage_type": "piercing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": 30,
+              "range_max": 120,
+              "properties": [
+                "thrown"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_prayer_book_or_prayer_wheel_24dfe9",
+          "item_base": {
+            "item_id": "prayer_book_or_prayer_wheel",
+            "name": "Prayer Book or Prayer Wheel",
+            "item_type": "adventuring_gear",
+            "description": "",
+            "weight": 3.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": null,
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        },
+        {
+          "instance_id": "inst_two_handaxes_548c68",
+          "item_base": {
+            "item_id": "two_handaxes",
+            "name": "Handaxe",
+            "item_type": "weapon",
+            "description": "",
+            "weight": 2.0,
+            "value_gp": 5.0,
+            "rarity": "mundane",
+            "magical": false,
+            "requires_attunement": false,
+            "attunement_requirements": null,
+            "tags": [],
+            "weapon_properties": {
+              "category": "simple",
+              "weapon_type": "melee",
+              "damage_dice": "1d6",
+              "damage_type": "slashing",
+              "versatile_damage": null,
+              "attack_bonus": 0,
+              "damage_bonus": 0,
+              "range_normal": 20,
+              "range_max": 60,
+              "properties": [
+                "light",
+                "thrown"
+              ],
+              "silvered": false,
+              "adamantine": false
+            },
+            "armor_properties": null,
+            "ammunition_properties": null,
+            "consumable_properties": null,
+            "scroll_properties": null,
+            "tool_properties": null,
+            "instrument_properties": null,
+            "container_properties": null,
+            "magic_properties": null
+          },
+          "quantity": 1,
+          "attuned": false,
+          "charges": null,
+          "custom_name": null,
+          "condition": "normal"
+        }
+      ],
+      "currency": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 15,
+        "pp": 0
+      },
+      "carrying_capacity": 225,
+      "resistances": [
+        "lightning",
+        "poison",
+        "cold",
+        "fire",
+        "acid"
+      ],
+      "immunities": [],
+      "vulnerabilities": [],
+      "spellcasting_ability": "",
+      "spell_save_dc": 0,
+      "spell_attack_bonus": 0,
+      "spell_slots": {},
+      "spells": []
+    },
+    "economy": {
+      "action_spent": false,
+      "bonus_action_spent": false,
+      "reaction_spent": false,
+      "movement_used": 0
+    }
+  }
+}
+
+  >> Legacy character created! entity_id: char_01d997d8f99d
+
+
+Done.

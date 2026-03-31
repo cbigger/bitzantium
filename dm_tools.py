@@ -686,8 +686,26 @@ def _handle_tick_turn_end(args: dict) -> dict:
     }
 
 
+def _handle_append_narrative(args: dict) -> dict:
+    """Append text to the shared scene narrative."""
+    text = args["text"]
+    full = db.append_narrative(text)
+    return {"status": "appended", "narrative_length": len(full)}
+
+
+def _handle_set_player_location(args: dict) -> dict:
+    """Update a player's location context fields."""
+    entity_id = args["entity_id"]
+    location_area = args["location_area"]
+    location_sub = args.get("location_sub")
+    found = db.update_player_location(entity_id, location_area, location_sub)
+    if not found:
+        return {"error": f"Character {entity_id!r} not found or has no turn context"}
+    return {"status": "updated", "entity_id": entity_id, "location_area": location_area}
+
+
 # ---------------------------------------------------------------------------
-# Tool catalogue — MCP definitions + handler bindings
+# Tool catalogue — tool definitions + handler bindings
 # ---------------------------------------------------------------------------
 
 _DM_TOOLS: list[dict] = [
@@ -1075,6 +1093,39 @@ _DM_TOOLS: list[dict] = [
             "required": ["entity_id"],
         },
         "handler": _handle_tick_turn_end,
+    },
+
+    # ── Narrative ─────────────────────────────────────────────────────────────
+    {
+        "name": "append_narrative",
+        "description": (
+            "Append text to the scene narrative — the shared story that all players read. "
+            "Write in third person using character names. Called after resolving mechanics "
+            "to describe what happened. Each call adds a new paragraph."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {"text": {"type": "string"}},
+            "required": ["text"],
+        },
+        "handler": _handle_append_narrative,
+    },
+    {
+        "name": "set_player_location",
+        "description": (
+            "Update a player's location context (shown in their prompt as "
+            "'You find yourself in ...'). Call when the scene physically changes areas."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "entity_id":     {"type": "string"},
+                "location_area": {"type": "string"},
+                "location_sub":  {"type": "string"},
+            },
+            "required": ["entity_id", "location_area"],
+        },
+        "handler": _handle_set_player_location,
     },
 ]
 

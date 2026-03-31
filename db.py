@@ -134,6 +134,13 @@ class TurnStateRow(Base):
     dm_turn_pending = Column(Boolean, nullable=False, default=False)
 
 
+class SceneNarrativeRow(Base):
+    __tablename__ = "scene_narrative"
+
+    id = Column(Integer, primary_key=True)
+    narrative = Column(Text, nullable=False, default="")
+
+
 class DmChatMessage(Base):
     __tablename__ = "dm_chat_history"
 
@@ -369,6 +376,23 @@ def save_turn_context(
         return tc
 
 
+def update_player_location(
+    entity_id: str,
+    location_area: str,
+    location_sub: Optional[str] = None,
+) -> bool:
+    """Update just the location fields on a player's turn context.
+    Returns True if found and updated, False if character not found."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character or not character.turn_context:
+            return False
+        character.turn_context.location_area = location_area
+        character.turn_context.location_sub = location_sub
+        session.commit()
+        return True
+
+
 # ---------------------------------------------------------------------------
 # Realm objects — reference data (classes, races, items, etc.)
 # ---------------------------------------------------------------------------
@@ -466,7 +490,7 @@ def init_scene(
     area_description: str = "",
     light_level: str = "bright",
 ) -> dict:
-    """Initialise or reset the current scene."""
+    """Initialise or reset the current scene. Also clears the scene narrative."""
     with SessionLocal() as session:
         row = _get_or_create_scene(session)
         row.area_id = area_id
@@ -474,6 +498,9 @@ def init_scene(
         row.area_description = area_description
         row.light_level = light_level
         row.entity_positions = {}
+        # Clear the narrative — new scene, fresh story
+        narr = _get_or_create_narrative(session)
+        narr.narrative = ""
         session.commit()
         return {
             "area_id": row.area_id,
@@ -528,6 +555,51 @@ def distance_between(entity_a: str, entity_b: str) -> Optional[float]:
         return None
     grid_dist = ((pa["x"] - pb["x"]) ** 2 + (pa["y"] - pb["y"]) ** 2 + (pa["z"] - pb["z"]) ** 2) ** 0.5
     return grid_dist * 5
+
+
+# ---------------------------------------------------------------------------
+# Scene narrative — shared story document
+# ---------------------------------------------------------------------------
+
+_NARRATIVE_ROW_ID = 1  # single-row pattern
+
+
+def _get_or_create_narrative(session: Session) -> SceneNarrativeRow:
+    """Get the singleton narrative row, creating it if it doesn't exist."""
+    row = session.query(SceneNarrativeRow).filter(SceneNarrativeRow.id == _NARRATIVE_ROW_ID).first()
+    if row is None:
+        row = SceneNarrativeRow(id=_NARRATIVE_ROW_ID, narrative="")
+        session.add(row)
+        session.flush()
+    return row
+
+
+def get_narrative() -> str:
+    """Return the current scene narrative."""
+    with SessionLocal() as session:
+        row = _get_or_create_narrative(session)
+        return row.narrative or ""
+
+
+def append_narrative(text: str) -> str:
+    """Append text to the scene narrative. Returns the full narrative."""
+    with SessionLocal() as session:
+        row = _get_or_create_narrative(session)
+        current = row.narrative or ""
+        if current:
+            row.narrative = current + "\n\n" + text
+        else:
+            row.narrative = text
+        session.commit()
+        return row.narrative
+
+
+def clear_narrative() -> None:
+    """Reset the scene narrative."""
+    with SessionLocal() as session:
+        row = _get_or_create_narrative(session)
+        row.narrative = ""
+        session.commit()
 
 
 # ---------------------------------------------------------------------------

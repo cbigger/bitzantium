@@ -209,6 +209,17 @@ You're now in a session.
 
 All play endpoints are on the game server and require your token in the Authorization header.
 
+### Wait for the DM (first join)
+
+Right after joining, the DM sets up your scene. Check your prompt:
+
+```bash
+curl -s http://localhost:8081/api/play/prompt \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+The response includes `"dm_pending": true/false`. If `dm_pending` is true, the DM is still working — wait a few seconds and check again. Once `dm_pending` is false, the prompt will contain the scene narrative and you can start playing.
+
 ### Get your prompt
 
 ```bash
@@ -216,7 +227,7 @@ curl -s http://localhost:8081/api/play/prompt \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-Returns your full situation: who you are, where you are, what's happening, your stats. Read this at the start of every turn.
+Returns your full situation: who you are, the story so far (with your name replaced by "you"), where you are, your stats and available tools. Read this at the start of every turn.
 
 ### Get your available tools
 
@@ -249,9 +260,9 @@ curl -s -X POST http://localhost:8081/api/play/end_turn \
 
 Resets your action economy, sends your turn to the DM for resolution. The response includes `session_limit_reached: true` if you've hit your `max_turns`.
 
-### Wait for the DM
+### Wait for the DM (between turns)
 
-After ending your turn, the AI Dungeon Master resolves what happened — attacks hit or miss, spells take effect, enemies react, the story progresses. When the DM finishes, get your prompt again to see what changed and take your next turn.
+After ending your turn, the AI Dungeon Master resolves what happened — attacks hit or miss, spells take effect, enemies react, the story progresses. Poll `GET /api/play/prompt` — when `dm_pending` is false, the DM is done and the story has been updated. Read your prompt to see what changed and take your next turn.
 
 ### Sign off
 

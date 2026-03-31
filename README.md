@@ -1,6 +1,6 @@
 # Bitzantium — Game Engine Backend
 
-Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs the game; player agents interact through REST API calls or MCP. No tables necessary.
+Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs the game; player agents interact through REST API calls. No tables necessary.
 
 ---
 
@@ -9,17 +9,17 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs t
 ```
 bitzantium/
 ├── auth_wrapper.py       — Auth server: registration, character creation, JWT issuance
-├── game_server.py        — Game server: REST play API, player + DM MCP endpoints, session lifecycle
-├── dm_client.py          — DM agent client: polling loop, LLM agent, MCP tool execution
+├── game_server.py        — Game server: REST API for players + DM, session lifecycle
+├── dm_client.py          — DM agent client: polling loop, LLM agent, REST tool execution
 ├── dm_client.toml        — DM client config: LLM provider/model, poll interval, game server URL
 ├── jwt_utils.py          — Shared JWT creation/validation (HS256)
 ├── config.py             — Loads bitzantium.toml, typed accessors for all config values
-├── player_mcp.py         — Player MCP server + prompt builder (DB-direct, stateless)
+├── player_mcp.py         — Player prompt builder (DB-direct, stateless)
 ├── player_tools.py       — Player tool execution (validate → spend → snapshot)
 ├── registry.py           — Player tool catalogue + four-layer gate logic
-├── dm_tools.py           — DM tool catalogue + execution (rolls, state mutation, all DB-backed)
+├── dm_tools.py           — DM tool catalogue + execution (rolls, state mutation, narrative, all DB-backed)
 ├── character_builder.py  — Programmatic character creation with rule validation
-├── db.py                 — SQLAlchemy ORM: accounts, characters, scene, turns, DM chat history
+├── db.py                 — SQLAlchemy ORM: accounts, characters, scene, narrative, turns, DM chat history
 ├── db_controls.py        — Account creation, DB population, clear (temp-safe)
 ├── rules.py              — Pure D&D 5e calculations (no I/O, no state mutation)
 ├── dice.py               — Dice rolling primitives
@@ -36,13 +36,13 @@ bitzantium/
 
 ## Architecture
 
-The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via REST API and MCP-over-streamable-HTTP. The database is the single source of truth for all state — character data, scene, turn order, and DM conversation history.
+The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via REST API. The database is the single source of truth for all state — character data, scene, narrative, turn order, and DM conversation history.
 
 ### Agents
 
-**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They play via the REST API (`/api/play/*`) or MCP (`/mcp`), both authenticated with a JWT. Player agents sign on and off per session.
+**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They play via the REST API (`/api/play/*`), authenticated with a JWT. Player agents sign on and off per session.
 
-**The DM agent** is a remote, always-running service driven by `dm_client.py`. It authenticates with a pre-configured API key (no registration, no JWT, no character). It connects to the game server's `/dm-mcp` endpoint via the MCP SDK client. The DM has no local memory — its entire context is a persistent LLM conversation history stored in the database. The DM is a singleton: one per game server instance.
+**The DM agent** is a remote, always-running service driven by `dm_client.py`. It authenticates with a pre-configured API key (no registration, no JWT, no character). It connects to the game server's `/api/dm/*` endpoints via HTTP. The DM has no local memory — its entire context is a persistent LLM conversation history stored in the database. The DM is a singleton: one per game server instance.
 
 ### Full Player Lifecycle
 
@@ -85,14 +85,12 @@ Agent                     Auth Server              Human             Game Server
   │  {status: "joined"}                                                    │
   │                                                                        │
   │  REST API on /api/play/* (Authorization: Bearer <jwt>)                 │
-  │  ┌─ GET  /api/play/prompt   → system prompt built from DB              │
+  │  ┌─ GET  /api/play/prompt   → system prompt + narrative from DB        │
   │  ├─ GET  /api/play/tools    → gated tool list from DB                  │
   │  ├─ POST /api/play/tool     → validate + spend economy + snapshot      │
   │  ├─ POST /api/play/end_turn → reset economy, log to DM history, flag DM│
   │  └─ POST /api/play/signoff  → save departure, deactivate session       │
   │◄══════════════════════════════════════════════════════════════════════►│
-  │                                                                        │
-  │  (MCP also available on /mcp with same JWT for MCP-native clients)     │
 ```
 
 ### DM Lifecycle

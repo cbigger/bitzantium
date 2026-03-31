@@ -264,7 +264,8 @@ async def handle_confirm_character(request: web.Request) -> web.Response:
 
     character_state = CharacterState.model_validate(result["character_state"])
     entity_id = character_state.sheet.entity_id
-    db.create_character(account.id, entity_id, character_state)
+    character = db.create_character(account.id, entity_id, character_state)
+    db.save_turn_context(character_id=character.id)
 
     return web.json_response({
         "entity_id": entity_id,
@@ -313,7 +314,8 @@ async def handle_create_character(request: web.Request) -> web.Response:
     # Persist
     character_state = CharacterState.model_validate(result["character_state"])
     entity_id = character_state.sheet.entity_id
-    db.create_character(account.id, entity_id, character_state)
+    character = db.create_character(account.id, entity_id, character_state)
+    db.save_turn_context(character_id=character.id)
 
     return web.json_response({
         "entity_id": entity_id,

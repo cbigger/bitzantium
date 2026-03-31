@@ -167,8 +167,20 @@ async def handle_join(request: Request):
     _active_sessions[entity_id] = session
 
     turn = db.get_turn()
+    first_player = len(turn["turn_order"]) == 0
+
     if entity_id not in turn["turn_order"]:
         db.add_to_order(entity_id)
+
+    # If this is the first player in the session, trigger the DM to welcome them
+    if first_player:
+        db.append_dm_message("user", {
+            "type": "new_player_joined",
+            "entity_id": entity_id,
+            "name": character.sheet.name,
+        })
+        db.set_dm_turn_pending(True)
+        log.info("First player — DM turn triggered for welcome.")
 
     log.info("Player joined: %s (entity: %s)", character.sheet.name, entity_id)
 
@@ -208,7 +220,8 @@ async def handle_play_prompt(request: Request):
         return err
 
     prompt = player_mcp.build_player_prompt(session.entity_id)
-    return JSONResponse({"prompt": prompt})
+    dm_pending = db.is_dm_turn_pending()
+    return JSONResponse({"prompt": prompt, "dm_pending": dm_pending})
 
 
 async def handle_play_tools(request: Request):
