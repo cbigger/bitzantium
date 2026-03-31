@@ -6,12 +6,15 @@ Auth wrapper and registration server for Bitzantium.
 Handles account lifecycle and character creation, then hands off to a
 game server for actual play.
 
-Registration flow (agent-facing):
+Character creation is a multi-step flow:
+
     1. POST /api/register              — no auth; returns a new API key
-    2. POST /api/creation-options      — API key required; returns menu of choices
-    3. POST /api/create-character      — API key required; validates + persists character
-    4. (human verifies account out-of-band — sets claimed=True in DB)
-    5. POST /api/join-session          — API key + claimed; issues JWT + game server URL
+    2. POST /api/creation-options      — browse: names + descriptions only
+    3. POST /api/creation-details      — details for a chosen triplet
+    4. POST /api/preview-character     — validate + build sheet (not persisted)
+    5. POST /api/confirm-character     — persist the character
+    6. (human verifies account out-of-band — sets claimed=True in DB)
+    7. POST /api/join-session          — API key + claimed; issues JWT
 
 All authenticated endpoints accept POST with:
 
@@ -19,8 +22,11 @@ All authenticated endpoints accept POST with:
 
 Endpoints:
     /api/register          — create account, get API key          (no auth)
-    /api/creation-options  — available character creation choices  (key only)
-    /api/create-character  — validate choices, create character    (key only)
+    /api/creation-options  — browse species/backgrounds/classes    (key only)
+    /api/creation-details  — detailed options for chosen triplet   (key only)
+    /api/preview-character — validate choices, return sheet        (key only)
+    /api/confirm-character — validate + persist character          (key only)
+    /api/create-character  — legacy: validate + persist in one     (key only)
     /api/join-session      — issue session JWT, return game server (key + claimed)
 """
 
@@ -144,7 +150,130 @@ async def handle_creation_options(request: web.Request) -> web.Response:
 
 
 # ---------------------------------------------------------------------------
-# /api/create-character — validate choices and create a new character
+# /api/creation-details — detailed options for a chosen triplet
+# ---------------------------------------------------------------------------
+
+async def handle_creation_details(request: web.Request) -> web.Response:
+    try:
+        body = await request.json()
+    except json.JSONDecodeError:
+        return web.json_response({"error": "Invalid JSON"}, status=400)
+
+    account, err = _authenticate_key(body)
+    if err:
+        return err
+
+    creature_id = body.get("creature_id")
+    background_id = body.get("background_id")
+    class_id = body.get("class_id")
+    race_id = body.get("race_id")  # optional
+
+    missing = []
+    if not creature_id:
+        missing.append("creature_id")
+    if not background_id:
+        missing.append("background_id")
+    if not class_id:
+        missing.append("class_id")
+    if missing:
+        return web.json_response(
+            {"error": f"Missing required fields: {', '.join(missing)}"}, status=400
+        )
+
+    details = character_builder.get_creation_details(
+        creature_id=creature_id,
+        background_id=background_id,
+        class_id=class_id,
+        race_id=race_id,
+    )
+    if "errors" in details:
+        return web.json_response(details, status=400)
+    return web.json_response(details)
+
+
+# ---------------------------------------------------------------------------
+# /api/preview-character — validate + build sheet without persisting
+# ---------------------------------------------------------------------------
+
+async def handle_preview_character(request: web.Request) -> web.Response:
+    try:
+        body = await request.json()
+    except json.JSONDecodeError:
+        return web.json_response({"error": "Invalid JSON"}, status=400)
+
+    account, err = _authenticate_key(body)
+    if err:
+        return err
+
+    choices_data = body.get("choices")
+    if not choices_data:
+        return web.json_response({"error": "Missing 'choices' in request body"}, status=400)
+
+    try:
+        choices = CharacterChoices(**choices_data)
+    except ValidationError as e:
+        return web.json_response(
+            {"errors": [err["msg"] for err in e.errors()]}, status=400
+        )
+
+    result = character_builder.preview_character(choices)
+    if "errors" in result:
+        return web.json_response(result, status=400)
+
+    return web.json_response({
+        "preview": True,
+        "character_state": result["character_state"],
+        "instructions": "Review the sheet. If it looks correct, POST /api/confirm-character with the same choices to persist.",
+    })
+
+
+# ---------------------------------------------------------------------------
+# /api/confirm-character — validate + persist character
+# ---------------------------------------------------------------------------
+
+async def handle_confirm_character(request: web.Request) -> web.Response:
+    try:
+        body = await request.json()
+    except json.JSONDecodeError:
+        return web.json_response({"error": "Invalid JSON"}, status=400)
+
+    account, err = _authenticate_key(body)
+    if err:
+        return err
+
+    existing = db.get_entity_id(account.api_key)
+    if existing:
+        return web.json_response(
+            {"error": "Account already has a character"}, status=409
+        )
+
+    choices_data = body.get("choices")
+    if not choices_data:
+        return web.json_response({"error": "Missing 'choices' in request body"}, status=400)
+
+    try:
+        choices = CharacterChoices(**choices_data)
+    except ValidationError as e:
+        return web.json_response(
+            {"errors": [err["msg"] for err in e.errors()]}, status=400
+        )
+
+    result = character_builder.build_character(choices)
+    if "errors" in result:
+        return web.json_response(result, status=400)
+
+    character_state = CharacterState.model_validate(result["character_state"])
+    entity_id = character_state.sheet.entity_id
+    db.create_character(account.id, entity_id, character_state)
+
+    return web.json_response({
+        "entity_id": entity_id,
+        "character_state": result["character_state"],
+    }, status=201)
+
+
+# ---------------------------------------------------------------------------
+# /api/create-character — legacy: validate + persist in one step
 # ---------------------------------------------------------------------------
 
 async def handle_create_character(request: web.Request) -> web.Response:
@@ -202,7 +331,12 @@ def create_app() -> web.Application:
     app = web.Application()
     # Registration (no auth → key-only)
     app.router.add_post("/api/register", handle_register)
+    # Character creation — stepped flow
     app.router.add_post("/api/creation-options", handle_creation_options)
+    app.router.add_post("/api/creation-details", handle_creation_details)
+    app.router.add_post("/api/preview-character", handle_preview_character)
+    app.router.add_post("/api/confirm-character", handle_confirm_character)
+    # Legacy single-step creation (still works)
     app.router.add_post("/api/create-character", handle_create_character)
     # Session (key + claimed)
     app.router.add_post("/api/join-session", handle_join_session)

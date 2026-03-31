@@ -3,19 +3,25 @@ character_builder.py
 ====================
 Programmatic character creation with full class-rule validation.
 
-Two public functions:
+Public functions:
 
     get_creation_options()
-        Returns a dict describing every available choice (classes, species,
-        backgrounds, etc.) with constraints, so an agent can make informed
-        decisions without knowing the rule book.
+        Step 1 (Browse): Returns names + descriptions for species,
+        backgrounds, and classes.  Lightweight — no spell lists.
+
+    get_creation_details(creature_id, background_id, class_id)
+        Step 2 (Details): Returns detailed options for the chosen triplet
+        including spell definitions filtered to cantrips + level 1 only.
+
+    preview_character(choices: CharacterChoices) -> dict
+        Step 3 (Preview): Validates the choices and builds a full
+        CharacterState dict, but does NOT persist.
 
     build_character(choices: CharacterChoices) -> dict
-        Validates the choices against class/race/background rules and, if
-        valid, returns {"character_state": <CharacterState dict>}.
-        On failure returns {"errors": [<str>, ...]}.
+        Step 4 (Confirm): Validates and builds the character for real.
+        Identical to preview but signals the caller to persist.
 
-Both require that loader.load_all() has been called first.
+All require that loader.load_all() has been called first.
 """
 
 from __future__ import annotations
@@ -210,76 +216,48 @@ def _is_cantrip(ability) -> bool:
     )
 
 
+def _spell_base_level(ability) -> int:
+    """Return the base spell level: 0 for cantrips, else the lowest non-zero slot_level."""
+    if not ability.effects_by_level:
+        return 0
+    levels = [e.slot_level for e in ability.effects_by_level]
+    non_zero = [l for l in levels if l > 0]
+    return min(non_zero) if non_zero else 0
+
+
 # ---------------------------------------------------------------------------
 # get_creation_options
 # ---------------------------------------------------------------------------
 
 def get_creation_options() -> dict:
     """
-    Return a structured dict of every available character creation choice,
-    with enough detail for an agent to make valid decisions.
+    Step 1 — Browse.
+
+    Return names and descriptions only for species, backgrounds, and classes.
+    Agent picks a creature_id, background_id, and class_id, then calls
+    get_creation_details() for the full option set.
     """
-    options: dict = {}
-
-    # Alignments
-    options["alignments"] = ALIGNMENTS
-
-    # Ability score methods
-    options["ability_methods"] = {
-        "standard_array": {
-            "description": "Assign [15, 14, 13, 12, 10, 8] to six abilities. Each value used exactly once.",
-            "values": STANDARD_ARRAY,
-        },
-        "point_buy": {
-            "description": f"Budget of {POINT_BUY_BUDGET} points. Scores range 8-15 before racial bonuses.",
-            "cost_table": POINT_BUY_COST,
-            "budget": POINT_BUY_BUDGET,
-        },
-        "manual": {
-            "description": "Set each score directly (1-30). Use when the DM has you roll dice.",
-        },
-    }
-    options["abilities"] = ABILITIES
-
     # Species
     species = []
     for cid in sorted(loader.list_sapient_creatures()):
         creature = loader.get_creature(cid)
         if not creature:
             continue
-        races_for_creature = []
+        races = []
         for rid in sorted(loader.list_races()):
             race = loader.get_race(rid)
             if race and race.parent_creature_id == cid:
-                choice_asi_count = sum(
-                    1 for asi in race.ability_score_increases if asi.ability == "choice"
-                )
-                races_for_creature.append({
+                races.append({
                     "race_id": race.race_id,
                     "name": race.name,
                     "description": race.description,
-                    "ability_score_increases": [
-                        {"ability": asi.ability, "amount": asi.amount}
-                        for asi in race.ability_score_increases
-                    ],
-                    "choice_asi_count": choice_asi_count,
-                    "languages": race.languages,
-                    "bonus_languages": race.bonus_languages,
-                    "traits": [{"name": t.name, "description": t.description} for t in race.traits],
-                    "resistances": race.resistances,
                 })
         species.append({
             "creature_id": creature.creature_id,
             "name": creature.name,
             "description": creature.description,
-            "speed": creature.speed.walk,
-            "darkvision_ft": creature.senses.darkvision_ft,
-            "languages": creature.languages,
-            "bonus_languages": creature.bonus_languages,
-            "traits": [{"name": t.name, "description": t.description} for t in creature.traits],
-            "races": races_for_creature,
+            "races": races,
         })
-    options["species"] = species
 
     # Backgrounds
     backgrounds = []
@@ -287,20 +265,11 @@ def get_creation_options() -> dict:
         bg = loader.get_background(bid)
         if not bg:
             continue
-        bg_grants = _parse_grants(bg.proficiency_grants)
         backgrounds.append({
             "background_id": bg.background_id,
             "name": bg.name,
             "description": bg.description,
-            "skill_proficiencies_auto": bg_grants["skill_auto"],
-            "skill_proficiencies_choose": [
-                {"count": c, "from": p} for c, p in bg_grants["skill_choose"]
-            ],
-            "tool_proficiencies_auto": bg_grants["tool_auto"],
-            "bonus_languages": bg.bonus_languages,
-            "features": [{"name": f.name, "description": f.description} for f in bg.features],
         })
-    options["backgrounds"] = backgrounds
 
     # Classes
     classes = []
@@ -308,72 +277,226 @@ def get_creation_options() -> dict:
         cls = loader.get_class(cid)
         if not cls:
             continue
-        cls_grants = _parse_grants(cls.proficiency_grants)
-
-        # Subclasses for this class
-        subclasses = []
-        for sid in sorted(loader.list_subclasses()):
-            sub = loader.get_subclass(sid)
-            if sub and sub.parent_class_id == cid:
-                subclasses.append({
-                    "subclass_id": sub.subclass_id,
-                    "name": sub.name,
-                    "description": sub.description,
-                    "granted_at_level": sub.granted_at_level,
-                })
-
-        # Spell list for this class
-        class_spells = []
-        for aid in sorted(loader.list_abilities()):
-            ability = loader.get_ability(aid)
-            if ability and cid in ability.spell_lists:
-                class_spells.append({
-                    "spell_id": ability.ability_id,
-                    "name": ability.name,
-                    "is_cantrip": _is_cantrip(ability),
-                    "description": ability.description,
-                    "school": ability.spell_school.value if ability.spell_school else None,
-                })
-
         classes.append({
             "class_id": cls.class_id,
             "name": cls.name,
             "description": cls.description,
             "hit_die": cls.hit_die,
             "spellcasting_ability": cls.spellcasting_ability or None,
-            "spell_prepare_style": cls.spell_prepare_style or None,
-            "subclass_level": cls.subclass_level,
-            "saving_throws": cls_grants["saving_throw"],
-            "skill_proficiencies_auto": cls_grants["skill_auto"],
-            "skill_proficiencies_choose": [
-                {"count": c, "from": p} for c, p in cls_grants["skill_choose"]
-            ],
-            "armor_proficiencies": [
-                g.type for g in cls.proficiency_grants
-                if g.type.startswith("armor:")
-            ],
-            "weapon_proficiencies": [
-                g.type for g in cls.proficiency_grants
-                if g.type.startswith("weapon:")
-            ],
-            "subclasses": subclasses,
-            "spells": class_spells,
         })
-    options["classes"] = classes
 
-    options["all_skills"] = ALL_SKILLS
-    options["common_languages"] = COMMON_LANGUAGES
-
-    return options
+    return {
+        "species": species,
+        "backgrounds": backgrounds,
+        "classes": classes,
+        "instructions": (
+            "Pick a creature_id (and optionally a race_id), a background_id, "
+            "and a class_id, then call /api/creation-details with those IDs "
+            "to get the full set of options for building your character."
+        ),
+    }
 
 
 # ---------------------------------------------------------------------------
-# build_character
+# get_creation_details
 # ---------------------------------------------------------------------------
 
-def build_character(choices: CharacterChoices) -> dict:
+def get_creation_details(
+    creature_id: str,
+    background_id: str,
+    class_id: str,
+    race_id: Optional[str] = None,
+) -> dict:
     """
-    Validate choices and build a full CharacterState dict.
+    Step 2 — Details.
+
+    Given the agent's chosen triplet (creature, background, class), return
+    everything they need to fill out CharacterChoices: ability score rules,
+    racial traits, skill pools, spell lists (cantrips + level-1 only), etc.
+    """
+    errors: list[str] = []
+
+    creature = loader.get_creature(creature_id)
+    if not creature:
+        errors.append(f"Unknown creature_id: {creature_id!r}")
+    elif creature_id not in loader.list_sapient_creatures():
+        errors.append(f"Creature {creature_id!r} is not a playable species")
+
+    race: Optional[RaceDefinition] = None
+    if race_id:
+        race = loader.get_race(race_id)
+        if not race:
+            errors.append(f"Unknown race_id: {race_id!r}")
+        elif creature and race.parent_creature_id != creature_id:
+            errors.append(f"Race {race_id!r} does not belong to creature {creature_id!r}")
+
+    background = loader.get_background(background_id)
+    if not background:
+        errors.append(f"Unknown background_id: {background_id!r}")
+
+    class_def = loader.get_class(class_id)
+    if not class_def:
+        errors.append(f"Unknown class_id: {class_id!r}")
+
+    if errors:
+        return {"errors": errors}
+
+    # --- Species detail ---
+    species_detail: dict = {
+        "creature_id": creature.creature_id,
+        "name": creature.name,
+        "description": creature.description,
+        "speed": creature.speed.walk,
+        "darkvision_ft": creature.senses.darkvision_ft,
+        "languages": creature.languages,
+        "bonus_languages": creature.bonus_languages,
+        "traits": [{"name": t.name, "description": t.description} for t in creature.traits],
+    }
+    if race:
+        choice_asi_count = sum(
+            1 for asi in race.ability_score_increases if asi.ability == "choice"
+        )
+        species_detail["race"] = {
+            "race_id": race.race_id,
+            "name": race.name,
+            "description": race.description,
+            "ability_score_increases": [
+                {"ability": asi.ability, "amount": asi.amount}
+                for asi in race.ability_score_increases
+            ],
+            "choice_asi_count": choice_asi_count,
+            "languages": race.languages,
+            "bonus_languages": race.bonus_languages,
+            "traits": [{"name": t.name, "description": t.description} for t in race.traits],
+            "resistances": race.resistances,
+        }
+
+    # --- Background detail ---
+    bg_grants = _parse_grants(background.proficiency_grants)
+    background_detail = {
+        "background_id": background.background_id,
+        "name": background.name,
+        "description": background.description,
+        "skill_proficiencies_auto": bg_grants["skill_auto"],
+        "skill_proficiencies_choose": [
+            {"count": c, "from": p} for c, p in bg_grants["skill_choose"]
+        ],
+        "tool_proficiencies_auto": bg_grants["tool_auto"],
+        "bonus_languages": background.bonus_languages,
+        "features": [{"name": f.name, "description": f.description} for f in background.features],
+    }
+
+    # --- Class detail ---
+    cls_grants = _parse_grants(class_def.proficiency_grants)
+
+    # Subclasses
+    subclasses = []
+    for sid in sorted(loader.list_subclasses()):
+        sub = loader.get_subclass(sid)
+        if sub and sub.parent_class_id == class_id:
+            subclasses.append({
+                "subclass_id": sub.subclass_id,
+                "name": sub.name,
+                "description": sub.description,
+                "granted_at_level": sub.granted_at_level,
+            })
+
+    # Level 1 progression info
+    level_data = _aggregate_level_progression(class_def, 1)
+
+    # Spells — cantrips + level 1 only
+    cantrips = []
+    level_1_spells = []
+    for aid in sorted(loader.list_abilities()):
+        ability = loader.get_ability(aid)
+        if not ability or class_id not in ability.spell_lists:
+            continue
+        base_level = _spell_base_level(ability)
+        if base_level > 1:
+            continue  # skip anything above level 1
+        spell_entry = {
+            "spell_id": ability.ability_id,
+            "name": ability.name,
+            "description": ability.description,
+            "school": ability.spell_school.value if ability.spell_school else None,
+            "action_cost": ability.action_cost.value if ability.action_cost else None,
+            "range_ft": ability.range_ft,
+            "concentration": ability.concentration,
+            "ritual": ability.ritual,
+            "duration": ability.duration,
+        }
+        if base_level == 0:
+            cantrips.append(spell_entry)
+        else:
+            level_1_spells.append(spell_entry)
+
+    class_detail = {
+        "class_id": class_def.class_id,
+        "name": class_def.name,
+        "description": class_def.description,
+        "hit_die": class_def.hit_die,
+        "spellcasting_ability": class_def.spellcasting_ability or None,
+        "spell_prepare_style": class_def.spell_prepare_style or None,
+        "subclass_level": class_def.subclass_level,
+        "saving_throws": cls_grants["saving_throw"],
+        "skill_proficiencies_auto": cls_grants["skill_auto"],
+        "skill_proficiencies_choose": [
+            {"count": c, "from": p} for c, p in cls_grants["skill_choose"]
+        ],
+        "armor_proficiencies": [
+            g.type for g in class_def.proficiency_grants
+            if g.type.startswith("armor:")
+        ],
+        "weapon_proficiencies": [
+            g.type for g in class_def.proficiency_grants
+            if g.type.startswith("weapon:")
+        ],
+        "subclasses": subclasses,
+        "level_1": {
+            "cantrips_knowable": level_data.get("cantrips_knowable") or 0,
+            "spells_knowable": level_data.get("spells_knowable"),
+            "spell_slots": level_data.get("spell_slots") or {},
+            "features": [
+                {"name": f.name, "description": f.description}
+                for f in level_data["features"]
+            ],
+        },
+        "cantrips": cantrips,
+        "level_1_spells": level_1_spells,
+    }
+
+    return {
+        "species": species_detail,
+        "background": background_detail,
+        "class": class_detail,
+        "ability_methods": {
+            "standard_array": {
+                "description": "Assign [15, 14, 13, 12, 10, 8] to six abilities. Each value used exactly once.",
+                "values": STANDARD_ARRAY,
+            },
+            "point_buy": {
+                "description": f"Budget of {POINT_BUY_BUDGET} points. Scores range 8-15 before racial bonuses.",
+                "cost_table": POINT_BUY_COST,
+                "budget": POINT_BUY_BUDGET,
+            },
+            "manual": {
+                "description": "Set each score directly (1-30). Use when the DM has you roll dice.",
+            },
+        },
+        "abilities": ABILITIES,
+        "alignments": ALIGNMENTS,
+        "all_skills": ALL_SKILLS,
+        "common_languages": COMMON_LANGUAGES,
+    }
+
+
+# ---------------------------------------------------------------------------
+# preview_character / build_character
+# ---------------------------------------------------------------------------
+
+def _validate_and_build(choices: CharacterChoices) -> dict:
+    """
+    Core logic: validate choices, build a full CharacterState dict.
 
     Returns:
         {"character_state": <dict>}  on success
@@ -587,13 +710,20 @@ def build_character(choices: CharacterChoices) -> dict:
 
     class_spell_ids = set()
     class_cantrip_ids = set()
+    spell_levels: dict[str, int] = {}  # ability_id -> base spell level
     for aid in loader.list_abilities():
         ability = loader.get_ability(aid)
         if ability and class_def.class_id in ability.spell_lists:
-            if _is_cantrip(ability):
+            base_lvl = _spell_base_level(ability)
+            spell_levels[ability.ability_id] = base_lvl
+            if base_lvl == 0:
                 class_cantrip_ids.add(ability.ability_id)
             else:
                 class_spell_ids.add(ability.ability_id)
+
+    # Determine the highest spell slot the character has access to
+    raw_slots = level_data.get("spell_slots") or {}
+    max_slot_level = max((int(k) for k, v in raw_slots.items() if v > 0), default=0)
 
     if not spellcasting_ability:
         if choices.cantrip_choices:
@@ -632,6 +762,11 @@ def build_character(choices: CharacterChoices) -> dict:
             if sid not in class_spell_ids:
                 errors.append(
                     f"Spell {sid!r} is not on the {choices.class_id} spell list"
+                )
+            elif spell_levels.get(sid, 0) > max_slot_level:
+                errors.append(
+                    f"Spell {sid!r} is level {spell_levels[sid]} but character "
+                    f"only has slots up to level {max_slot_level}"
                 )
 
     if errors:
@@ -789,3 +924,23 @@ def build_character(choices: CharacterChoices) -> dict:
     state = CharacterState(sheet=sheet, economy=ActionEconomy())
 
     return {"character_state": state.model_dump(mode="json")}
+
+
+def preview_character(choices: CharacterChoices) -> dict:
+    """
+    Step 3 — Preview.
+
+    Validate choices and return the full character sheet WITHOUT persisting.
+    The agent reviews the sheet and then calls build_character() to confirm.
+    """
+    return _validate_and_build(choices)
+
+
+def build_character(choices: CharacterChoices) -> dict:
+    """
+    Step 4 — Confirm.
+
+    Validate choices and return the full character sheet for persistence.
+    Identical to preview — the caller (auth_wrapper) decides whether to persist.
+    """
+    return _validate_and_build(choices)
