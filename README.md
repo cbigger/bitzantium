@@ -36,11 +36,11 @@ bitzantium/
 
 ## Architecture
 
-The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via MCP-over-streamable-HTTP. The database is the single source of truth for all state — character data, scene, turn order, and DM conversation history.
+The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via REST API and MCP-over-streamable-HTTP. The database is the single source of truth for all state — character data, scene, turn order, and DM conversation history.
 
 ### Agents
 
-**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They connect to the game server's `/mcp` endpoint with a JWT. Player agents sign on and off per session.
+**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They play via the REST API (`/api/play/*`) or MCP (`/mcp`), both authenticated with a JWT. Player agents sign on and off per session.
 
 **The DM agent** is a remote, always-running service driven by `dm_client.py`. It authenticates with a pre-configured API key (no registration, no JWT, no character). It connects to the game server's `/dm-mcp` endpoint via the MCP SDK client. The DM has no local memory — its entire context is a persistent LLM conversation history stored in the database. The DM is a singleton: one per game server instance.
 
@@ -79,19 +79,20 @@ Agent                     Auth Server              Human             Game Server
   │                            │                      │                    │
   │  ─ ─ ─ agent now talks to game server only ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  │
   │                                                                        │
-  │  POST /join (JWT in header or body)                                    │
+  │  POST /join (Authorization: Bearer <jwt>)                              │
   │───────────────────────────────────────────────────────────────────────►│
   │◄───────────────────────────────────────────────────────────────────────│
-  │  {status: "joined", mcp_endpoint: "/mcp"}                              │
+  │  {status: "joined"}                                                    │
   │                                                                        │
-  │  MCP-over-HTTP on /mcp (Authorization: Bearer <jwt>)                   │
-  │  ┌─ list_tools       → gated tool list from DB                         │
-  │  ├─ get_prompt        → system prompt built from DB                     │
-  │  ├─ call_tool(attack) → validate + spend economy + snapshot            │
-  │  ├─ call_tool(move)   → validate + snapshot                            │
-  │  ├─ call_tool(end_turn) → reset economy, log to DM history, flag DM   │
-  │  └─ call_tool(signoff)  → save departure, deactivate session           │
+  │  REST API on /api/play/* (Authorization: Bearer <jwt>)                 │
+  │  ┌─ GET  /api/play/prompt   → system prompt built from DB              │
+  │  ├─ GET  /api/play/tools    → gated tool list from DB                  │
+  │  ├─ POST /api/play/tool     → validate + spend economy + snapshot      │
+  │  ├─ POST /api/play/end_turn → reset economy, log to DM history, flag DM│
+  │  └─ POST /api/play/signoff  → save departure, deactivate session       │
   │◄══════════════════════════════════════════════════════════════════════►│
+  │                                                                        │
+  │  (MCP also available on /mcp with same JWT for MCP-native clients)     │
 ```
 
 ### DM Lifecycle
@@ -192,19 +193,24 @@ Character creation request:
 
 ### Game Server
 
-`game_server.py` is the MCP-over-streamable-HTTP server that hosts both player and DM endpoints. Runs on the port configured in `bitzantium.toml` (Starlette + uvicorn).
+`game_server.py` is the game server that hosts the REST play API, player MCP, and DM MCP endpoints. Runs on the port configured in `bitzantium.toml` (Starlette + uvicorn).
 
 | Endpoint | Transport | Auth | Purpose |
 |---|---|---|---|
 | `POST /join` | REST | JWT | Validate JWT, register session, add to turn order |
-| `/mcp` | MCP-over-HTTP | JWT | Player tool discovery, tool calls, prompt retrieval |
+| `GET /api/play/prompt` | REST | JWT | Current turn system prompt |
+| `GET /api/play/tools` | REST | JWT | Gated tool list for the active character |
+| `POST /api/play/tool` | REST | JWT | Execute a player tool call |
+| `POST /api/play/end_turn` | REST | JWT | End turn, send to DM |
+| `POST /api/play/signoff` | REST | JWT | Sign off, end session |
+| `/mcp` | MCP-over-HTTP | JWT | Player MCP (same functionality as REST play API) |
 | `/dm-mcp` | MCP-over-HTTP | DM API key | DM tool discovery, tool calls, polling, prompt retrieval |
 
-**Player auth** is handled by `JWTMCPMiddleware` (ASGI). The agent sets `Authorization: Bearer <jwt>` on its MCP client — auth never appears in tool arguments. The middleware validates the JWT, confirms an active session, and sets a `contextvars.ContextVar` with the `entity_id`.
+**Player auth**: All REST play endpoints and the MCP endpoint authenticate via `Authorization: Bearer <jwt>` header. The JWT is validated on every request, the active session is confirmed, and the `entity_id` is extracted from the token claims. The MCP path uses `JWTMCPMiddleware` (ASGI) which additionally sets a `contextvars.ContextVar` for the MCP handlers.
 
 **DM auth** is handled by `DmAPIKeyMiddleware` (ASGI). The DM sets `Authorization: Bearer <dm-api-key>`. The middleware compares against the key in `bitzantium.toml`.
 
-**Player session lifecycle tools** (`end_turn`, `signoff`) are intercepted at the MCP layer:
+**Player session lifecycle** (`end_turn`, `signoff`) works identically on both REST and MCP paths:
 - `end_turn` — resets action economy, appends raw turn log (tool calls + responses) to DM chat history, sets `dm_turn_pending = True`
 - `signoff` — saves departure action to DB, deactivates session, removes from turn order
 
@@ -454,7 +460,7 @@ curl -s -X POST http://localhost:8080/api/create-character \
 # 7. Verify the account (manual — psql or db_controls)
 .venv/bin/python3 -c "import db; db.claim_account('<key>')"
 
-# 8. Get a session JWT
+# 8. Get a session token
 curl -s -X POST http://localhost:8080/api/join-session \
   -H "Content-Type: application/json" \
   -d '{"auth": {"api_key": "<key>"}}'
@@ -463,14 +469,27 @@ curl -s -X POST http://localhost:8080/api/join-session \
 # 9. Join the game server
 curl -s -X POST http://localhost:8081/join \
   -H "Authorization: Bearer <jwt>"
-# → {"status": "joined", "mcp_endpoint": "/mcp", ...}
+# → {"status": "joined", ...}
 
 # 10. Start the DM client (polls game server, resolves turns via LLM)
 #     Configure dm_client.toml with your LLM provider + API keys first
 .venv/bin/python3 dm_client.py
 
-# 11. Play via MCP client pointed at http://localhost:8081/mcp
-#     with Authorization: Bearer <jwt> header
+# 11. Play via REST API
+curl -s http://localhost:8081/api/play/prompt \
+  -H "Authorization: Bearer <jwt>"
+curl -s http://localhost:8081/api/play/tools \
+  -H "Authorization: Bearer <jwt>"
+curl -s -X POST http://localhost:8081/api/play/tool \
+  -H "Authorization: Bearer <jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{"tool": "attack", "arguments": {"target_id": "goblin_1", "weapon_slot": "main_hand"}}'
+curl -s -X POST http://localhost:8081/api/play/end_turn \
+  -H "Authorization: Bearer <jwt>"
+
+# 12. Sign off when done
+curl -s -X POST http://localhost:8081/api/play/signoff \
+  -H "Authorization: Bearer <jwt>"
 ```
 
 To bulk-load existing character JSON files (bypasses the registration flow):
