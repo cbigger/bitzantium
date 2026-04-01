@@ -448,7 +448,7 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 
 ### Session lifecycle
 
-- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`, clears `player_turn_entity_id`. If `max_turns` is reached, the response includes `session_limit_reached: true`.
+- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`, clears `player_turn_entity_id`.
 - `signoff` — saves `departure_action` to DB, deactivates the player session, removes entity from turn order.
 
 ---

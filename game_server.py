@@ -46,11 +46,10 @@ log = logging.getLogger(__name__)
 
 class PlayerSession:
     """Tracks an active player in this game server."""
-    def __init__(self, entity_id: str, account_id: int, api_key: str, max_turns: Optional[int] = None):
+    def __init__(self, entity_id: str, account_id: int, api_key: str):
         self.entity_id = entity_id
         self.account_id = account_id
         self.api_key = api_key
-        self.max_turns = max_turns
         self.turns_taken: int = 0
         self.active: bool = True
         self.turn_log: list[dict] = []  # raw tool calls + responses for the current turn
@@ -80,7 +79,6 @@ def _do_end_turn(session: PlayerSession) -> dict:
     """End the current player's turn. Resets economy, appends raw turn
     output to DM chat history, sets dm_turn_pending."""
     session.turns_taken += 1
-    at_limit = session.max_turns is not None and session.turns_taken >= session.max_turns
 
     db.reset_economy(session.entity_id)
 
@@ -102,8 +100,6 @@ def _do_end_turn(session: PlayerSession) -> dict:
         "status": "turn_ended",
         "entity_id": session.entity_id,
         "turns_taken": session.turns_taken,
-        "max_turns": session.max_turns,
-        "session_limit_reached": at_limit,
     }
 
 
@@ -161,8 +157,7 @@ async def handle_join(request: Request):
     if not character:
         return JSONResponse({"error": "Character not found in database"}, status_code=404)
 
-    max_turns = body.get("max_turns")
-    session = PlayerSession(entity_id, account.id, api_key, max_turns)
+    session = PlayerSession(entity_id, account.id, api_key)
     _active_sessions[api_key] = session
 
     turn = db.get_turn()
@@ -191,7 +186,6 @@ async def handle_join(request: Request):
         "status": "joined",
         "entity_id": entity_id,
         "name": character.sheet.name,
-        "max_turns": session.max_turns,
     })
 
 
