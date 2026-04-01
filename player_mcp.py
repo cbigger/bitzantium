@@ -11,9 +11,11 @@ import logging
 import re
 from typing import Optional
 
+import config
 import db
 import loader
 import registry
+import scene_loader
 
 log = logging.getLogger(__name__)
 
@@ -193,26 +195,22 @@ def build_player_prompt(entity_id: str) -> str:
 
     Pulls all data from the database — no in-memory state required.
 
-    Section order matches the player agent prompt schema:
+    Section order:
 
         You are <name>, a [<race>]<creature> <class>.
         <description>
-        <scene narrative, personalized>
         <story so far>
         You find yourself in [<sub> in ]<area>.
         [QUEST LOG
         <quest_log>]
+        <exposition — scene description from disk>
+        <scene narrative — DM-written story, personalized>
         TOOLS AVAILABLE
           tool_name: description
           …
         HP …  |  AC …  |  Speed …
-        Conditions: …
-        STR … DEX … …
-        Resources: …
-        Spell Slots: …
-        Spells: …
-        Abilities: …
-        Equipped: …
+        …
+        What will you do?
     """
     cs = db.get_character_state_by_entity(entity_id)
     if not cs:
@@ -232,14 +230,22 @@ def build_player_prompt(entity_id: str) -> str:
     parts: list[str] = [_identity_line(cs)]
     if cs.sheet.description:
         parts.append(cs.sheet.description)
-    if narrative:
-        parts.append(narrative)
     if story_so_far:
         parts.append(story_so_far)
     parts.append(_location_line(location_area, location_sub))
     if quest_log:
         parts.append(f"QUEST LOG\n{quest_log}")
+
+    # Scene exposition — authored setting description loaded from disk
+    exposition = scene_loader.get_exposition(config.default_scene())
+    parts.append(exposition)
+
+    # Scene narrative — running story written by the DM, personalized
+    if narrative:
+        parts.append(narrative)
+
     parts.append(_tools_block(cs))
     parts.append(_stats_block(cs))
+    parts.append("What will you do?")
 
     return "\n".join(parts)

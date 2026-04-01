@@ -72,3 +72,9 @@ def jwt_algorithm() -> str:
 
 def dm_api_key() -> str:
     return get()["dm"]["api_key"]
+
+def scenes_directory() -> str:
+    return get().get("scenes", {}).get("directory", "scenes")
+
+def default_scene() -> str:
+    return get().get("scenes", {}).get("default_scene", "aether")

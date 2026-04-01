@@ -16,3 +16,7 @@ algorithm = "HS256"
 
 [dm]
 api_key = "dm-dev-key-change-me"
+
+[scenes]
+directory = "scenes"
+default_scene = "aether"

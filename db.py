@@ -132,6 +132,7 @@ class TurnStateRow(Base):
     turn_index = Column(Integer, nullable=False, default=0)
     initiative_rolls = Column(JSONB, nullable=False, default=dict)
     dm_turn_pending = Column(Boolean, nullable=False, default=False)
+    player_turn_entity_id = Column(String, nullable=True)
 
 
 class SceneNarrativeRow(Base):
@@ -633,6 +634,7 @@ def get_turn() -> dict:
             "current_entity": current,
             "initiative_rolls": row.initiative_rolls or {},
             "dm_turn_pending": row.dm_turn_pending,
+            "player_turn_entity_id": row.player_turn_entity_id,
         }
 
 
@@ -755,6 +757,21 @@ def is_dm_turn_pending() -> bool:
     with SessionLocal() as session:
         row = _get_or_create_turn(session)
         return row.dm_turn_pending
+
+
+def set_player_turn(entity_id: str | None) -> None:
+    """Set which player's turn it is. None means no player's turn (DM working)."""
+    with SessionLocal() as session:
+        row = _get_or_create_turn(session)
+        row.player_turn_entity_id = entity_id
+        session.commit()
+
+
+def get_player_turn() -> str | None:
+    """Return the entity_id of the player whose turn it is, or None."""
+    with SessionLocal() as session:
+        row = _get_or_create_turn(session)
+        return row.player_turn_entity_id
 
 
 # ---------------------------------------------------------------------------

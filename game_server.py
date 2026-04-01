@@ -37,6 +37,7 @@ import loader
 import player_mcp
 import player_tools
 import registry
+import scene_loader
 
 log = logging.getLogger(__name__)
 
@@ -101,8 +102,9 @@ def _do_end_turn(session: PlayerSession) -> dict:
         })
         session.turn_log = []
 
-    # Signal DM that it has work to do
+    # Signal DM that it has work to do, clear player turn
     db.set_dm_turn_pending(True)
+    db.set_player_turn(None)
 
     return {
         "status": "turn_ended",
@@ -172,15 +174,19 @@ async def handle_join(request: Request):
     if entity_id not in turn["turn_order"]:
         db.add_to_order(entity_id)
 
-    # If this is the first player in the session, trigger the DM to welcome them
     if first_player:
+        # First player gets their turn immediately — no DM involvement
+        db.set_player_turn(entity_id)
+        log.info("First player — turn set directly, no DM trigger.")
+    else:
+        # Subsequent players: DM needs to incorporate them into the scene
         db.append_dm_message("user", {
             "type": "new_player_joined",
             "entity_id": entity_id,
             "name": character.sheet.name,
         })
         db.set_dm_turn_pending(True)
-        log.info("First player — DM turn triggered for welcome.")
+        log.info("Additional player — DM turn triggered to incorporate.")
 
     log.info("Player joined: %s (entity: %s)", character.sheet.name, entity_id)
 
@@ -221,7 +227,8 @@ async def handle_play_prompt(request: Request):
 
     prompt = player_mcp.build_player_prompt(session.entity_id)
     dm_pending = db.is_dm_turn_pending()
-    return JSONResponse({"prompt": prompt, "dm_pending": dm_pending})
+    your_turn = db.get_player_turn() == session.entity_id
+    return JSONResponse({"prompt": prompt, "dm_pending": dm_pending, "your_turn": your_turn})
 
 
 async def handle_play_tools(request: Request):
@@ -352,12 +359,27 @@ async def handle_dm_tool(request: Request):
 
 
 async def handle_dm_turn_complete(request: Request):
-    """Signal that the DM has finished resolving the current turn."""
+    """Signal that the DM has finished resolving the current turn.
+
+    Clears dm_turn_pending and advances the turn to the next player.
+    """
     err = _validate_dm_auth(request)
     if err:
         return err
 
     db.set_dm_turn_pending(False)
+
+    # Advance to next player in turn order
+    turn = db.get_turn()
+    order = turn["turn_order"]
+    if order:
+        next_entity, _ = db.advance_turn()
+        db.set_player_turn(next_entity)
+        log.info("DM turn complete — next player: %s", next_entity)
+    else:
+        db.set_player_turn(None)
+        log.warning("DM turn complete but turn order is empty.")
+
     return JSONResponse({"status": "dm_turn_complete"})
 
 
@@ -385,6 +407,7 @@ async def handle_dm_append_history(request: Request):
 def create_app() -> Starlette:
     db.create_tables()
     loader.load_all()
+    scene_loader.load_scenes()
 
     app = Starlette(
         routes=[

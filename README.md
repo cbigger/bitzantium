@@ -23,8 +23,12 @@ bitzantium/
 ├── db_controls.py        — Account creation, DB population, clear (temp-safe)
 ├── rules.py              — Pure D&D 5e calculations (no I/O, no state mutation)
 ├── dice.py               — Dice rolling primitives
+├── scene_loader.py       — Loads scene exposition files from scenes/ directory at startup
 ├── loader.py             — Populates in-memory registries from realm_objects DB table
 ├── load_realm.py         — CLI script: ingest a Realm directory into the database
+├── scenes/
+│   └── aether/
+│       └── EXPOSITION.md — Authored scene description for the Aether (default scene)
 └── bitzantium_schemas/
     ├── character.py          — PlayerSheet, CharacterState, ActionEconomy
     ├── character_choices.py  — CharacterChoices input model for builder
@@ -36,7 +40,7 @@ bitzantium/
 
 ## Architecture
 
-The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via REST API. The database is the single source of truth for all state — character data, scene, narrative, turn order, and DM conversation history.
+The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via REST API. The database is the single source of truth for all state — character data, scene, narrative, turn order, and DM conversation history. Scene exposition (setting descriptions) is loaded from disk at startup.
 
 ### Agents
 
@@ -85,7 +89,7 @@ Agent                     Auth Server              Human             Game Server
   │  {status: "joined"}                                                    │
   │                                                                        │
   │  REST API on /api/play/* (Authorization: Bearer <jwt>)                 │
-  │  ┌─ GET  /api/play/prompt   → system prompt + narrative from DB        │
+  │  ┌─ GET  /api/play/prompt   → prompt + exposition + narrative + flags  │
   │  ├─ GET  /api/play/tools    → gated tool list from DB                  │
   │  ├─ POST /api/play/tool     → validate + spend economy + snapshot      │
   │  ├─ POST /api/play/end_turn → reset economy, log to DM history, flag DM│
@@ -105,9 +109,9 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/api/dm/
   │  {"pending": false}                                            │
   │  ... (sleep poll_interval, repeat) ...                         │
   │                                                               │
-  │  (player calls end_turn, or new player joins)                  │
+  │  (player calls end_turn, or additional player joins)            │
   │  → game server appends event to dm_chat_history                │
-  │  → sets dm_turn_pending = True                                 │
+  │  → sets dm_turn_pending = True, player_turn = None             │
   │                                                               │
   │  POST /api/dm/poll ─────────────────────────────────────────►│
   │◄──────────────────────────────────────────────────────────────│
@@ -140,7 +144,7 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/api/dm/
   │◄──────────────────────────────────────────────────────────────│
   │  POST /api/dm/turn-complete ─────────────────────────────────►│  ← client, not LLM
   │◄──────────────────────────────────────────────────────────────│
-  │  → clears dm_turn_pending                                      │
+  │  → clears dm_turn_pending, advances turn, sets player_turn     │
   │                                                               │
   │  (resumes polling)                                             │
 ```
@@ -154,6 +158,9 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/api/dm/
 - Player tools only mutate action economy; everything else is a declaration of intent for the DM
 - The DM is stateless — its "memory" is the persistent chat history in the DB
 - All scene, turn order, and character state lives in the DB — no in-memory state stores
+- Scene exposition is loaded from disk at startup (`scenes/<scene_id>/EXPOSITION.md`)
+- First player joining sees exposition directly — no DM involvement. DM is only triggered on `end_turn` or when additional players join
+- Turn ownership is tracked via `player_turn_entity_id` in the DB — players poll `your_turn` to know when to act
 
 ### Auth Server
 
@@ -203,7 +210,7 @@ Character creation request:
 | Endpoint | Method | Purpose |
 |---|---|---|
 | `/join` | POST | Validate JWT, register session, add to turn order |
-| `/api/play/prompt` | GET | Current turn system prompt + scene narrative |
+| `/api/play/prompt` | GET | System prompt + exposition + narrative + `your_turn` / `dm_pending` flags |
 | `/api/play/tools` | GET | Gated tool list for the active character |
 | `/api/play/tool` | POST | Execute a player tool call |
 | `/api/play/end_turn` | POST | End turn, send to DM |
@@ -225,14 +232,14 @@ DM endpoints authenticate via `Authorization: Bearer <dm-api-key>` header. The k
 
 #### Session lifecycle
 
-- `end_turn` — resets action economy, appends raw turn log (tool calls + responses) to DM chat history, sets `dm_turn_pending = True`
+- `end_turn` — resets action economy, appends raw turn log (tool calls + responses) to DM chat history, sets `dm_turn_pending = True`, clears `player_turn_entity_id`
 - `signoff` — saves departure action to DB, deactivates session, removes from turn order
 
 #### DM lifecycle (called mechanically by `dm_client.py`, not by the LLM)
 
 - `POST /api/dm/poll` — if `dm_turn_pending` is false, returns `{"pending": false}`. If true, returns `{"pending": true, "messages": [...]}` with the full DM chat history.
 - `POST /api/dm/append-history` — appends a message (role + content) to `dm_chat_history`. Used by the client to store the DM's narrative after turn resolution.
-- `POST /api/dm/turn-complete` — clears `dm_turn_pending`. Called by the client after history is stored.
+- `POST /api/dm/turn-complete` — clears `dm_turn_pending`, advances turn order, sets `player_turn_entity_id` to the next player. Called by the client after history is stored.
 
 ### DM Client
 
@@ -287,7 +294,7 @@ On failure, the endpoint returns specific error messages (e.g. `"Skill 'arcana' 
 | `realm_objects` | `category`, `data_id` (unique together), `data` (JSONB), `is_sapient` | Realm reference data |
 | `scene_states` | `area_id`, `area_name`, `light_level`, `entity_positions` (JSONB) | Single row — active scene |
 | `scene_narrative` | `narrative` (Text) | Single row — running scene story (DM appends, players read personalized) |
-| `turn_states` | `tick`, `turn_order` (JSONB), `turn_index`, `initiative_rolls` (JSONB), `dm_turn_pending` | Single row — turn engine |
+| `turn_states` | `tick`, `turn_order` (JSONB), `turn_index`, `initiative_rolls` (JSONB), `dm_turn_pending`, `player_turn_entity_id` | Single row — turn engine |
 | `dm_chat_history` | `role`, `content` (JSONB), `created_at` | One row per message — DM's persistent LLM conversation |
 
 Character state is stored as a single JSONB column — serialized via Pydantic's `model_dump(mode="json")` and deserialized via `CharacterState.model_validate()`.
@@ -317,6 +324,10 @@ algorithm = "HS256"
 
 [dm]
 api_key = "..."
+
+[scenes]
+directory = "scenes"
+default_scene = "aether"
 ```
 
 Config file search order: `BITZANTIUM_CONFIG` env var, then `./bitzantium.toml`, then next to `config.py`.
@@ -360,11 +371,12 @@ The `clear_all_data()` function refuses to run if the connection string does not
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│ 1. Player agent fetches prompt + tools via REST                     │
+│ 1. Player agent polls prompt, checks your_turn flag                 │
 │        GET /api/play/prompt                                         │
-│        → player_mcp.build_player_prompt(entity_id)                  │
-│        → reads CharacterState + TurnContext + scene narrative from DB│
-│        → personalizes narrative (character name → "you")            │
+│        → returns {prompt, dm_pending, your_turn}                    │
+│        → prompt includes: identity, location, exposition (from disk)│
+│          scene narrative (DM-written, personalized), tools, stats   │
+│          and ends with "What will you do?"                          │
 │        GET /api/play/tools                                          │
 │        → registry.get_available_tools(CharacterState from DB)       │
 │        → filtered by class/conditions/economy/resources             │
@@ -384,7 +396,7 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │        POST /api/play/end_turn                                      │
 │        → resets action economy in DB                                │
 │        → appends raw turn log to dm_chat_history                    │
-│        → sets dm_turn_pending = True                                │
+│        → sets dm_turn_pending = True, player_turn = None            │
 │                                                                     │
 │ 4. DM agent polls, gets pending=true + chat history                 │
 │        POST /api/dm/poll                                            │
@@ -403,9 +415,11 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │                                                                     │
 │ 6. dm_client.py stores narrative + signals completion                │
 │        POST /api/dm/append-history (role=assistant, content=text)   │
-│        POST /api/dm/turn-complete → clears dm_turn_pending          │
+│        POST /api/dm/turn-complete                                   │
+│        → clears dm_turn_pending                                     │
+│        → advances turn order, sets player_turn to next player       │
 │                                                                     │
-│ 7. Next player's turn begins, repeat from 1                         │
+│ 7. Next player's turn begins (your_turn = true), repeat from 1     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -446,7 +460,7 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 
 ### Session lifecycle
 
-- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`. If `max_turns` from the JWT is reached, the response includes `session_limit_reached: true`.
+- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`, clears `player_turn_entity_id`. If `max_turns` from the JWT is reached, the response includes `session_limit_reached: true`.
 - `signoff` — saves `departure_action` to DB, deactivates the player session, removes entity from turn order. The JWT expires naturally.
 
 ---
