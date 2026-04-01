@@ -10,10 +10,6 @@ host = "0.0.0.0"
 port = 8081
 url = "http://localhost:8081"
 
-[jwt]
-secret = "bitzantium-dev-secret-change-me!"
-algorithm = "HS256"
-
 [dm]
 api_key = "dm-dev-key-change-me"
 

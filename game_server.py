@@ -3,13 +3,13 @@ game_server.py
 ==============
 Game server (the "bitzantium server") — REST API with authentication.
 
-Player agents connect via /api/play/* with a JWT in the Authorization: Bearer header.
+Player agents connect via /api/play/* with their API key in the Authorization: Bearer header.
 The DM agent connects via /api/dm/* with the pre-configured DM API key as Bearer.
 
 Responsibilities:
-    - POST /join:  accept JWT, verify character exists, register active session
-    - /api/play/*: Player endpoints (JWT auth)
-    - /api/dm/*:   DM endpoints (API key auth)
+    - POST /join:  accept API key, verify account + character, register active session
+    - /api/play/*: Player endpoints (API key auth)
+    - /api/dm/*:   DM endpoints (DM API key auth)
     - Intercept end_turn/signoff for session lifecycle
     - On player end_turn: append raw turn output to DM chat history, set dm_turn_pending
     - Track active players, turn counts, session limits
@@ -22,7 +22,6 @@ import json
 import logging
 from typing import Any, Optional
 
-import jwt as pyjwt
 import uvicorn
 from starlette.applications import Starlette
 from starlette.requests import Request
@@ -32,7 +31,6 @@ from starlette.routing import Route
 import config
 import db
 import dm_tools
-import jwt_utils
 import loader
 import player_mcp
 import player_tools
@@ -48,36 +46,30 @@ log = logging.getLogger(__name__)
 
 class PlayerSession:
     """Tracks an active player in this game server."""
-    def __init__(self, entity_id: str, account_id: int, token_claims: dict):
+    def __init__(self, entity_id: str, account_id: int, api_key: str, max_turns: Optional[int] = None):
         self.entity_id = entity_id
         self.account_id = account_id
-        self.max_turns: Optional[int] = token_claims.get("max_turns")
+        self.api_key = api_key
+        self.max_turns = max_turns
         self.turns_taken: int = 0
         self.active: bool = True
         self.turn_log: list[dict] = []  # raw tool calls + responses for the current turn
 
 
-# entity_id -> PlayerSession
+# api_key -> PlayerSession
 _active_sessions: dict[str, PlayerSession] = {}
 
 
 # ---------------------------------------------------------------------------
-# JWT helpers
+# Player auth helpers
 # ---------------------------------------------------------------------------
 
-def _validate_bearer(headers: dict) -> tuple[Optional[dict], Optional[str]]:
-    """Extract and validate JWT from headers. Returns (claims, error_msg)."""
-    auth = headers.get("authorization", "")
-    if not auth.startswith("Bearer "):
-        return None, "Missing Authorization: Bearer <token> header"
-    token = auth[7:]
-    try:
-        claims = jwt_utils.validate_session_token(token)
-    except pyjwt.ExpiredSignatureError:
-        return None, "Session token expired"
-    except pyjwt.InvalidTokenError as e:
-        return None, f"Invalid token: {e}"
-    return claims, None
+def _extract_api_key(request: Request) -> Optional[str]:
+    """Extract API key from Authorization: Bearer header."""
+    auth = request.headers.get("authorization", "")
+    if auth.startswith("Bearer "):
+        return auth[7:]
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -144,29 +136,34 @@ async def handle_join(request: Request):
     except Exception:
         return JSONResponse({"error": "Invalid JSON"}, status_code=400)
 
-    # Accept token from body or header
-    claims, error = _validate_bearer(dict(request.headers))
-    if error:
-        # Try body
-        token = body.get("token")
-        if not token:
-            return JSONResponse({"error": error}, status_code=401)
-        try:
-            claims = jwt_utils.validate_session_token(token)
-        except pyjwt.ExpiredSignatureError:
-            return JSONResponse({"error": "Session token expired"}, status_code=401)
-        except pyjwt.InvalidTokenError as e:
-            return JSONResponse({"error": f"Invalid token: {e}"}, status_code=401)
+    # Accept API key from body or header
+    api_key = _extract_api_key(request) or body.get("api_key")
+    if not api_key:
+        return JSONResponse(
+            {"error": "Missing api_key in body or Authorization: Bearer header"},
+            status_code=401,
+        )
 
-    entity_id = claims["entity_id"]
-    account_id = claims["account_id"]
+    account = db.get_account_by_api_key(api_key)
+    if not account:
+        return JSONResponse({"error": "Invalid API key"}, status_code=403)
+    if not account.claimed:
+        return JSONResponse(
+            {"error": "Account not verified. A human must verify your account before you can play."},
+            status_code=403,
+        )
+
+    entity_id = db.get_entity_id(api_key)
+    if not entity_id:
+        return JSONResponse({"error": "No character for this account"}, status_code=400)
 
     character = db.get_character_state_by_entity(entity_id)
     if not character:
         return JSONResponse({"error": "Character not found in database"}, status_code=404)
 
-    session = PlayerSession(entity_id, account_id, claims)
-    _active_sessions[entity_id] = session
+    max_turns = body.get("max_turns")
+    session = PlayerSession(entity_id, account.id, api_key, max_turns)
+    _active_sessions[api_key] = session
 
     turn = db.get_turn()
     first_player = len(turn["turn_order"]) == 0
@@ -203,16 +200,18 @@ async def handle_join(request: Request):
 # ---------------------------------------------------------------------------
 
 def _get_session_from_request(request: Request) -> tuple[Optional[PlayerSession], Optional[JSONResponse]]:
-    """Validate JWT from Authorization header and look up active session."""
-    claims, error = _validate_bearer(dict(request.headers))
-    if error:
-        return None, JSONResponse({"error": error}, status_code=401)
+    """Extract API key from header and look up active session."""
+    api_key = _extract_api_key(request)
+    if not api_key:
+        return None, JSONResponse(
+            {"error": "Missing Authorization: Bearer <api_key> header"},
+            status_code=401,
+        )
 
-    entity_id = claims["entity_id"]
-    session = _active_sessions.get(entity_id)
+    session = _active_sessions.get(api_key)
     if not session or not session.active:
         return None, JSONResponse(
-            {"error": "No active session. POST /join with your token first."},
+            {"error": "No active session. POST /join first."},
             status_code=403,
         )
 

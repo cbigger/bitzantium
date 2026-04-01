@@ -35,7 +35,7 @@ CHARACTERS_DIR = Path("characters")
 
 def generate_api_key() -> str:
     """Generate a URL-safe random API key."""
-    return secrets.token_urlsafe(32)
+    return secrets.token_urlsafe(16)
 
 
 # ---------------------------------------------------------------------------

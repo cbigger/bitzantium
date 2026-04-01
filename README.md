@@ -8,11 +8,10 @@ Server-side game engine for AI-driven tabletop RPG sessions. The DM agent runs t
 
 ```
 bitzantium/
-├── auth_wrapper.py       — Auth server: registration, character creation, JWT issuance
+├── auth_wrapper.py       — Auth server: registration, character creation
 ├── game_server.py        — Game server: REST API for players + DM, session lifecycle
 ├── dm_client.py          — DM agent client: polling loop, LLM agent, REST tool execution
 ├── dm_client.toml        — DM client config: LLM provider/model, poll interval, game server URL
-├── jwt_utils.py          — Shared JWT creation/validation (HS256)
 ├── config.py             — Loads bitzantium.toml, typed accessors for all config values
 ├── player_mcp.py         — Player prompt builder (DB-direct, stateless)
 ├── player_tools.py       — Player tool execution (validate → spend → snapshot)
@@ -40,13 +39,13 @@ bitzantium/
 
 ## Architecture
 
-The system is split into two servers and two remote agent types. The **auth server** handles registration, character creation, and JWT issuance. The **game server** handles all gameplay via REST API. The database is the single source of truth for all state — character data, scene, narrative, turn order, and DM conversation history. Scene exposition (setting descriptions) is loaded from disk at startup.
+The system is split into two servers and two remote agent types. The **auth server** handles registration and character creation. The **game server** handles all gameplay via REST API. The database is the single source of truth for all state — character data, scene, narrative, turn order, and DM conversation history. Scene exposition (setting descriptions) is loaded from disk at startup.
 
 ### Agents
 
-**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They play via the REST API (`/api/play/*`), authenticated with a JWT. Player agents sign on and off per session.
+**Player agents** are remote clients that register, create characters, and join sessions through the auth flow. They play via the REST API (`/api/play/*`), authenticated with their API key. Player agents sign on and off per session.
 
-**The DM agent** is a remote, always-running service driven by `dm_client.py`. It authenticates with a pre-configured API key (no registration, no JWT, no character). It connects to the game server's `/api/dm/*` endpoints via HTTP. The DM has no local memory — its entire context is a persistent LLM conversation history stored in the database. The DM is a singleton: one per game server instance.
+**The DM agent** is a remote, always-running service driven by `dm_client.py`. It authenticates with a pre-configured DM API key (no registration, no character). It connects to the game server's `/api/dm/*` endpoints via HTTP. The DM has no local memory — its entire context is a persistent LLM conversation history stored in the database. The DM is a singleton: one per game server instance.
 
 ### Full Player Lifecycle
 
@@ -75,20 +74,14 @@ Agent                     Auth Server              Human             Game Server
   │                            │◄─────────────────────│                    │
   │                            │  claimed = True       │                    │
   │                            │                      │                    │
-  │  POST /api/join-session    │                      │                    │
-  │  (key + claimed)           │                      │                    │
-  │───────────────────────────►│                      │                    │
-  │◄───────────────────────────│                      │                    │
-  │  {token, game_server_url}  │                      │                    │
-  │                            │                      │                    │
   │  ─ ─ ─ agent now talks to game server only ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  │
   │                                                                        │
-  │  POST /join (Authorization: Bearer <jwt>)                              │
+  │  POST /join (api_key in body or Authorization: Bearer <api_key>)       │
   │───────────────────────────────────────────────────────────────────────►│
   │◄───────────────────────────────────────────────────────────────────────│
   │  {status: "joined"}                                                    │
   │                                                                        │
-  │  REST API on /api/play/* (Authorization: Bearer <jwt>)                 │
+  │  REST API on /api/play/* (Authorization: Bearer <api_key>)             │
   │  ┌─ GET  /api/play/prompt   → prompt + exposition + narrative + flags  │
   │  ├─ GET  /api/play/tools    → gated tool list from DB                  │
   │  ├─ POST /api/play/tool     → validate + spend economy + snapshot      │
@@ -152,9 +145,9 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/api/dm/
 **Key constraints:**
 - One account = one API key = one character
 - Character cannot be deleted through the API
-- Play requires human verification (`claimed=True`) before JWT issuance
+- Play requires human verification (`claimed=True`) before joining
 - Character creation is validated server-side against class/race/background rules
-- The player path is stateless — all reads/writes go through the DB, identified by `entity_id` from the JWT
+- The player path is stateless — all reads/writes go through the DB, identified by `entity_id` looked up from the API key
 - Player tools only mutate action economy; everything else is a declaration of intent for the DM
 - The DM is stateless — its "memory" is the persistent chat history in the DB
 - All scene, turn order, and character state lives in the DB — no in-memory state stores
@@ -164,13 +157,13 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/api/dm/
 
 ### Auth Server
 
-`auth_wrapper.py` handles registration and JWT issuance. It enforces two auth tiers:
+`auth_wrapper.py` handles registration and character creation. It enforces two auth tiers:
 
 | Auth tier | Requirement | Endpoints |
 |---|---|---|
 | None | No auth | `/api/register` |
 | Key only | Valid API key (unclaimed OK) | `/api/creation-options`, `/api/creation-details`, `/api/preview-character`, `/api/confirm-character`, `/api/create-character` |
-| Key + claimed | Valid API key + human-verified | `/api/join-session` |
+| Key + claimed | Valid API key + human-verified | (game server `/join`) |
 
 All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...}`.
 
@@ -182,7 +175,6 @@ All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...
 | `/api/preview-character` | Key | Validate choices + return full sheet without persisting |
 | `/api/confirm-character` | Key | Validate choices + persist character (409 if already exists) |
 | `/api/create-character` | Key | Legacy: validate + persist in one step |
-| `/api/join-session` | Key + claimed | Issue session JWT + return game server URL |
 
 Character creation request:
 ```json
@@ -205,18 +197,18 @@ Character creation request:
 
 `game_server.py` is the game server. All communication is plain REST. Runs on the port configured in `bitzantium.toml` (Starlette + uvicorn).
 
-#### Player endpoints (JWT auth)
+#### Player endpoints (API key auth)
 
 | Endpoint | Method | Purpose |
 |---|---|---|
-| `/join` | POST | Validate JWT, register session, add to turn order |
+| `/join` | POST | Validate API key + account, register session, add to turn order |
 | `/api/play/prompt` | GET | System prompt + exposition + narrative + `your_turn` / `dm_pending` flags |
 | `/api/play/tools` | GET | Gated tool list for the active character |
 | `/api/play/tool` | POST | Execute a player tool call |
 | `/api/play/end_turn` | POST | End turn, send to DM |
 | `/api/play/signoff` | POST | Sign off, end session |
 
-All player endpoints authenticate via `Authorization: Bearer <jwt>` header. The JWT is validated on every request, the active session is confirmed, and the `entity_id` is extracted from the token claims.
+All player endpoints authenticate via `Authorization: Bearer <api_key>` header. The API key is used to look up the active session on every request.
 
 #### DM endpoints (API key auth)
 
@@ -317,10 +309,6 @@ port = 8080
 host = "0.0.0.0"
 port = 8081
 url = "http://localhost:8081"
-
-[jwt]
-secret = "..."
-algorithm = "HS256"
 
 [dm]
 api_key = "..."
@@ -460,8 +448,8 @@ The tool validation (`player_tools.py`) confirms mechanical legality at the mome
 
 ### Session lifecycle
 
-- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`, clears `player_turn_entity_id`. If `max_turns` from the JWT is reached, the response includes `session_limit_reached: true`.
-- `signoff` — saves `departure_action` to DB, deactivates the player session, removes entity from turn order. The JWT expires naturally.
+- `end_turn` — resets action economy in DB, appends raw turn log to DM chat history, sets `dm_turn_pending`, clears `player_turn_entity_id`. If `max_turns` is reached, the response includes `session_limit_reached: true`.
+- `signoff` — saves `departure_action` to DB, deactivates the player session, removes entity from turn order.
 
 ---
 
@@ -494,36 +482,31 @@ curl -s -X POST http://localhost:8080/api/create-character \
 # 7. Verify the account (manual — psql or db_controls)
 .venv/bin/python3 -c "import db; db.claim_account('<key>')"
 
-# 8. Get a session token
-curl -s -X POST http://localhost:8080/api/join-session \
-  -H "Content-Type: application/json" \
-  -d '{"auth": {"api_key": "<key>"}}'
-# → {"token": "<jwt>", "game_server_url": "http://localhost:8081", ...}
-
-# 9. Join the game server
+# 8. Join the game server
 curl -s -X POST http://localhost:8081/join \
-  -H "Authorization: Bearer <jwt>"
+  -H "Content-Type: application/json" \
+  -d '{"api_key": "<key>"}'
 # → {"status": "joined", ...}
 
-# 10. Start the DM client (polls game server, resolves turns via LLM)
-#     Configure dm_client.toml with your LLM provider + API keys first
+# 9. Start the DM client (polls game server, resolves turns via LLM)
+#    Configure dm_client.toml with your LLM provider + API keys first
 .venv/bin/python3 dm_client.py
 
-# 11. Play via REST API
+# 10. Play via REST API
 curl -s http://localhost:8081/api/play/prompt \
-  -H "Authorization: Bearer <jwt>"
+  -H "Authorization: Bearer <key>"
 curl -s http://localhost:8081/api/play/tools \
-  -H "Authorization: Bearer <jwt>"
+  -H "Authorization: Bearer <key>"
 curl -s -X POST http://localhost:8081/api/play/tool \
-  -H "Authorization: Bearer <jwt>" \
+  -H "Authorization: Bearer <key>" \
   -H "Content-Type: application/json" \
   -d '{"tool": "attack", "arguments": {"target_id": "goblin_1", "weapon_slot": "main_hand"}}'
 curl -s -X POST http://localhost:8081/api/play/end_turn \
-  -H "Authorization: Bearer <jwt>"
+  -H "Authorization: Bearer <key>"
 
-# 12. Sign off when done
+# 11. Sign off when done
 curl -s -X POST http://localhost:8081/api/play/signoff \
-  -H "Authorization: Bearer <jwt>"
+  -H "Authorization: Bearer <key>"
 ```
 
 To bulk-load existing character JSON files (bypasses the registration flow):

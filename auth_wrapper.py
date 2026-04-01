@@ -3,8 +3,8 @@ auth_wrapper.py
 ===============
 Auth wrapper and registration server for Bitzantium.
 
-Handles account lifecycle and character creation, then hands off to a
-game server for actual play.
+Handles account lifecycle and character creation. Players use their API key
+directly with the game server to play — no JWT or session tokens needed.
 
 Character creation is a multi-step flow:
 
@@ -14,7 +14,6 @@ Character creation is a multi-step flow:
     4. POST /api/preview-character     — validate + build sheet (not persisted)
     5. POST /api/confirm-character     — persist the character
     6. (human verifies account out-of-band — sets claimed=True in DB)
-    7. POST /api/join-session          — API key + claimed; issues JWT
 
 All authenticated endpoints accept POST with:
 
@@ -27,7 +26,6 @@ Endpoints:
     /api/preview-character — validate choices, return sheet        (key only)
     /api/confirm-character — validate + persist character          (key only)
     /api/create-character  — legacy: validate + persist in one     (key only)
-    /api/join-session      — issue session JWT, return game server (key + claimed)
 """
 
 import json
@@ -41,7 +39,6 @@ from pydantic import ValidationError
 import config
 import db
 import character_builder
-import jwt_utils
 from bitzantium_schemas.character import CharacterState
 from bitzantium_schemas.character_choices import CharacterChoices
 from loader import load_all
@@ -67,68 +64,15 @@ def _authenticate_key(body: dict) -> tuple[Optional[db.Account], Optional[web.Re
     return account, None
 
 
-def _authenticate(body: dict) -> tuple[Optional[db.Account], Optional[web.Response]]:
-    """Validate API key AND require claimed=True.
-    Used by join-session (play requires human verification)."""
-    account, err = _authenticate_key(body)
-    if err:
-        return None, err
-    if not account.claimed:
-        return None, web.json_response(
-            {"error": "Account not verified. A human must verify your account before you can play."},
-            status=403,
-        )
-
-    return account, None
-
-
 # ---------------------------------------------------------------------------
 # /api/register — create a new account and return an API key
 # ---------------------------------------------------------------------------
 
 async def handle_register(request: web.Request) -> web.Response:
-    api_key = secrets.token_urlsafe(32)
+    api_key = secrets.token_urlsafe(16)
     db.create_account(api_key, claimed=False)
     log.info("New account registered (unclaimed)")
     return web.json_response({"api_key": api_key}, status=201)
-
-
-# ---------------------------------------------------------------------------
-# /api/join-session — issue a session JWT and redirect to a game server
-# ---------------------------------------------------------------------------
-
-async def handle_join_session(request: web.Request) -> web.Response:
-    try:
-        body = await request.json()
-    except json.JSONDecodeError:
-        return web.json_response({"error": "Invalid JSON"}, status=400)
-
-    account, err = _authenticate(body)
-    if err:
-        return err
-
-    entity_id = db.get_entity_id(account.api_key)
-    if not entity_id:
-        return web.json_response({"error": "No character for this account"}, status=400)
-
-    # Session parameters from request (all optional, sensible defaults)
-    max_turns = body.get("max_turns")  # None = unlimited
-    session_duration = body.get("session_duration_seconds", 3600)
-
-    token = jwt_utils.create_session_token(
-        entity_id=entity_id,
-        account_id=account.id,
-        game_server_url=config.game_server_url(),
-        max_turns=max_turns,
-        session_duration_seconds=session_duration,
-    )
-
-    return web.json_response({
-        "token": token,
-        "game_server_url": config.game_server_url(),
-        "join_url": f"{config.game_server_url()}/join",
-        "entity_id": entity_id,
-    })
 
 
 # ---------------------------------------------------------------------------
@@ -340,8 +284,6 @@ def create_app() -> web.Application:
     app.router.add_post("/api/confirm-character", handle_confirm_character)
     # Legacy single-step creation (still works)
     app.router.add_post("/api/create-character", handle_create_character)
-    # Session (key + claimed)
-    app.router.add_post("/api/join-session", handle_join_session)
     return app
 
 

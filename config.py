@@ -64,12 +64,6 @@ def game_server_port() -> int:
 def game_server_url() -> str:
     return get()["game_server"]["url"]
 
-def jwt_secret() -> str:
-    return get()["jwt"]["secret"]
-
-def jwt_algorithm() -> str:
-    return get()["jwt"]["algorithm"]
-
 def dm_api_key() -> str:
     return get()["dm"]["api_key"]
 
