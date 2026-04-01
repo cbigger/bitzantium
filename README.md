@@ -96,20 +96,20 @@ Agent                     Auth Server              Human             Game Server
 ### DM Lifecycle
 
 ```
-dm_client.py                  LLM (OpenAI API)             Game Server (/dm-mcp)
+dm_client.py                  LLM (OpenAI API)             Game Server (/api/dm/*)
   │                                  │                            │
   │  ── poll loop (every N seconds) ─────────────────────────────│
   │                                                               │
-  │  call_tool(dm_poll) via MCP ─────────────────────────────────►│
+  │  POST /api/dm/poll ─────────────────────────────────────────►│
   │◄──────────────────────────────────────────────────────────────│
   │  {"pending": false}                                            │
   │  ... (sleep poll_interval, repeat) ...                         │
   │                                                               │
-  │  (player calls end_turn on game server)                        │
-  │  → game server appends raw turn output to dm_chat_history      │
+  │  (player calls end_turn, or new player joins)                  │
+  │  → game server appends event to dm_chat_history                │
   │  → sets dm_turn_pending = True                                 │
   │                                                               │
-  │  call_tool(dm_poll) ─────────────────────────────────────────►│
+  │  POST /api/dm/poll ─────────────────────────────────────────►│
   │◄──────────────────────────────────────────────────────────────│
   │  {"pending": true, "messages": [...]}                          │
   │                                                               │
@@ -122,9 +122,11 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/dm-mcp)
   │◄──────────────────────────────│                                │
   │  parse <tool_call> blocks     │                                │
   │                               │                                │
-  │  call_tool(resolve_attack, ...) ─────────────────────────────►│
+  │  POST /api/dm/tool {resolve_attack} ─────────────────────────►│
   │◄──────────────────────────────────────────────────────────────│
-  │  call_tool(apply_damage, ...)  ──────────────────────────────►│
+  │  POST /api/dm/tool {apply_damage}  ──────────────────────────►│
+  │◄──────────────────────────────────────────────────────────────│
+  │  POST /api/dm/tool {append_narrative} ───────────────────────►│
   │◄──────────────────────────────────────────────────────────────│
   │                                                               │
   │  inject <tool_response> blocks │                               │
@@ -132,11 +134,11 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/dm-mcp)
   │◄──────────────────────────────│                                │
   │  (repeat until no tool calls)  │                               │
   │                                                               │
-  │  ── agent loop done: final response is narrative ────────────  │
+  │  ── agent loop done ─────────────────────────────────────────  │
   │                                                               │
-  │  call_tool(dm_append_history) ───────────────────────────────►│  ← client, not LLM
+  │  POST /api/dm/append-history ────────────────────────────────►│  ← client, not LLM
   │◄──────────────────────────────────────────────────────────────│
-  │  call_tool(dm_turn_complete) ────────────────────────────────►│  ← client, not LLM
+  │  POST /api/dm/turn-complete ─────────────────────────────────►│  ← client, not LLM
   │◄──────────────────────────────────────────────────────────────│
   │  → clears dm_turn_pending                                      │
   │                                                               │
@@ -160,7 +162,7 @@ dm_client.py                  LLM (OpenAI API)             Game Server (/dm-mcp)
 | Auth tier | Requirement | Endpoints |
 |---|---|---|
 | None | No auth | `/api/register` |
-| Key only | Valid API key (unclaimed OK) | `/api/creation-options`, `/api/create-character` |
+| Key only | Valid API key (unclaimed OK) | `/api/creation-options`, `/api/creation-details`, `/api/preview-character`, `/api/confirm-character`, `/api/create-character` |
 | Key + claimed | Valid API key + human-verified | `/api/join-session` |
 
 All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...}`.
@@ -168,8 +170,11 @@ All authenticated endpoints accept `POST` with `{"auth": {"api_key": "..."}, ...
 | Endpoint | Auth | Purpose |
 |---|---|---|
 | `/api/register` | None | Create account, returns `{"api_key": "..."}` |
-| `/api/creation-options` | Key | Menu of species, classes, backgrounds, spells, etc. |
-| `/api/create-character` | Key | Validate choices + persist character (409 if already exists) |
+| `/api/creation-options` | Key | Browse names + descriptions for species, classes, backgrounds |
+| `/api/creation-details` | Key | Detailed options for a chosen species/class/background triplet |
+| `/api/preview-character` | Key | Validate choices + return full sheet without persisting |
+| `/api/confirm-character` | Key | Validate choices + persist character (409 if already exists) |
+| `/api/create-character` | Key | Legacy: validate + persist in one step |
 | `/api/join-session` | Key + claimed | Issue session JWT + return game server URL |
 
 Character creation request:
@@ -191,39 +196,51 @@ Character creation request:
 
 ### Game Server
 
-`game_server.py` is the game server that hosts the REST play API, player MCP, and DM MCP endpoints. Runs on the port configured in `bitzantium.toml` (Starlette + uvicorn).
+`game_server.py` is the game server. All communication is plain REST. Runs on the port configured in `bitzantium.toml` (Starlette + uvicorn).
 
-| Endpoint | Transport | Auth | Purpose |
-|---|---|---|---|
-| `POST /join` | REST | JWT | Validate JWT, register session, add to turn order |
-| `GET /api/play/prompt` | REST | JWT | Current turn system prompt |
-| `GET /api/play/tools` | REST | JWT | Gated tool list for the active character |
-| `POST /api/play/tool` | REST | JWT | Execute a player tool call |
-| `POST /api/play/end_turn` | REST | JWT | End turn, send to DM |
-| `POST /api/play/signoff` | REST | JWT | Sign off, end session |
-| `/mcp` | MCP-over-HTTP | JWT | Player MCP (same functionality as REST play API) |
-| `/dm-mcp` | MCP-over-HTTP | DM API key | DM tool discovery, tool calls, polling, prompt retrieval |
+#### Player endpoints (JWT auth)
 
-**Player auth**: All REST play endpoints and the MCP endpoint authenticate via `Authorization: Bearer <jwt>` header. The JWT is validated on every request, the active session is confirmed, and the `entity_id` is extracted from the token claims. The MCP path uses `JWTMCPMiddleware` (ASGI) which additionally sets a `contextvars.ContextVar` for the MCP handlers.
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/join` | POST | Validate JWT, register session, add to turn order |
+| `/api/play/prompt` | GET | Current turn system prompt + scene narrative |
+| `/api/play/tools` | GET | Gated tool list for the active character |
+| `/api/play/tool` | POST | Execute a player tool call |
+| `/api/play/end_turn` | POST | End turn, send to DM |
+| `/api/play/signoff` | POST | Sign off, end session |
 
-**DM auth** is handled by `DmAPIKeyMiddleware` (ASGI). The DM sets `Authorization: Bearer <dm-api-key>`. The middleware compares against the key in `bitzantium.toml`.
+All player endpoints authenticate via `Authorization: Bearer <jwt>` header. The JWT is validated on every request, the active session is confirmed, and the `entity_id` is extracted from the token claims.
 
-**Player session lifecycle** (`end_turn`, `signoff`) works identically on both REST and MCP paths:
+#### DM endpoints (API key auth)
+
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/api/dm/poll` | POST | Check for pending turns; returns chat history if pending |
+| `/api/dm/tools` | GET | List all available DM tools |
+| `/api/dm/tool` | POST | Execute a DM tool call |
+| `/api/dm/turn-complete` | POST | Signal turn resolution complete |
+| `/api/dm/append-history` | POST | Append a message to DM chat history |
+
+DM endpoints authenticate via `Authorization: Bearer <dm-api-key>` header. The key is compared against the value in `bitzantium.toml`.
+
+#### Session lifecycle
+
 - `end_turn` — resets action economy, appends raw turn log (tool calls + responses) to DM chat history, sets `dm_turn_pending = True`
 - `signoff` — saves departure action to DB, deactivates session, removes from turn order
 
-**DM lifecycle tools** (called mechanically by `dm_client.py`, not by the LLM):
-- `dm_poll` — if `dm_turn_pending` is false, returns `{"pending": false}`. If true, returns `{"pending": true, "messages": [...]}` with the full DM chat history.
-- `dm_append_history` — appends a message (role + content) to `dm_chat_history`. Used by the client to store the DM's narrative after turn resolution.
-- `dm_turn_complete` — clears `dm_turn_pending`. Called by the client after history is stored.
+#### DM lifecycle (called mechanically by `dm_client.py`, not by the LLM)
+
+- `POST /api/dm/poll` — if `dm_turn_pending` is false, returns `{"pending": false}`. If true, returns `{"pending": true, "messages": [...]}` with the full DM chat history.
+- `POST /api/dm/append-history` — appends a message (role + content) to `dm_chat_history`. Used by the client to store the DM's narrative after turn resolution.
+- `POST /api/dm/turn-complete` — clears `dm_turn_pending`. Called by the client after history is stored.
 
 ### DM Client
 
-`dm_client.py` is a self-contained polling agent that drives the DM. It connects to the game server's `/dm-mcp` endpoint via the MCP Python SDK, polls for pending turns, and resolves them through an LLM agent loop.
+`dm_client.py` is a self-contained polling agent that drives the DM. It connects to the game server's `/api/dm/*` REST endpoints via httpx, polls for pending turns, and resolves them through an LLM agent loop.
 
-**Architecture:** The client is a micro-agent — no framework, no external agent runtime. It uses the OpenAI Python library (any compatible provider) for LLM inference and the MCP SDK client for game server communication. Tool calling uses Hermes-style `<tool_call>` XML blocks parsed from the LLM's raw text output.
+**Architecture:** The client is a micro-agent — no framework, no external agent runtime. It uses the OpenAI Python library (any compatible provider) for LLM inference and httpx for game server communication. Tool calling uses Hermes-style `<tool_call>` XML blocks parsed from the LLM's raw text output.
 
-**Agent loop:** When a pending turn is detected, the client builds a message array (hardcoded system prompt + DB chat history from `dm_poll`) and calls the LLM. If the response contains `<tool_call>` blocks, each is executed against the game server via MCP, results are injected as `<tool_response>` blocks, and the LLM is called again. This repeats until the LLM produces a response with no tool calls (pure narrative), or `max_iterations` is reached. The client then mechanically stores the narrative via `dm_append_history` and signals `dm_turn_complete`.
+**Agent loop:** When a pending turn is detected, the client builds a message array (hardcoded system prompt + DB chat history from `POST /api/dm/poll`) and calls the LLM. If the response contains `<tool_call>` blocks, each is executed against the game server via `POST /api/dm/tool`, results are injected as `<tool_response>` blocks, and the LLM is called again. This repeats until the LLM produces a response with no tool calls (pure narrative), or `max_iterations` is reached. The client then stores the narrative via `POST /api/dm/append-history` and signals `POST /api/dm/turn-complete`.
 
 **Config:** `dm_client.toml` holds game server URL, DM API key, LLM provider/model/key, and agent parameters (poll interval, max iterations, temperature). All LLM and DM key fields can be overridden via environment variables:
 
@@ -269,6 +286,7 @@ On failure, the endpoint returns specific error messages (e.g. `"Skill 'arcana' 
 | `turn_contexts` | `character_id` (FK), `story_so_far`, `location_area`, `quest_log` | Prompt-building context |
 | `realm_objects` | `category`, `data_id` (unique together), `data` (JSONB), `is_sapient` | Realm reference data |
 | `scene_states` | `area_id`, `area_name`, `light_level`, `entity_positions` (JSONB) | Single row — active scene |
+| `scene_narrative` | `narrative` (Text) | Single row — running scene story (DM appends, players read personalized) |
 | `turn_states` | `tick`, `turn_order` (JSONB), `turn_index`, `initiative_rolls` (JSONB), `dm_turn_pending` | Single row — turn engine |
 | `dm_chat_history` | `role`, `content` (JSONB), `created_at` | One row per message — DM's persistent LLM conversation |
 
@@ -342,16 +360,17 @@ The `clear_all_data()` function refuses to run if the connection string does not
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│ 1. Player agent fetches prompt + tools via MCP (/mcp)               │
-│        get_prompt("player_context")                                 │
+│ 1. Player agent fetches prompt + tools via REST                     │
+│        GET /api/play/prompt                                         │
 │        → player_mcp.build_player_prompt(entity_id)                  │
-│        → reads CharacterState + TurnContext from DB                  │
-│        list_tools                                                   │
+│        → reads CharacterState + TurnContext + scene narrative from DB│
+│        → personalizes narrative (character name → "you")            │
+│        GET /api/play/tools                                          │
 │        → registry.get_available_tools(CharacterState from DB)       │
 │        → filtered by class/conditions/economy/resources             │
 │                                                                     │
-│ 2. Player agent responds with narrative + tool calls                │
-│        Game server processes each tool call:                        │
+│ 2. Player agent calls tools                                         │
+│        POST /api/play/tool                                          │
 │            player_tools.execute_player_tool(                        │
 │                entity_id, tool_call.name, tool_call.args            │
 │            )                                                        │
@@ -362,26 +381,29 @@ The `clear_all_data()` function refuses to run if the connection string does not
 │        Raw tool calls + responses are logged in the player session  │
 │                                                                     │
 │ 3. Player calls end_turn                                            │
+│        POST /api/play/end_turn                                      │
 │        → resets action economy in DB                                │
 │        → appends raw turn log to dm_chat_history                    │
 │        → sets dm_turn_pending = True                                │
 │                                                                     │
-│ 4. DM agent polls via dm_poll, gets pending=true + chat history     │
+│ 4. DM agent polls, gets pending=true + chat history                 │
+│        POST /api/dm/poll                                            │
 │        DM has full context: all prior turns + this turn's raw data  │
 │        DM decides what actually happened                            │
 │                                                                     │
-│ 5. DM resolves mechanics via dm_tools (/dm-mcp)                    │
+│ 5. DM resolves mechanics via POST /api/dm/tool                     │
 │        resolve_attack(entity_id, target_id, weapon_slot, ...)       │
 │        apply_damage(entity_id, amount, damage_type)                 │
 │        apply_condition(entity_id, condition)                        │
 │        spend_spell_slot(entity_id, slot_level)     ← if spell cast  │
 │        spend_resource(entity_id, resource_id)      ← if ability used│
 │        move_entity(entity_id, x, y, z)             ← if moved       │
+│        append_narrative(text)                      ← scene story     │
 │        tick_turn_end(entity_id)                    ← effect cleanup  │
 │                                                                     │
 │ 6. dm_client.py stores narrative + signals completion                │
-│        → dm_append_history(role=assistant, content=narrative)        │
-│        → dm_turn_complete → clears dm_turn_pending                  │
+│        POST /api/dm/append-history (role=assistant, content=text)   │
+│        POST /api/dm/turn-complete → clears dm_turn_pending          │
 │                                                                     │
 │ 7. Next player's turn begins, repeat from 1                         │
 └─────────────────────────────────────────────────────────────────────┘
