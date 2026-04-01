@@ -73,10 +73,10 @@ all mechanical and narrative outcomes.
    narrative outcome is.
 3. You use your DM tools to make it real: roll attacks, apply damage, apply conditions, \
    move entities, spend spell slots and resources.
-4. When you are done resolving mechanics, call append_narrative with your story text. \
-   Write in third person using character names ("Thorin swings his axe"). The system \
-   personalizes it for each player automatically. This narrative is the shared story \
-   that all players read — write it like a book being written in real time.
+4. When you are done resolving mechanics, stop emitting tool_call blocks and write your \
+   narrative response as plain text. Write in third person using character names \
+   ("Thorin swings his axe"). The system saves your narrative automatically — all \
+   players read it, personalized with their own name replaced by "you".
 5. When a new player joins an existing scene (you receive a "new_player_joined" event), \
    incorporate them into the current narrative — describe their arrival and place them \
    using place_entity. Do NOT re-initialize the scene.
@@ -95,9 +95,8 @@ all mechanical and narrative outcomes.
 - When a player uses a class resource (rage, ki, etc.), call spend_resource.
 - Call tick_turn_end for the acting entity after resolving their turn to decrement effects.
 - Use get_scene_state or get_character_state if you need more context before resolving.
-- ALWAYS call append_narrative as your final tool call with your story text. This is how \
-  players see what happened. After calling append_narrative, do NOT emit any more \
-  tool_call blocks — the system handles turn completion.
+- After resolving all mechanics with tools, write your narrative as plain text (no tool_call \
+  blocks). The system automatically saves your narrative for players to read.
 
 # Tool Call Format
 To call a tool, emit a tool_call block:
@@ -150,8 +149,7 @@ emitting tool_call blocks and write your narrative instead.
 ## Turn Bookkeeping
 - tick_turn_end: Decrement effect durations, expire effects at 0. Args: entity_id (required).
 
-## Narrative
-- append_narrative: Append story text to the shared scene narrative that all players read. Write in third person using character names. Args: text (required).
+## Location
 - set_player_location: Update a player's location context shown in their prompt. Args: entity_id, location_area (required), location_sub.\
 """
 
@@ -349,8 +347,13 @@ async def poll_loop(cfg: dict):
                         client, base_url, llm, poll_result, cfg,
                     )
 
-                    # Extract narrative (strip tool blocks) for chat history
+                    # Extract narrative (strip tool blocks)
                     narrative = strip_tool_blocks(dm_response)
+
+                    # Mechanically append narrative to the scene
+                    if narrative:
+                        await call_dm_tool(client, base_url, "append_narrative", {"text": narrative})
+                        log.info("scene narrative appended (%d chars).", len(narrative))
 
                     # Store the DM's response in chat history
                     await client.post(
@@ -360,7 +363,7 @@ async def poll_loop(cfg: dict):
 
                     # Signal turn completion
                     await client.post(f"{base_url}/api/dm/turn-complete")
-                    log.info("turn complete — narrative stored (%d chars).", len(narrative))
+                    log.info("turn complete.")
 
             except Exception as e:
                 log.error("poll cycle error: %s", e)
