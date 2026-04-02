@@ -687,10 +687,12 @@ def _handle_tick_turn_end(args: dict) -> dict:
 
 
 def _handle_append_narrative(args: dict) -> dict:
-    """Append text to the shared scene narrative."""
-    text = args["text"]
-    full = db.append_narrative(text)
-    return {"status": "appended", "narrative_length": len(full)}
+    """Write narrative for this turn — a shared (third-person) and personal (second-person) version."""
+    acting_entity_id = args["acting_entity_id"]
+    shared_text      = args["shared_text"]
+    personal_text    = args["personal_text"]
+    result = db.append_narrative_segment(acting_entity_id, shared_text, personal_text)
+    return {"status": "appended", "segment_id": result["id"]}
 
 
 def _handle_set_player_location(args: dict) -> dict:
@@ -1099,14 +1101,22 @@ _DM_TOOLS: list[dict] = [
     {
         "name": "append_narrative",
         "description": (
-            "Append text to the scene narrative — the shared story that all players read. "
-            "Write in third person using character names. Called after resolving mechanics "
-            "to describe what happened. Each call adds a new paragraph."
+            "Write the narrative for this turn. This is your FINAL tool call each turn — "
+            "call it once after resolving all mechanics. "
+            "shared_text: third-person prose describing what happened, shown to all players "
+            "except the one who acted (e.g. 'Thorin swings his axe — the goblin staggers.'). "
+            "personal_text: second-person prose addressed directly to the acting player, shown "
+            "only to them (e.g. 'You swing your axe hard — the goblin staggers, eyes going wide.'). "
+            "acting_entity_id: the entity_id of the player whose turn this is."
         ),
         "inputSchema": {
             "type": "object",
-            "properties": {"text": {"type": "string"}},
-            "required": ["text"],
+            "properties": {
+                "acting_entity_id": {"type": "string"},
+                "shared_text":      {"type": "string"},
+                "personal_text":    {"type": "string"},
+            },
+            "required": ["acting_entity_id", "shared_text", "personal_text"],
         },
         "handler": _handle_append_narrative,
     },

@@ -376,6 +376,16 @@ async def handle_dm_turn_complete(request: Request):
     return JSONResponse({"status": "dm_turn_complete"})
 
 
+async def handle_dm_last_narrative(request: Request):
+    """Return the most recently appended narrative segment."""
+    err = _validate_dm_auth(request)
+    if err:
+        return err
+
+    segment = db.get_last_narrative_segment()
+    return JSONResponse(segment or {})
+
+
 async def handle_dm_append_history(request: Request):
     """Append a message to DM chat history."""
     err = _validate_dm_auth(request)
@@ -416,6 +426,7 @@ def create_app() -> Starlette:
             Route("/api/dm/tools", handle_dm_tools, methods=["GET"]),
             Route("/api/dm/tool", handle_dm_tool, methods=["POST"]),
             Route("/api/dm/turn-complete", handle_dm_turn_complete, methods=["POST"]),
+            Route("/api/dm/last-narrative", handle_dm_last_narrative, methods=["GET"]),
             Route("/api/dm/append-history", handle_dm_append_history, methods=["POST"]),
         ],
     )

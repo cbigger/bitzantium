@@ -4,13 +4,15 @@ db.py
 Database layer for Bitzantium — SQLAlchemy ORM with JSON blob storage.
 
 Tables:
-    accounts        — API key + claim status.
-    characters      — 1:1 with account. Full CharacterState as JSON.
-    turn_contexts   — 1:1 with character. Prompt-building context per turn.
-    realm_objects   — Realm reference data (classes, races, items, etc.)
-    scene_states    — Active scene (positions, area, light). Single row.
-    turn_states     — Turn order engine state. Single row.
-    dm_chat_history — DM's persistent LLM conversation (one row per message).
+    accounts           — API key + claim status.
+    characters         — 1:1 with account. Full CharacterState as JSON.
+    turn_contexts      — 1:1 with character. Prompt-building context per turn.
+    realm_objects      — Realm reference data (classes, races, items, etc.)
+    scene_states       — Active scene (positions, area, light). Single row.
+    turn_states        — Turn order engine state. Single row.
+    narrative_segments — Per-turn narrative segments. Each has a shared (third-person)
+                         and personal (second-person) version, tagged by acting entity.
+    dm_chat_history    — DM's persistent LLM conversation (one row per message).
 
 All state is serialized/deserialized via Pydantic's model_dump / model_validate,
 so swapping the DB backend later only requires changing the connection string.
@@ -135,11 +137,14 @@ class TurnStateRow(Base):
     player_turn_entity_id = Column(String, nullable=True)
 
 
-class SceneNarrativeRow(Base):
-    __tablename__ = "scene_narrative"
+class NarrativeSegment(Base):
+    __tablename__ = "narrative_segments"
 
-    id = Column(Integer, primary_key=True)
-    narrative = Column(Text, nullable=False, default="")
+    id               = Column(Integer, primary_key=True, autoincrement=True)
+    acting_entity_id = Column(String, nullable=False)
+    shared_text      = Column(Text, nullable=False)   # third-person, shown to all other players
+    personal_text    = Column(Text, nullable=False)   # second-person, shown to the acting player
+    created_at       = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 class DmChatMessage(Base):
@@ -562,44 +567,71 @@ def distance_between(entity_a: str, entity_b: str) -> Optional[float]:
 # Scene narrative — shared story document
 # ---------------------------------------------------------------------------
 
-_NARRATIVE_ROW_ID = 1  # single-row pattern
+def append_narrative_segment(acting_entity_id: str, shared_text: str, personal_text: str) -> dict:
+    """Append a narrative segment for one DM turn.
 
+    shared_text   — third-person prose shown to all players except the acting one.
+    personal_text — second-person prose shown only to the acting player.
 
-def _get_or_create_narrative(session: Session) -> SceneNarrativeRow:
-    """Get the singleton narrative row, creating it if it doesn't exist."""
-    row = session.query(SceneNarrativeRow).filter(SceneNarrativeRow.id == _NARRATIVE_ROW_ID).first()
-    if row is None:
-        row = SceneNarrativeRow(id=_NARRATIVE_ROW_ID, narrative="")
-        session.add(row)
-        session.flush()
-    return row
-
-
-def get_narrative() -> str:
-    """Return the current scene narrative."""
+    Returns a dict with the new segment's id.
+    """
     with SessionLocal() as session:
-        row = _get_or_create_narrative(session)
-        return row.narrative or ""
-
-
-def append_narrative(text: str) -> str:
-    """Append text to the scene narrative. Returns the full narrative."""
-    with SessionLocal() as session:
-        row = _get_or_create_narrative(session)
-        current = row.narrative or ""
-        if current:
-            row.narrative = current + "\n\n" + text
-        else:
-            row.narrative = text
+        seg = NarrativeSegment(
+            acting_entity_id=acting_entity_id,
+            shared_text=shared_text,
+            personal_text=personal_text,
+        )
+        session.add(seg)
         session.commit()
-        return row.narrative
+        return {"id": seg.id}
 
 
-def clear_narrative() -> None:
-    """Reset the scene narrative."""
+def build_player_narrative(entity_id: str) -> str:
+    """Assemble the narrative for a specific player.
+
+    For each segment:
+      - acting_entity_id == entity_id → use personal_text (second-person)
+      - otherwise                     → use shared_text   (third-person)
+
+    Returns the full assembled narrative string, or "" if no segments exist.
+    """
     with SessionLocal() as session:
-        row = _get_or_create_narrative(session)
-        row.narrative = ""
+        segments = (
+            session.query(NarrativeSegment)
+            .order_by(NarrativeSegment.id)
+            .all()
+        )
+        parts: list[str] = []
+        for seg in segments:
+            if seg.acting_entity_id == entity_id:
+                parts.append(seg.personal_text)
+            else:
+                parts.append(seg.shared_text)
+        return "\n\n".join(parts)
+
+
+def get_last_narrative_segment() -> dict | None:
+    """Return the most recently appended narrative segment as a dict, or None."""
+    with SessionLocal() as session:
+        seg = (
+            session.query(NarrativeSegment)
+            .order_by(NarrativeSegment.id.desc())
+            .first()
+        )
+        if seg is None:
+            return None
+        return {
+            "id": seg.id,
+            "acting_entity_id": seg.acting_entity_id,
+            "shared_text": seg.shared_text,
+            "personal_text": seg.personal_text,
+        }
+
+
+def clear_narrative_segments() -> None:
+    """Delete all narrative segments."""
+    with SessionLocal() as session:
+        session.query(NarrativeSegment).delete()
         session.commit()
 
 
