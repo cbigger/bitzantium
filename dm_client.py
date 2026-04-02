@@ -228,7 +228,10 @@ def llm_complete(client: OpenAI, messages: list[dict], cfg: dict) -> str:
         messages=messages,
         temperature=float(agent_cfg.get("temperature", 0.7)),
     )
-    return resp.choices[0].message.content or ""
+    content = resp.choices[0].message.content or ""
+    if not content.strip():
+        log.warning("empty LLM response — dumping full response object:\n%s", resp)
+    return content
 
 
 # ---------------------------------------------------------------------------
@@ -251,7 +254,9 @@ async def run_dm_turn(
 
     Returns the DM's final narrative text for history storage.
     """
-    max_iter = int(cfg.get("agent", {}).get("max_iterations", 10))
+    agent_cfg = cfg.get("agent", {})
+    max_iter = int(agent_cfg.get("max_iterations", 10))
+    max_empty_retries = int(agent_cfg.get("empty_retries", 0))
     chat_history = poll_data.get("messages", [])
 
     # Build the initial messages array
@@ -284,6 +289,21 @@ async def run_dm_turn(
         tool_calls = parse_tool_calls(response)
 
         if not tool_calls:
+            if not response.strip() and max_empty_retries > 0:
+                max_empty_retries -= 1
+                log.warning(
+                    "empty response with no tool calls — nudging (%d retries left)",
+                    max_empty_retries,
+                )
+                messages.append({"role": "assistant", "content": response})
+                messages.append({"role": "user", "content": (
+                    "Your response was empty. You MUST resolve this turn. "
+                    "Use <tool_call> blocks to call your DM tools, then call "
+                    "append_narrative as your final tool call. Do not return "
+                    "an empty response."
+                )})
+                continue
+
             # No tool calls — this is the final narrative response
             log.info("no tool calls in iteration %d — turn resolved.", iteration)
             last_response = response
