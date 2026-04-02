@@ -6,7 +6,7 @@ api_key = "dm-dev-key-change-me"
 
 [llm]
 base_url = "https://api.openai.com/v1"
-model = "gpt-5.3-mini"
+model = "gpt-5.4-mini"
 api_key = ""  # prefer BITZ_DM_LLM_API_KEY env var
 
 [agent]
