@@ -8,7 +8,6 @@ Used by game_server.py for the /api/play/prompt endpoint.
 """
 
 import logging
-import re
 from typing import Optional
 
 import config
@@ -165,31 +164,6 @@ def _stats_block(cs) -> str:
     return "\n".join(lines)
 
 
-def _personalize_narrative(narrative: str, character_name: str) -> str:
-    """Replace the player's character name with 'you' in the narrative.
-
-    Uses case-insensitive replacement. Also handles possessive form
-    (e.g. "Thorin's" → "your").
-    """
-    if not narrative or not character_name:
-        return narrative
-    # Possessive first (so "Thorin's" doesn't become "you's")
-    narrative = re.sub(
-        re.escape(character_name) + r"'s",
-        "your",
-        narrative,
-        flags=re.IGNORECASE,
-    )
-    # Then the name itself
-    narrative = re.sub(
-        re.escape(character_name),
-        "you",
-        narrative,
-        flags=re.IGNORECASE,
-    )
-    return narrative
-
-
 def build_player_prompt(entity_id: str) -> str:
     """Assemble the full system prompt for the current turn.
 
@@ -204,7 +178,7 @@ def build_player_prompt(entity_id: str) -> str:
         [QUEST LOG
         <quest_log>]
         <exposition — scene description from disk>
-        <scene narrative — DM-written story, personalized>
+        <scene narrative — assembled from per-player narrative segments>
         TOOLS AVAILABLE
           tool_name: description
           …
@@ -222,10 +196,8 @@ def build_player_prompt(entity_id: str) -> str:
     location_sub = context.get("location_sub")
     quest_log = context.get("quest_log")
 
-    # Scene narrative — shared story, personalized for this player
-    narrative = db.get_narrative()
-    if narrative:
-        narrative = _personalize_narrative(narrative, cs.sheet.name)
+    # Scene narrative — assembled per-player from tagged segments
+    narrative = db.build_player_narrative(entity_id)
 
     parts: list[str] = [_identity_line(cs)]
     if cs.sheet.description:

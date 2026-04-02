@@ -73,10 +73,14 @@ all mechanical and narrative outcomes.
    narrative outcome is.
 3. You use your DM tools to make it real: roll attacks, apply damage, apply conditions, \
    move entities, spend spell slots and resources.
-4. When you are done resolving mechanics, stop emitting tool_call blocks and write your \
-   narrative response as plain text. Write in third person using character names \
-   ("Thorin swings his axe"). The system saves your narrative automatically — all \
-   players read it, personalized with their own name replaced by "you".
+4. When you are done resolving mechanics, call append_narrative as your FINAL tool call. \
+   Do NOT write plain-text narrative after your tool calls — use append_narrative instead. \
+   Provide three arguments: \
+     acting_entity_id — the entity_id of the player whose turn this is. \
+     shared_text — third-person prose for all other players \
+       (e.g. "Thorin swings his axe — the goblin staggers back."). \
+     personal_text — second-person prose addressed directly to the acting player \
+       (e.g. "You swing your axe hard — the goblin staggers, its eyes going wide.").
 5. When a new player joins an existing scene (you receive a "new_player_joined" event), \
    incorporate them into the current narrative — describe their arrival and place them \
    using place_entity. Do NOT re-initialize the scene.
@@ -95,8 +99,8 @@ all mechanical and narrative outcomes.
 - When a player uses a class resource (rage, ki, etc.), call spend_resource.
 - Call tick_turn_end for the acting entity after resolving their turn to decrement effects.
 - Use get_scene_state or get_character_state if you need more context before resolving.
-- After resolving all mechanics with tools, write your narrative as plain text (no tool_call \
-  blocks). The system automatically saves your narrative for players to read.
+- After resolving all mechanics with tools, call append_narrative with acting_entity_id, \
+  shared_text, and personal_text. This is required — do not skip it.
 
 # Tool Call Format
 To call a tool, emit a tool_call block:
@@ -150,7 +154,12 @@ emitting tool_call blocks and write your narrative instead.
 - tick_turn_end: Decrement effect durations, expire effects at 0. Args: entity_id (required).
 
 ## Location
-- set_player_location: Update a player's location context shown in their prompt. Args: entity_id, location_area (required), location_sub.\
+- set_player_location: Update a player's location context shown in their prompt. Args: entity_id, location_area (required), location_sub.
+
+## Narrative (call last, required every turn)
+- append_narrative: Write this turn's narrative. Args: acting_entity_id (required), \
+shared_text (required, third-person for all other players), \
+personal_text (required, second-person addressed directly to the acting player).\
 """
 
 
@@ -178,14 +187,6 @@ def parse_tool_calls(text: str) -> list[dict]:
             log.warning("malformed tool_call JSON: %s", e)
     return calls
 
-
-def strip_tool_blocks(text: str) -> str:
-    """Remove all <tool_call> and <tool_response> blocks, return narrative only."""
-    text = TOOL_CALL_RE.sub("", text)
-    text = re.sub(r"<tool_response>.*?</tool_response>", "", text, flags=re.DOTALL)
-    # Collapse blank lines
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip()
 
 
 # ---------------------------------------------------------------------------
@@ -343,22 +344,23 @@ async def poll_loop(cfg: dict):
                     log.info("pending turn detected — resolving.")
 
                     # Run the DM agent turn
-                    dm_response = await run_dm_turn(
+                    await run_dm_turn(
                         client, base_url, llm, poll_result, cfg,
                     )
 
-                    # Extract narrative (strip tool blocks)
-                    narrative = strip_tool_blocks(dm_response)
+                    # Fetch the shared_text from the narrative segment the DM just wrote,
+                    # and store it in chat history so future turns have narrative context.
+                    seg_resp = await client.get(f"{base_url}/api/dm/last-narrative")
+                    seg_resp.raise_for_status()
+                    seg_data = seg_resp.json()
+                    narrative_for_history = seg_data.get("shared_text", "")
+                    if narrative_for_history:
+                        log.info("narrative segment stored (%d chars shared).", len(narrative_for_history))
 
-                    # Mechanically append narrative to the scene
-                    if narrative:
-                        await call_dm_tool(client, base_url, "append_narrative", {"text": narrative})
-                        log.info("scene narrative appended (%d chars).", len(narrative))
-
-                    # Store the DM's response in chat history
+                    # Store the DM's narrative in chat history
                     await client.post(
                         f"{base_url}/api/dm/append-history",
-                        json={"role": "assistant", "content": narrative},
+                        json={"role": "assistant", "content": narrative_for_history},
                     )
 
                     # Signal turn completion
