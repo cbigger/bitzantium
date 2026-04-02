@@ -1,17 +1,20 @@
 """
 dm_client.py — Bitzantium DM agent client.
 
+Two-pass pipeline:
+  Pass 1 (Resolution) — DM resolves player actions using tools (no narrative).
+  Pass 2 (Narrative)  — Narrator writes prose from the resolution results.
+
 Self-contained polling agent that connects to the game server's /api/dm/*
-endpoints, waits for player turns, resolves them via LLM + DM tools, and
-signals completion.
+endpoints, waits for player turns, resolves them, and signals completion.
 
     .venv/bin/python3 dm_client.py [--config dm_client.toml]
 
 Env var overrides (take precedence over dm_client.toml):
-    BITZ_DM_PROVIDER     → [llm].base_url
-    BITZ_DM_MODEL        → [llm].model
-    BITZ_DM_LLM_API_KEY  → [llm].api_key
-    BITZ_DM_API_KEY      → [dm].api_key
+    BITZ_DM_PROVIDER     -> [llm].base_url
+    BITZ_DM_MODEL        -> [llm].model
+    BITZ_DM_LLM_API_KEY  -> [llm].api_key
+    BITZ_DM_API_KEY      -> [dm].api_key
 """
 
 import asyncio
@@ -55,52 +58,46 @@ def load_config(path: str = "dm_client.toml") -> dict:
 
 
 # ---------------------------------------------------------------------------
-# System prompt — hardcoded for now
+# System prompts
 # ---------------------------------------------------------------------------
 
-DM_SYSTEM_PROMPT = """\
+DM_RESOLUTION_PROMPT = """\
 You are the Dungeon Master for a D&D 5th Edition game running on the Bitzantium engine.
 
 # Your Role
 You receive player turn data — the raw tool calls and snapshots from their actions — \
 and you resolve what actually happens in the game world. You have final authority over \
-all mechanical and narrative outcomes.
+all outcomes. A separate narrator will write the prose — your job is to decide what \
+happens and make it real using your tools.
 
 # How a Turn Works
 1. You receive a player's turn (their declared actions) OR a system event (e.g. new player \
    joined an existing scene).
 2. You decide what actually happens — whether attacks hit, how spells resolve, what the \
-   narrative outcome is.
+   world does in response.
 3. You use your DM tools to make it real: roll attacks, apply damage, apply conditions, \
    move entities, spend spell slots and resources.
-4. When you are done resolving mechanics, call append_narrative as your FINAL tool call. \
-   Do NOT write plain-text narrative after your tool calls — use append_narrative instead. \
-   Provide three arguments: \
-     acting_entity_id — the entity_id of the player whose turn this is. \
-     shared_text — third-person prose for all other players \
-       (e.g. "Thorin swings his axe — the goblin staggers back."). \
-     personal_text — second-person prose addressed directly to the acting player \
-       (e.g. "You swing your axe hard — the goblin staggers, its eyes going wide.").
-5. When a new player joins an existing scene (you receive a "new_player_joined" event), \
-   incorporate them into the current narrative — describe their arrival and place them \
-   using place_entity. Do NOT re-initialize the scene.
+4. When a new player joins an existing scene (you receive a "new_player_joined" event), \
+   place them using place_entity. Do NOT re-initialize the scene.
+5. When you are done resolving, write a brief DM summary of what happened and why. This \
+   is NOT narrative prose — it is a factual summary for the narrator to work from. \
+   Example: "Player moved 30ft north. Threw a pen at the shadow — improvised weapon, \
+   rolled 8 vs AC 12, miss. Cast prestidigitation on the air ahead — cantrip resolves, \
+   no visible effect. No enemies present."
 
 # Your Authority
 - You decide advantage/disadvantage based on narrative context.
 - You decide whether a declared action is appropriate in context.
 - You can trigger opportunity attacks, reactions, or environmental effects.
-- You narrate outcomes — be vivid but concise.
 - Player tool calls confirm mechanical legality; you confirm everything else.
 
 # Important Rules
-- Resolve ALL mechanical effects with tools — do not just narrate damage without calling \
-  apply_damage, do not narrate movement without calling move_entity, etc.
+- Resolve ALL mechanical effects with tools — do not just describe damage without calling \
+  apply_damage, do not describe movement without calling move_entity, etc.
 - When a player casts a spell, call spend_spell_slot for the appropriate level.
 - When a player uses a class resource (rage, ki, etc.), call spend_resource.
 - Call tick_turn_end for the acting entity after resolving their turn to decrement effects.
 - Use get_scene_state or get_character_state if you need more context before resolving.
-- After resolving all mechanics with tools, call append_narrative with acting_entity_id, \
-  shared_text, and personal_text. This is required — do not skip it.
 
 # Tool Call Format
 To call a tool, emit a tool_call block:
@@ -111,7 +108,7 @@ To call a tool, emit a tool_call block:
 
 The result will be injected as a tool_response block. You may call multiple tools in \
 sequence across multiple rounds. When you have finished resolving all mechanics, stop \
-emitting tool_call blocks and write your narrative instead.
+emitting tool_call blocks and write your DM summary.
 
 # Available Tools
 
@@ -154,12 +151,37 @@ emitting tool_call blocks and write your narrative instead.
 - tick_turn_end: Decrement effect durations, expire effects at 0. Args: entity_id (required).
 
 ## Location
-- set_player_location: Update a player's location context shown in their prompt. Args: entity_id, location_area (required), location_sub.
+- set_player_location: Update a player's location context shown in their prompt. Args: entity_id, location_area (required), location_sub.\
+"""
 
-## Narrative (call last, required every turn)
-- append_narrative: Write this turn's narrative. Args: acting_entity_id (required), \
-shared_text (required, third-person for all other players), \
-personal_text (required, second-person addressed directly to the acting player).\
+NARRATOR_PROMPT = """\
+You are the narrator for a D&D game. You receive a summary of what a player tried \
+to do and what actually happened (as resolved by the Dungeon Master). Your job is to \
+write vivid, concise prose describing the events.
+
+You must write two versions of the same events:
+
+1. SHARED — Third-person prose shown to all other players. Refer to the acting \
+   player by name. Example: "Thorin swings his axe hard — the goblin staggers back, \
+   clutching its side."
+
+2. PERSONAL — Second-person prose addressed directly to the acting player. Example: \
+   "You swing your axe hard — the goblin staggers back, clutching its side, eyes wide \
+   with shock."
+
+Format your response exactly like this:
+
+[SHARED]
+<third-person prose here>
+
+[PERSONAL]
+<second-person prose here>
+
+Rules:
+- Be vivid but concise. A few sentences, not paragraphs.
+- Do not invent mechanical outcomes — only narrate what the DM summary tells you happened.
+- Do not mention dice rolls, armor class, hit points, or other game mechanics.
+- Maintain consistent tone and style with previous narrative.\
 """
 
 
@@ -187,6 +209,22 @@ def parse_tool_calls(text: str) -> list[dict]:
             log.warning("malformed tool_call JSON: %s", e)
     return calls
 
+
+# ---------------------------------------------------------------------------
+# Narrative response parsing
+# ---------------------------------------------------------------------------
+
+_SHARED_RE = re.compile(r"\[SHARED\]\s*(.*?)(?=\[PERSONAL\])", re.DOTALL)
+_PERSONAL_RE = re.compile(r"\[PERSONAL\]\s*(.*)", re.DOTALL)
+
+
+def parse_narrative(text: str) -> tuple[str, str]:
+    """Extract shared_text and personal_text from narrator response."""
+    shared_m = _SHARED_RE.search(text)
+    personal_m = _PERSONAL_RE.search(text)
+    shared = shared_m.group(1).strip() if shared_m else ""
+    personal = personal_m.group(1).strip() if personal_m else ""
+    return shared, personal
 
 
 # ---------------------------------------------------------------------------
@@ -235,10 +273,10 @@ def llm_complete(client: OpenAI, messages: list[dict], cfg: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Agent loop — one DM turn
+# Pass 1: DM Resolution (tool-calling loop)
 # ---------------------------------------------------------------------------
 
-async def run_dm_turn(
+async def run_resolution_pass(
     client: httpx.AsyncClient,
     base_url: str,
     llm: OpenAI,
@@ -246,23 +284,16 @@ async def run_dm_turn(
     cfg: dict,
 ) -> str:
     """
-    Resolve a single DM turn.
+    DM resolves the player's turn using tools.
 
-    Builds a conversation from the system prompt + chat history, then loops:
-    LLM → parse tool calls → execute via REST → inject results → repeat
-    until the LLM produces a response with no tool calls (pure narrative).
-
-    Returns the DM's final narrative text for history storage.
+    Returns the DM's full response text (including all tool calls and results
+    across iterations). Raises on empty response.
     """
-    agent_cfg = cfg.get("agent", {})
-    max_iter = int(agent_cfg.get("max_iterations", 10))
-    max_empty_retries = int(agent_cfg.get("empty_retries", 0))
+    max_iter = int(cfg.get("agent", {}).get("max_iterations", 10))
     chat_history = poll_data.get("messages", [])
 
-    # Build the initial messages array
-    messages: list[dict] = [{"role": "system", "content": DM_SYSTEM_PROMPT}]
+    messages: list[dict] = [{"role": "system", "content": DM_RESOLUTION_PROMPT}]
 
-    # Append existing DM chat history as context
     for entry in chat_history:
         role = entry.get("role", "user")
         content = entry.get("content")
@@ -275,66 +306,171 @@ async def run_dm_turn(
     last_response = ""
 
     for iteration in range(1, max_iter + 1):
-        log.info("agent iteration %d/%d — %d messages", iteration, max_iter, len(messages))
+        log.info("[resolution] iteration %d/%d — %d messages", iteration, max_iter, len(messages))
 
-        # LLM call (blocking, run in executor to not block the event loop)
         loop = asyncio.get_running_loop()
         response = await loop.run_in_executor(
             None, llm_complete, llm, messages, cfg,
         )
-        log.info("llm response: %d chars", len(response))
-        log.debug("llm output:\n%s", response)
+        log.info("[resolution] llm response: %d chars", len(response))
+        log.debug("[resolution] llm output:\n%s", response)
 
-        # Parse tool calls
+        if not response.strip():
+            raise RuntimeError(
+                f"DM resolution returned empty response on iteration {iteration}"
+            )
+
         tool_calls = parse_tool_calls(response)
 
         if not tool_calls:
-            if not response.strip() and max_empty_retries > 0:
-                max_empty_retries -= 1
-                log.warning(
-                    "empty response with no tool calls — nudging (%d retries left)",
-                    max_empty_retries,
-                )
-                messages.append({"role": "assistant", "content": response})
-                messages.append({"role": "user", "content": (
-                    "Your response was empty. You MUST resolve this turn. "
-                    "Use <tool_call> blocks to call your DM tools, then call "
-                    "append_narrative as your final tool call. Do not return "
-                    "an empty response."
-                )})
-                continue
-
-            # No tool calls — this is the final narrative response
-            log.info("no tool calls in iteration %d — turn resolved.", iteration)
+            log.info("[resolution] no tool calls in iteration %d — resolution complete.", iteration)
             last_response = response
             break
 
-        log.info("found %d tool call(s)", len(tool_calls))
+        log.info("[resolution] found %d tool call(s)", len(tool_calls))
 
-        # Execute each tool call and collect results
         tool_results = []
-
         for tc in tool_calls:
             name = tc["name"]
             args = tc["arguments"]
-            log.info("executing: %s(%s)", name, json.dumps(args))
+            log.info("[resolution] executing: %s(%s)", name, json.dumps(args))
 
             result = await call_dm_tool(client, base_url, name, args)
-
-            log.info("result: %s", json.dumps(result)[:200])
+            log.info("[resolution] result: %s", json.dumps(result)[:200])
             tool_results.append(f"<tool_response>\n{json.dumps(result, indent=2)}\n</tool_response>")
 
-        # Append the assistant's tool calls, then tool results as a
-        # separate user message so the model sees new input to respond to
-        # rather than thinking it already finished its turn.
         messages.append({"role": "assistant", "content": response})
         messages.append({"role": "user", "content": "\n\n".join(tool_results)})
         last_response = response
 
     else:
-        log.warning("max iterations (%d) reached.", max_iter)
+        log.warning("[resolution] max iterations (%d) reached.", max_iter)
 
     return last_response
+
+
+# ---------------------------------------------------------------------------
+# Pass 2: Narrator (single LLM call, no tools)
+# ---------------------------------------------------------------------------
+
+async def run_narrative_pass(
+    client: httpx.AsyncClient,
+    base_url: str,
+    llm: OpenAI,
+    poll_data: dict,
+    dm_summary: str,
+    cfg: dict,
+) -> tuple[str, str]:
+    """
+    Narrator writes prose from the DM's resolution summary.
+
+    Uses its own separate history for voice/style consistency.
+    Returns (shared_text, personal_text). Raises on empty/unparseable response.
+    """
+    narrator_history = poll_data.get("narrator_messages", [])
+
+    messages: list[dict] = [{"role": "system", "content": NARRATOR_PROMPT}]
+
+    for entry in narrator_history:
+        role = entry.get("role", "user")
+        content = entry.get("content")
+        if isinstance(content, dict):
+            content = json.dumps(content, indent=2)
+        elif not isinstance(content, str):
+            content = str(content)
+        messages.append({"role": role, "content": content})
+
+    # Current turn input for the narrator
+    messages.append({"role": "user", "content": dm_summary})
+
+    log.info("[narrator] calling LLM — %d messages", len(messages))
+
+    loop = asyncio.get_running_loop()
+    response = await loop.run_in_executor(
+        None, llm_complete, llm, messages, cfg,
+    )
+    log.info("[narrator] llm response: %d chars", len(response))
+    log.debug("[narrator] llm output:\n%s", response)
+
+    if not response.strip():
+        raise RuntimeError("Narrator returned empty response")
+
+    shared, personal = parse_narrative(response)
+
+    if not shared or not personal:
+        log.error(
+            "[narrator] failed to parse narrative — shared=%d chars, personal=%d chars. "
+            "Raw response:\n%s",
+            len(shared), len(personal), response,
+        )
+        raise RuntimeError(
+            f"Narrator response could not be parsed into shared/personal sections"
+        )
+
+    # Store narrator exchange in its own history
+    await client.post(
+        f"{base_url}/api/dm/append-narrator-history",
+        json={"role": "user", "content": dm_summary},
+    )
+    await client.post(
+        f"{base_url}/api/dm/append-narrator-history",
+        json={"role": "assistant", "content": response},
+    )
+
+    return shared, personal
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator — two-pass DM turn
+# ---------------------------------------------------------------------------
+
+def _extract_entity_id(poll_data: dict) -> str:
+    """Pull the acting entity_id from the last user message in chat history."""
+    for msg in reversed(poll_data.get("messages", [])):
+        content = msg.get("content")
+        if isinstance(content, dict):
+            eid = content.get("entity_id")
+            if eid:
+                return eid
+    return "unknown"
+
+
+async def run_dm_turn(
+    client: httpx.AsyncClient,
+    base_url: str,
+    llm: OpenAI,
+    poll_data: dict,
+    cfg: dict,
+) -> str:
+    """
+    Two-pass DM turn resolution.
+
+    Pass 1: DM resolves mechanics via tool calls.
+    Pass 2: Narrator writes prose from the resolution summary.
+    Then append_narrative is called from code.
+
+    Returns the DM's resolution response for history storage.
+    """
+    # Pass 1: Resolution
+    dm_response = await run_resolution_pass(client, base_url, llm, poll_data, cfg)
+
+    # Pass 2: Narrative
+    shared, personal = await run_narrative_pass(
+        client, base_url, llm, poll_data, dm_response, cfg,
+    )
+
+    # Store narrative via append_narrative tool (called from code, not LLM)
+    entity_id = _extract_entity_id(poll_data)
+    log.info("appending narrative for %s — shared=%d chars, personal=%d chars",
+             entity_id, len(shared), len(personal))
+
+    await call_dm_tool(client, base_url, "append_narrative", {
+        "acting_entity_id": entity_id,
+        "shared_text": shared,
+        "personal_text": personal,
+    })
+
+    return dm_response
 
 
 # ---------------------------------------------------------------------------
@@ -354,7 +490,6 @@ async def poll_loop(cfg: dict):
     async with httpx.AsyncClient(headers=headers, timeout=30.0) as client:
         while True:
             try:
-                # Poll for pending turns
                 resp = await client.post(f"{base_url}/api/dm/poll")
                 resp.raise_for_status()
                 poll_result = resp.json()
@@ -366,28 +501,22 @@ async def poll_loop(cfg: dict):
                 else:
                     log.info("pending turn detected — resolving.")
 
-                    # Run the DM agent turn
                     dm_response = await run_dm_turn(
                         client, base_url, llm, poll_result, cfg,
                     )
 
-                    # Store the full DM response (including tool calls and
-                    # results) in chat history so the LLM sees its own
-                    # tool-calling pattern on subsequent turns and continues
-                    # to call append_narrative reliably.
-                    if dm_response:
-                        log.info("storing DM response in history (%d chars).", len(dm_response))
+                    # Store the full DM resolution in chat history so the
+                    # LLM sees its own tool-calling pattern on future turns.
                     await client.post(
                         f"{base_url}/api/dm/append-history",
                         json={"role": "assistant", "content": dm_response},
                     )
 
-                    # Signal turn completion
                     await client.post(f"{base_url}/api/dm/turn-complete")
                     log.info("turn complete.")
 
             except Exception as e:
-                log.error("poll cycle error: %s", e)
+                log.error("poll cycle error: %s", e, exc_info=True)
 
             await asyncio.sleep(poll_interval)
 
@@ -399,7 +528,7 @@ async def poll_loop(cfg: dict):
 async def main(config_path: str):
     cfg = load_config(config_path)
 
-    level = logging.DEBUG #if os.environ.get("BITZ_DM_DEBUG") else logging.INFO
+    level = logging.DEBUG
     logging.basicConfig(
         level=level,
         format="%(asctime)s [%(name)s] %(levelname)s %(message)s",

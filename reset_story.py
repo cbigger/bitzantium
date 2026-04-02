@@ -6,7 +6,8 @@ Wipe all gameplay state while preserving accounts, characters, and realm data.
 
 Clears:
     narrative_segments  — all story narrative
-    dm_chat_history     — DM LLM conversation
+    dm_chat_history     — DM resolution conversation
+    narrator_history    — narrator conversation
     turn_states         — turn order, initiative, tick counter
     scene_states        — current scene / entity positions
     turn_contexts       — per-character story_so_far, location, quest_log
@@ -24,6 +25,7 @@ import db
 TABLES_TO_CLEAR = [
     db.NarrativeSegment,
     db.DmChatMessage,
+    db.NarratorMessage,
     db.TurnStateRow,
     db.SceneStateRow,
     db.TurnContext,

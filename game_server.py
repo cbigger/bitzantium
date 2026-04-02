@@ -318,7 +318,12 @@ async def handle_dm_poll(request: Request):
         return JSONResponse({"pending": False})
 
     history = db.get_dm_chat_history()
-    return JSONResponse({"pending": True, "messages": history})
+    narrator_history = db.get_narrator_history()
+    return JSONResponse({
+        "pending": True,
+        "messages": history,
+        "narrator_messages": narrator_history,
+    })
 
 
 async def handle_dm_tools(request: Request):
@@ -403,6 +408,23 @@ async def handle_dm_append_history(request: Request):
     return JSONResponse({"status": "appended"})
 
 
+async def handle_dm_append_narrator_history(request: Request):
+    """Append a message to narrator history."""
+    err = _validate_dm_auth(request)
+    if err:
+        return err
+
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "Invalid JSON"}, status_code=400)
+
+    role = body.get("role", "assistant")
+    content = body.get("content", "")
+    db.append_narrator_message(role, content)
+    return JSONResponse({"status": "appended"})
+
+
 # ---------------------------------------------------------------------------
 # App setup
 # ---------------------------------------------------------------------------
@@ -428,6 +450,7 @@ def create_app() -> Starlette:
             Route("/api/dm/turn-complete", handle_dm_turn_complete, methods=["POST"]),
             Route("/api/dm/last-narrative", handle_dm_last_narrative, methods=["GET"]),
             Route("/api/dm/append-history", handle_dm_append_history, methods=["POST"]),
+            Route("/api/dm/append-narrator-history", handle_dm_append_narrator_history, methods=["POST"]),
         ],
     )
     return app

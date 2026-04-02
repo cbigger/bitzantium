@@ -156,6 +156,15 @@ class DmChatMessage(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
+class NarratorMessage(Base):
+    __tablename__ = "narrator_history"
+
+    id = Column(Integer, primary_key=True)
+    role = Column(String, nullable=False)
+    content = Column(JSONB, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
 # ---------------------------------------------------------------------------
 # Table creation
 # ---------------------------------------------------------------------------
@@ -949,3 +958,22 @@ def clear_dm_chat_history() -> int:
         count = session.query(DmChatMessage).delete()
         session.commit()
         return count
+
+
+# ---------------------------------------------------------------------------
+# Narrator history — persistent narrator conversation (separate from DM)
+# ---------------------------------------------------------------------------
+
+def append_narrator_message(role: str, content) -> None:
+    """Append a message to the narrator history."""
+    with SessionLocal() as session:
+        msg = NarratorMessage(role=role, content=content)
+        session.add(msg)
+        session.commit()
+
+
+def get_narrator_history() -> list[dict]:
+    """Return the full narrator history in order."""
+    with SessionLocal() as session:
+        rows = session.query(NarratorMessage).order_by(NarratorMessage.id).all()
+        return [{"role": r.role, "content": r.content} for r in rows]

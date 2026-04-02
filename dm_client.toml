@@ -13,4 +13,3 @@ api_key = ""  # prefer BITZ_DM_LLM_API_KEY env var
 poll_interval = 10     # seconds between dm_poll calls when idle
 max_iterations = 10    # max tool-call round-trips per turn
 temperature = 0.7
-empty_retries = 2      # nudge retries when LLM returns empty response (0 = disabled)
