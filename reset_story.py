@@ -30,12 +30,22 @@ TABLES_TO_CLEAR = [
 
 
 def reset_story() -> dict[str, int]:
-    """Delete all rows from gameplay tables. Returns {table: rows_deleted}."""
+    """Delete all rows from gameplay tables and reset character economies.
+    Returns {table: rows_deleted} plus an 'economies_reset' count."""
     counts: dict[str, int] = {}
     with db.SessionLocal() as session:
         for model in TABLES_TO_CLEAR:
             n = session.query(model).delete()
             counts[model.__tablename__] = n
+
+        # Reset every character's action economy to fresh state
+        characters = session.query(db.Character).all()
+        for char in characters:
+            cs = db.CharacterState.model_validate(char.character_state)
+            cs = cs.model_copy(update={"economy": db.ActionEconomy()})
+            char.character_state = cs.model_dump(mode="json")
+        counts["economies_reset"] = len(characters)
+
         session.commit()
     return counts
 
