@@ -344,23 +344,19 @@ async def poll_loop(cfg: dict):
                     log.info("pending turn detected — resolving.")
 
                     # Run the DM agent turn
-                    await run_dm_turn(
+                    dm_response = await run_dm_turn(
                         client, base_url, llm, poll_result, cfg,
                     )
 
-                    # Fetch the shared_text from the narrative segment the DM just wrote,
-                    # and store it in chat history so future turns have narrative context.
-                    seg_resp = await client.get(f"{base_url}/api/dm/last-narrative")
-                    seg_resp.raise_for_status()
-                    seg_data = seg_resp.json()
-                    narrative_for_history = seg_data.get("shared_text", "")
-                    if narrative_for_history:
-                        log.info("narrative segment stored (%d chars shared).", len(narrative_for_history))
-
-                    # Store the DM's narrative in chat history
+                    # Store the full DM response (including tool calls and
+                    # results) in chat history so the LLM sees its own
+                    # tool-calling pattern on subsequent turns and continues
+                    # to call append_narrative reliably.
+                    if dm_response:
+                        log.info("storing DM response in history (%d chars).", len(dm_response))
                     await client.post(
                         f"{base_url}/api/dm/append-history",
-                        json={"role": "assistant", "content": narrative_for_history},
+                        json={"role": "assistant", "content": dm_response},
                     )
 
                     # Signal turn completion
