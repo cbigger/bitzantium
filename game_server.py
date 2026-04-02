@@ -161,17 +161,21 @@ async def handle_join(request: Request):
     _active_sessions[api_key] = session
 
     turn = db.get_turn()
+    already_in_order = entity_id in turn["turn_order"]
     first_player = len(turn["turn_order"]) == 0
 
-    if entity_id not in turn["turn_order"]:
+    if not already_in_order:
         db.add_to_order(entity_id)
 
-    if first_player:
-        # First player gets their turn immediately — no DM involvement
+    if first_player or already_in_order:
+        # First player or reconnecting player — set turn directly
         db.set_player_turn(entity_id)
-        log.info("First player — turn set directly, no DM trigger.")
+        if first_player:
+            log.info("First player — turn set directly, no DM trigger.")
+        else:
+            log.info("Reconnecting player — turn set directly.")
     else:
-        # Subsequent players: DM needs to incorporate them into the scene
+        # Genuinely new additional player joining an active session
         db.append_dm_message("user", {
             "type": "new_player_joined",
             "entity_id": entity_id,

@@ -79,11 +79,11 @@ happens and make it real using your tools.
    move entities, spend spell slots and resources.
 4. When a new player joins an existing scene (you receive a "new_player_joined" event), \
    place them using place_entity. Do NOT re-initialize the scene.
-5. When you are done resolving, write a brief DM summary of what happened and why. This \
-   is NOT narrative prose — it is a factual summary for the narrator to work from. \
-   Example: "Player moved 30ft north. Threw a pen at the shadow — improvised weapon, \
-   rolled 8 vs AC 12, miss. Cast prestidigitation on the air ahead — cantrip resolves, \
-   no visible effect. No enemies present."
+5. For each player action you resolve, briefly explain what is happening and why before \
+   calling tools. Example: "The player attempts to hurl a pen at the whispering shadow — \
+   treating it as an improvised ranged weapon." Then call the appropriate tools. After \
+   the tools resolve, note the outcome: "The pen sails wide — miss." Do this for every \
+   action the player declared. A separate narrator will turn your notes into prose.
 
 # Your Authority
 - You decide advantage/disadvantage based on narrative context.
@@ -286,8 +286,11 @@ async def run_resolution_pass(
     """
     DM resolves the player's turn using tools.
 
-    Returns the DM's full response text (including all tool calls and results
-    across iterations). Raises on empty response.
+    Returns a full transcript of the resolution: every DM response and every
+    tool result across all iterations. This transcript is passed directly to
+    the narrator so it knows everything that happened.
+
+    Raises RuntimeError on empty LLM response.
     """
     max_iter = int(cfg.get("agent", {}).get("max_iterations", 10))
     chat_history = poll_data.get("messages", [])
@@ -303,7 +306,8 @@ async def run_resolution_pass(
             content = str(content)
         messages.append({"role": role, "content": content})
 
-    last_response = ""
+    # Collect everything into a transcript for the narrator
+    transcript_parts: list[str] = []
 
     for iteration in range(1, max_iter + 1):
         log.info("[resolution] iteration %d/%d — %d messages", iteration, max_iter, len(messages))
@@ -320,11 +324,11 @@ async def run_resolution_pass(
                 f"DM resolution returned empty response on iteration {iteration}"
             )
 
+        transcript_parts.append(response)
         tool_calls = parse_tool_calls(response)
 
         if not tool_calls:
             log.info("[resolution] no tool calls in iteration %d — resolution complete.", iteration)
-            last_response = response
             break
 
         log.info("[resolution] found %d tool call(s)", len(tool_calls))
@@ -338,15 +342,15 @@ async def run_resolution_pass(
             result = await call_dm_tool(client, base_url, name, args)
             log.info("[resolution] result: %s", json.dumps(result)[:200])
             tool_results.append(f"<tool_response>\n{json.dumps(result, indent=2)}\n</tool_response>")
+            transcript_parts.append(f"[Tool: {name}] Result: {json.dumps(result)}")
 
         messages.append({"role": "assistant", "content": response})
         messages.append({"role": "user", "content": "\n\n".join(tool_results)})
-        last_response = response
 
     else:
         log.warning("[resolution] max iterations (%d) reached.", max_iter)
 
-    return last_response
+    return "\n\n".join(transcript_parts)
 
 
 # ---------------------------------------------------------------------------
