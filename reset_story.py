@@ -10,6 +10,7 @@ Clears:
     turn_states         — turn order, initiative, tick counter
     scene_states        — current scene / entity positions
     turn_contexts       — per-character story_so_far, location, quest_log
+    + long-rests every character (full HP, slots, resources, conditions)
 
 Usage:
     .venv/bin/python3 reset_story.py          # interactive confirm
@@ -30,23 +31,20 @@ TABLES_TO_CLEAR = [
 
 
 def reset_story() -> dict[str, int]:
-    """Delete all rows from gameplay tables and reset character economies.
-    Returns {table: rows_deleted} plus an 'economies_reset' count."""
+    """Delete all rows from gameplay tables and long-rest every character."""
     counts: dict[str, int] = {}
     with db.SessionLocal() as session:
         for model in TABLES_TO_CLEAR:
             n = session.query(model).delete()
             counts[model.__tablename__] = n
-
-        # Reset every character's action economy to fresh state
-        characters = session.query(db.Character).all()
-        for char in characters:
-            cs = db.CharacterState.model_validate(char.character_state)
-            cs = cs.model_copy(update={"economy": db.ActionEconomy()})
-            char.character_state = cs.model_dump(mode="json")
-        counts["economies_reset"] = len(characters)
-
         session.commit()
+
+    # Long rest each character (uses its own session per call)
+    characters = db.get_all_entity_ids()
+    for eid in characters:
+        db.long_rest(eid, full_reset=True)
+    counts["characters_rested"] = len(characters)
+
     return counts
 
 

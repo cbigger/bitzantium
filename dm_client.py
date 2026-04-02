@@ -291,8 +291,8 @@ async def run_dm_turn(
 
         log.info("found %d tool call(s)", len(tool_calls))
 
-        # Execute each tool call and build the continuation
-        continuation = response
+        # Execute each tool call and collect results
+        tool_results = []
 
         for tc in tool_calls:
             name = tc["name"]
@@ -302,11 +302,14 @@ async def run_dm_turn(
             result = await call_dm_tool(client, base_url, name, args)
 
             log.info("result: %s", json.dumps(result)[:200])
-            continuation += f"\n<tool_response>\n{json.dumps(result, indent=2)}\n</tool_response>\n"
+            tool_results.append(f"<tool_response>\n{json.dumps(result, indent=2)}\n</tool_response>")
 
-        # Append assistant turn with tool calls + results, loop for next LLM call
-        messages.append({"role": "assistant", "content": continuation})
-        last_response = continuation
+        # Append the assistant's tool calls, then tool results as a
+        # separate user message so the model sees new input to respond to
+        # rather than thinking it already finished its turn.
+        messages.append({"role": "assistant", "content": response})
+        messages.append({"role": "user", "content": "\n\n".join(tool_results)})
+        last_response = response
 
     else:
         log.warning("max iterations (%d) reached.", max_iter)

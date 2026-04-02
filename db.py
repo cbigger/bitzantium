@@ -216,6 +216,13 @@ def get_entity_id(api_key: str) -> Optional[str]:
         return account.character.entity_id
 
 
+def get_all_entity_ids() -> list[str]:
+    """Return entity_ids for every character in the database."""
+    with SessionLocal() as session:
+        rows = session.query(Character.entity_id).all()
+        return [r[0] for r in rows]
+
+
 def get_character_state_by_entity(entity_id: str) -> Optional[CharacterState]:
     """Look up character state directly by entity_id."""
     with SessionLocal() as session:
@@ -290,6 +297,117 @@ def reset_economy(entity_id: str) -> Optional[CharacterState]:
         character.character_state = cs.model_dump(mode="json")
         session.commit()
         return cs
+
+
+# ---------------------------------------------------------------------------
+# Resting
+# ---------------------------------------------------------------------------
+
+def short_rest(entity_id: str, hit_dice_to_spend: int = 0) -> Optional[dict]:
+    """Short rest: spend hit dice to recover HP, recharge short-rest resources,
+    and reset action economy.  Returns a summary dict or None if entity missing."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return None
+        cs = CharacterState.model_validate(character.character_state)
+        sheet = cs.sheet
+
+        # Spend hit dice to recover HP
+        hp_healed = 0
+        dice_spent = 0
+        con_mod = (sheet.ability_scores.constitution - 10) // 2
+        remaining_to_spend = hit_dice_to_spend
+        for hd in sheet.hit_dice:
+            while remaining_to_spend > 0 and hd.remaining > 0:
+                hd.remaining -= 1
+                hp_healed += max(1, dice.roll(f"1{hd.die}") + con_mod)
+                dice_spent += 1
+                remaining_to_spend -= 1
+
+        sheet.hp_current = min(sheet.hp_max, sheet.hp_current + hp_healed)
+
+        # Recharge short-rest class resources
+        resources_recharged = []
+        for res in sheet.class_resources:
+            if res.recharge_on in ("short_rest", "short rest") and res.current < res.max:
+                res.current = res.max
+                resources_recharged.append(res.name)
+
+        # Reset economy
+        cs = cs.model_copy(update={"economy": ActionEconomy()})
+        character.character_state = cs.model_dump(mode="json")
+        session.commit()
+
+        return {
+            "entity_id": entity_id,
+            "rest_type": "short",
+            "hit_dice_spent": dice_spent,
+            "hp_healed": hp_healed,
+            "hp_current": sheet.hp_current,
+            "hp_max": sheet.hp_max,
+            "resources_recharged": resources_recharged,
+        }
+
+
+def long_rest(entity_id: str, full_reset: bool = False) -> Optional[dict]:
+    """Long rest: full HP, restore half hit dice (min 1), all spell slots,
+    all class resources, clear conditions/effects/death saves, reset economy.
+
+    If full_reset is True, all hit dice are fully restored and exhaustion is
+    zeroed out instead of reduced by 1 (useful for story resets).
+
+    Returns a summary dict or None if entity missing."""
+    with SessionLocal() as session:
+        character = session.query(Character).filter(Character.entity_id == entity_id).first()
+        if not character:
+            return None
+        cs = CharacterState.model_validate(character.character_state)
+        sheet = cs.sheet
+
+        # Full HP
+        sheet.hp_current = sheet.hp_max
+        sheet.hp_temp = 0
+
+        # Hit dice recovery
+        for hd in sheet.hit_dice:
+            if full_reset:
+                hd.remaining = hd.total
+            else:
+                recover = max(1, hd.total // 2)
+                hd.remaining = min(hd.total, hd.remaining + recover)
+
+        # All spell slots
+        for slot in sheet.spell_slots.values():
+            slot.remaining = slot.total
+
+        # All class resources
+        for res in sheet.class_resources:
+            res.current = res.max
+
+        # Clear conditions, effects, death saves, exhaustion
+        from bitzantium_schemas.character import DeathSaves
+        sheet.death_saves = DeathSaves()
+        sheet.conditions = []
+        sheet.active_effects = []
+        sheet.concentration_effect_id = None
+        if full_reset:
+            sheet.exhaustion_level = 0
+        else:
+            sheet.exhaustion_level = max(0, sheet.exhaustion_level - 1)
+
+        # Reset economy
+        cs = cs.model_copy(update={"economy": ActionEconomy()})
+        character.character_state = cs.model_dump(mode="json")
+        session.commit()
+
+        return {
+            "entity_id": entity_id,
+            "rest_type": "long",
+            "full_reset": full_reset,
+            "hp_current": sheet.hp_current,
+            "hp_max": sheet.hp_max,
+        }
 
 
 # ---------------------------------------------------------------------------

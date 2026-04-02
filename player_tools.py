@@ -286,6 +286,17 @@ def _snap_move(entity_id: str, args: dict, cs: CharacterState) -> dict:
     }
 
 
+def _snap_short_rest(entity_id: str, args: dict, cs: CharacterState) -> dict:
+    hit_dice = int(args.get("hit_dice_to_spend", 0))
+    result = db.short_rest(entity_id, hit_dice)
+    return result or {"entity_id": entity_id, "error": "entity not found"}
+
+
+def _snap_long_rest(entity_id: str, args: dict, cs: CharacterState) -> dict:
+    result = db.long_rest(entity_id)
+    return result or {"entity_id": entity_id, "error": "entity not found"}
+
+
 def _snap_end_turn(entity_id: str, args: dict, cs: CharacterState) -> dict:
     return {"entity_id": entity_id}
 
@@ -307,6 +318,8 @@ _SNAPSHOT_DISPATCH: dict[str, object] = {
     "lay_on_hands": _snap_lay_on_hands,
     "hide":         _snap_hide,
     "move":         _snap_move,
+    "short_rest":   _snap_short_rest,
+    "long_rest":    _snap_long_rest,
     "end_turn":     _snap_end_turn,
     "signoff":      _snap_signoff,
 }
