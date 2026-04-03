@@ -695,6 +695,25 @@ def _handle_append_narrative(args: dict) -> dict:
     return {"status": "appended", "segment_id": result["id"]}
 
 
+def _handle_apply_short_rest(args: dict) -> dict:
+    """Execute a short rest for a character."""
+    entity_id = args["entity_id"]
+    hit_dice = int(args.get("hit_dice_to_spend", 0))
+    result = db.short_rest(entity_id, hit_dice)
+    if result is None:
+        return {"error": f"Character {entity_id!r} not found"}
+    return result
+
+
+def _handle_apply_long_rest(args: dict) -> dict:
+    """Execute a long rest for a character."""
+    entity_id = args["entity_id"]
+    result = db.long_rest(entity_id)
+    if result is None:
+        return {"error": f"Character {entity_id!r} not found"}
+    return result
+
+
 def _handle_set_player_location(args: dict) -> dict:
     """Update a player's location context fields."""
     entity_id = args["entity_id"]
@@ -1095,6 +1114,41 @@ _DM_TOOLS: list[dict] = [
             "required": ["entity_id"],
         },
         "handler": _handle_tick_turn_end,
+    },
+
+    # ── Resting ───────────────────────────────────────────────────────────────
+    {
+        "name": "apply_short_rest",
+        "description": (
+            "Execute a short rest for a character. Spends hit dice for HP recovery "
+            "and recharges short-rest resources. Call this when the DM approves a "
+            "player's short rest request."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "entity_id":        {"type": "string"},
+                "hit_dice_to_spend": {"type": "integer", "default": 0},
+            },
+            "required": ["entity_id"],
+        },
+        "handler": _handle_apply_short_rest,
+    },
+    {
+        "name": "apply_long_rest",
+        "description": (
+            "Execute a long rest for a character. Restores full HP, all spell slots, "
+            "class resources, clears conditions and effects, recovers half total hit dice. "
+            "Call this when the DM approves a player's long rest request."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "entity_id": {"type": "string"},
+            },
+            "required": ["entity_id"],
+        },
+        "handler": _handle_apply_long_rest,
     },
 
     # ── Narrative ─────────────────────────────────────────────────────────────

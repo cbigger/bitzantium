@@ -149,6 +149,10 @@ emitting tool_call blocks and write your DM summary.
 - spend_resource: Spend class resource charges. Args: entity_id, resource_name (required), amount.
 - restore_resource: Restore class resource charges. Args: entity_id, resource_name (required), amount.
 
+## Resting
+- apply_short_rest: Execute a short rest. Spends hit dice for HP, recharges short-rest resources. Args: entity_id (required), hit_dice_to_spend.
+- apply_long_rest: Execute a long rest. Full HP, spell slots, class resources, clears conditions. Args: entity_id (required).
+
 ## Turn Bookkeeping
 - tick_turn_end: Decrement effect durations, expire effects at 0. Args: entity_id (required).
 

@@ -287,14 +287,33 @@ def _snap_move(entity_id: str, args: dict, cs: CharacterState) -> dict:
 
 
 def _snap_short_rest(entity_id: str, args: dict, cs: CharacterState) -> dict:
+    """Snapshot only — actual rest mechanics are resolved by the DM."""
     hit_dice = int(args.get("hit_dice_to_spend", 0))
-    result = db.short_rest(entity_id, hit_dice)
-    return result or {"entity_id": entity_id, "error": "entity not found"}
+    sheet = cs.sheet
+    return {
+        "entity_id": entity_id,
+        "rest_type": "short",
+        "hit_dice_to_spend": hit_dice,
+        "hit_dice_available": sheet.hit_dice_current,
+        "hit_dice_total": sheet.hit_dice_total,
+        "hp_current": sheet.hp_current,
+        "hp_max": sheet.hp_max,
+    }
 
 
 def _snap_long_rest(entity_id: str, args: dict, cs: CharacterState) -> dict:
-    result = db.long_rest(entity_id)
-    return result or {"entity_id": entity_id, "error": "entity not found"}
+    """Snapshot only — actual rest mechanics are resolved by the DM."""
+    sheet = cs.sheet
+    return {
+        "entity_id": entity_id,
+        "rest_type": "long",
+        "hp_current": sheet.hp_current,
+        "hp_max": sheet.hp_max,
+        "hit_dice_current": sheet.hit_dice_current,
+        "hit_dice_total": sheet.hit_dice_total,
+        "spell_slots": {str(k): v for k, v in (sheet.spell_slots or {}).items()},
+        "conditions": [c.value for c in (sheet.conditions or [])],
+    }
 
 
 def _snap_end_turn(entity_id: str, args: dict, cs: CharacterState) -> dict:
