@@ -26,6 +26,7 @@ TABLES_TO_CLEAR = [
     db.NarrativeSegment,
     db.DmChatMessage,
     db.NarratorMessage,
+    db.DmDebugLog,
     db.TurnStateRow,
     db.SceneStateRow,
     db.TurnContext,

@@ -164,10 +164,6 @@ def _fmt_new_player(content: dict) -> list[str]:
     return [f"{_ts()} {BOLD}{CYAN}⟶  {name} joined the game{RESET}"]
 
 
-_TOOL_CALL_RE = re.compile(r"<tool_call>\s*(.*?)\s*</tool_call>", re.DOTALL)
-_TOOL_RESULT_RE = re.compile(r"^\[Tool:\s*(\S+)\]\s*Result:\s*(.*)", re.DOTALL)
-
-
 def _fmt_dm_response(content: str, debug: bool) -> list[str]:
     """Format a DM assistant message (resolution transcript stored in history)."""
     if not content or not content.strip():
@@ -176,52 +172,9 @@ def _fmt_dm_response(content: str, debug: bool) -> list[str]:
         return []
 
     lines = []
-    lines.append(f"{_ts()} {BOLD}{CYAN}--- Pass 1: Resolution ---{RESET}")
-
-    for chunk in content.split("\n\n"):
-        chunk = chunk.strip()
-        if not chunk:
-            continue
-
-        # Tool result line: [Tool: name] Result: {...}
-        tool_result_m = _TOOL_RESULT_RE.match(chunk)
-        if tool_result_m:
-            name = tool_result_m.group(1)
-            result_json = tool_result_m.group(2).strip()
-            # Truncate long results
-            if len(result_json) > 200:
-                result_json = result_json[:200] + "..."
-            lines.append(f"  {DIM}{GRAY}  \u2192 {name}: {result_json}{RESET}")
-            continue
-
-        # Check for tool_call XML within the chunk
-        tool_calls = _TOOL_CALL_RE.findall(chunk)
-        if tool_calls:
-            # Show DM reasoning (text outside tool_call tags)
-            reasoning = _TOOL_CALL_RE.sub("", chunk).strip()
-            if reasoning:
-                for ln in reasoning.splitlines():
-                    ln = ln.strip()
-                    if ln:
-                        lines.append(f"  {DIM}{YELLOW}{ln}{RESET}")
-            # Show each tool call
-            for tc_json in tool_calls:
-                try:
-                    tc = json.loads(tc_json)
-                    name = tc.get("name", "?")
-                    args = tc.get("arguments", {})
-                    lines.append(
-                        f"  {CYAN}\u21b3 {name}({json.dumps(args, separators=(',', ':'))}){RESET}"
-                    )
-                except json.JSONDecodeError:
-                    lines.append(f"  {CYAN}\u21b3 {tc_json}{RESET}")
-        else:
-            # Plain DM reasoning text
-            for ln in chunk.splitlines():
-                ln = ln.strip()
-                if ln:
-                    lines.append(f"  {DIM}{YELLOW}{ln}{RESET}")
-
+    lines.append(f"{_ts()} {BOLD}{CYAN}--- Pass 1: Resolution OUTPUT ---{RESET}")
+    for ln in content.splitlines():
+        lines.append(f"  {CYAN}{ln}{RESET}")
     return lines
 
 
@@ -250,7 +203,7 @@ def _fmt_narrative(seg: db.NarrativeSegment, debug: bool) -> list[str]:
 
 
 def _fmt_narrator_message(row: db.NarratorMessage) -> list[str]:
-    """Format a narrator history entry for debug display."""
+    """Format a narrator history entry for debug display — raw dump."""
     lines = []
     content = row.content
     if isinstance(content, dict):
@@ -259,24 +212,13 @@ def _fmt_narrator_message(row: db.NarratorMessage) -> list[str]:
         content = str(content)
 
     if row.role == "user":
-        # This is the resolution transcript sent to the narrator — just note it
-        char_count = len(content)
-        lines.append(
-            f"{_ts()} {BOLD}{MAGENTA}--- Pass 2: Narrator ---{RESET}"
-        )
-        lines.append(
-            f"  {DIM}{GRAY}[Narrator received resolution transcript — {char_count} chars]{RESET}"
-        )
-    elif row.role == "assistant":
-        # Raw narrator output with [SHARED]/[PERSONAL] sections
-        lines.append(f"{_ts()} {DIM}{MAGENTA}[Narrator raw output]{RESET}")
+        lines.append(f"{_ts()} {BOLD}{MAGENTA}--- Pass 2: Narrator INPUT ---{RESET}")
         for ln in content.splitlines():
-            if ln.strip().startswith("[SHARED]"):
-                lines.append(f"  {BOLD}{MAGENTA}{ln}{RESET}")
-            elif ln.strip().startswith("[PERSONAL]"):
-                lines.append(f"  {BOLD}{MAGENTA}{ln}{RESET}")
-            else:
-                lines.append(f"  {DIM}{MAGENTA}{ln}{RESET}")
+            lines.append(f"  {MAGENTA}{ln}{RESET}")
+    elif row.role == "assistant":
+        lines.append(f"{_ts()} {BOLD}{MAGENTA}--- Pass 2: Narrator OUTPUT ---{RESET}")
+        for ln in content.splitlines():
+            lines.append(f"  {MAGENTA}{ln}{RESET}")
 
     return lines
 
@@ -383,6 +325,53 @@ def poll_narrator_history(session, last_id: int) -> tuple[int, list[str]]:
     return new_last, output
 
 
+def _fmt_debug_log(row: db.DmDebugLog) -> list[str]:
+    """Format a dm_debug_log entry — full raw LLM I/O dump."""
+    lines = []
+    label = row.pass_name.upper()
+    lines.append(
+        f"{_ts()} {BOLD}{GRAY}═══ {label} pass — iteration {row.iteration} ═══{RESET}"
+    )
+
+    # Input: every message sent to the LLM
+    lines.append(f"  {DIM}{GRAY}── SENT TO LLM ({len(row.messages_sent)} messages) ──{RESET}")
+    for msg in row.messages_sent:
+        role = msg.get("role", "?")
+        content = msg.get("content", "")
+        if isinstance(content, dict):
+            content = json.dumps(content, indent=2)
+        elif not isinstance(content, str):
+            content = str(content)
+        lines.append(f"  {DIM}{GRAY}[{role}]{RESET}")
+        for ln in content.splitlines():
+            lines.append(f"    {DIM}{GRAY}{ln}{RESET}")
+
+    # Output: raw LLM response
+    lines.append(f"  {DIM}{GRAY}── LLM RESPONSE ──{RESET}")
+    for ln in (row.response or "").splitlines():
+        lines.append(f"    {DIM}{GRAY}{ln}{RESET}")
+
+    return lines
+
+
+def poll_debug_log(session, last_id: int) -> tuple[int, list[str]]:
+    """Poll dm_debug_log table for new entries (debug mode only)."""
+    rows = (
+        session.query(db.DmDebugLog)
+        .filter(db.DmDebugLog.id > last_id)
+        .order_by(db.DmDebugLog.id)
+        .all()
+    )
+    output: list[str] = []
+    new_last = last_id
+
+    for row in rows:
+        new_last = max(new_last, row.id)
+        output.extend(_fmt_debug_log(row))
+
+    return new_last, output
+
+
 # ---------------------------------------------------------------------------
 # Startup banner
 # ---------------------------------------------------------------------------
@@ -441,14 +430,17 @@ def main() -> None:
             last_chat_id = 0
             last_narrative_id = 0
             last_narrator_history_id = 0
+            last_debug_log_id = 0
         else:
             # Start from current max IDs so we only show new events
             max_chat = session.query(db.DmChatMessage.id).order_by(db.DmChatMessage.id.desc()).first()
             max_narrative = session.query(db.NarrativeSegment.id).order_by(db.NarrativeSegment.id.desc()).first()
             max_narrator = session.query(db.NarratorMessage.id).order_by(db.NarratorMessage.id.desc()).first()
+            max_debug = session.query(db.DmDebugLog.id).order_by(db.DmDebugLog.id.desc()).first()
             last_chat_id = max_chat[0] if max_chat else 0
             last_narrative_id = max_narrative[0] if max_narrative else 0
             last_narrator_history_id = max_narrator[0] if max_narrator else 0
+            last_debug_log_id = max_debug[0] if max_debug else 0
 
         turn_row = session.query(db.TurnStateRow).filter(db.TurnStateRow.id == 1).first()
         prev_turn_snap = _snapshot(turn_row) if turn_row else {}
@@ -459,14 +451,18 @@ def main() -> None:
                 with db.SessionLocal() as session:
                     prev_turn_snap, turn_lines = poll_turn_state(session, prev_turn_snap)
                     last_chat_id, chat_lines = poll_dm_chat(session, last_chat_id, args.debug)
+                    debug_lines = []
                     narrator_lines = []
                     if args.debug:
+                        last_debug_log_id, debug_lines = poll_debug_log(
+                            session, last_debug_log_id,
+                        )
                         last_narrator_history_id, narrator_lines = poll_narrator_history(
                             session, last_narrator_history_id,
                         )
                     last_narrative_id, narrative_lines = poll_narratives(session, last_narrative_id, args.debug)
 
-                for line in turn_lines + chat_lines + narrator_lines + narrative_lines:
+                for line in turn_lines + chat_lines + debug_lines + narrator_lines + narrative_lines:
                     _print(line)
 
             except Exception as exc:

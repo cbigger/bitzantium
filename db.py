@@ -165,6 +165,18 @@ class NarratorMessage(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
+class DmDebugLog(Base):
+    """Full LLM request/response log for each DM pass — used by monitor debug mode."""
+    __tablename__ = "dm_debug_log"
+
+    id = Column(Integer, primary_key=True)
+    pass_name = Column(String, nullable=False)       # "resolution" or "narrator"
+    iteration = Column(Integer, nullable=False)       # iteration number within the pass
+    messages_sent = Column(JSONB, nullable=False)     # full messages array sent to LLM
+    response = Column(String, nullable=False)         # raw LLM response text
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
 # ---------------------------------------------------------------------------
 # Table creation
 # ---------------------------------------------------------------------------
@@ -977,3 +989,20 @@ def get_narrator_history() -> list[dict]:
     with SessionLocal() as session:
         rows = session.query(NarratorMessage).order_by(NarratorMessage.id).all()
         return [{"role": r.role, "content": r.content} for r in rows]
+
+
+# ---------------------------------------------------------------------------
+# DM debug log — full LLM request/response for monitor debug mode
+# ---------------------------------------------------------------------------
+
+def append_debug_log(pass_name: str, iteration: int, messages_sent: list[dict], response: str) -> None:
+    """Store a full LLM exchange for debug inspection."""
+    with SessionLocal() as session:
+        row = DmDebugLog(
+            pass_name=pass_name,
+            iteration=iteration,
+            messages_sent=messages_sent,
+            response=response,
+        )
+        session.add(row)
+        session.commit()

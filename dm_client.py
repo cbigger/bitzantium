@@ -29,6 +29,8 @@ from pathlib import Path
 import httpx
 from openai import OpenAI
 
+import db
+
 log = logging.getLogger("dm_client")
 
 
@@ -319,6 +321,8 @@ async def run_resolution_pass(
         log.info("[resolution] llm response: %d chars", len(response))
         log.debug("[resolution] llm output:\n%s", response)
 
+        db.append_debug_log("resolution", iteration, messages, response)
+
         if not response.strip():
             raise RuntimeError(
                 f"DM resolution returned empty response on iteration {iteration}"
@@ -395,6 +399,8 @@ async def run_narrative_pass(
     )
     log.info("[narrator] llm response: %d chars", len(response))
     log.debug("[narrator] llm output:\n%s", response)
+
+    db.append_debug_log("narrator", 1, messages, response)
 
     if not response.strip():
         raise RuntimeError("Narrator returned empty response")
